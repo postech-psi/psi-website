@@ -1,8 +1,8 @@
 # Site Settings
 title: POSTECH AeroSpace Initiatives
 description: POSTECH AeroSpace Initiatives (PSI) - A research-focused aerospace student group at POSTECH in the Department of Mechanical Engineering
-url: "" # Leave empty for GitHub Pages
-baseurl: "" # Leave empty if deploying to root
+url: "https://postech-psi.github.io"
+baseurl: "/psi-website"
 
 # Author Information
 author:
