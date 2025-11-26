@@ -1,53 +1,117 @@
-// NASA/SpaceX Inspired Color Palette
-$space-black: #0a0a0a;
-$space-dark: #1a1a1a;
-$space-gray: #2a2a2a;
-$spacex-orange: #ff6b35;
+// ═══════════════════════════════════════════════════════════════════════════
+// PSI Design System - NASA Mission Control Inspired
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Deep Space Color Palette
+$void: #000000;
+$abyss: #05070a;
+$deep-space: #0a0d12;
+$nebula-dark: #0f1419;
+$nebula-mid: #171c24;
+$nebula-light: #1e2530;
+$cosmos-gray: #2a3444;
+
+// Mission Control Accents
+$signal-orange: #ff4d00;
+$signal-orange-glow: rgba(255, 77, 0, 0.4);
+$plasma-cyan: #00e5ff;
+$plasma-cyan-glow: rgba(0, 229, 255, 0.3);
+$thrust-amber: #ffab00;
+$success-green: #00e676;
+$alert-red: #ff1744;
 $nasa-blue: #0b3d91;
-$accent-cyan: #00d4ff;
-$text-primary: #ffffff;
-$text-secondary: #b0b0b0;
-$text-muted: #707070;
-$background: #0a0a0a;
-$background-alt: #1a1a1a;
-$border-color: #2a2a2a;
-$success-color: #00ff88;
-$warning-color: #ff6b35;
-$error-color: #ff3366;
 
-// Typography - Modern, Technical
-$font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-heading: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-$font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
+// Text Hierarchy
+$text-white: #ffffff;
+$text-primary: #e8eaed;
+$text-secondary: #9aa0a6;
+$text-muted: #5f6368;
+$text-ghost: #3c4043;
 
-$font-size-base: 16px;
-$font-size-small: 14px;
-$font-size-large: 18px;
-$font-size-h1: 3.5rem;
-$font-size-h2: 2.5rem;
-$font-size-h3: 1.75rem;
+// Borders & Dividers
+$border-subtle: rgba(255, 255, 255, 0.06);
+$border-default: rgba(255, 255, 255, 0.1);
+$border-strong: rgba(255, 255, 255, 0.15);
+$border-accent: rgba(255, 77, 0, 0.3);
 
-$line-height-base: 1.7;
-$line-height-heading: 1.2;
-$letter-spacing-wide: 0.05em;
+// Typography - Distinctive, Technical
+$font-display: 'Outfit', system-ui, sans-serif;
+$font-body: 'DM Sans', system-ui, sans-serif;
+$font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-// Spacing
-$spacing-xs: 0.5rem;
-$spacing-sm: 1rem;
-$spacing-md: 2rem;
-$spacing-lg: 3rem;
-$spacing-xl: 4rem;
+// Type Scale (based on 1.25 ratio)
+$text-xs: 0.64rem;
+$text-sm: 0.8rem;
+$text-base: 1rem;
+$text-lg: 1.25rem;
+$text-xl: 1.563rem;
+$text-2xl: 1.953rem;
+$text-3xl: 2.441rem;
+$text-4xl: 3.052rem;
+$text-5xl: 3.815rem;
+$text-6xl: 4.768rem;
+
+// Line Heights
+$leading-none: 1;
+$leading-tight: 1.15;
+$leading-snug: 1.35;
+$leading-normal: 1.6;
+$leading-relaxed: 1.75;
+
+// Letter Spacing
+$tracking-tighter: -0.04em;
+$tracking-tight: -0.02em;
+$tracking-normal: 0;
+$tracking-wide: 0.025em;
+$tracking-wider: 0.05em;
+$tracking-widest: 0.1em;
+
+// Spacing Scale
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.25rem;
+$space-6: 1.5rem;
+$space-8: 2rem;
+$space-10: 2.5rem;
+$space-12: 3rem;
+$space-16: 4rem;
+$space-20: 5rem;
+$space-24: 6rem;
+$space-32: 8rem;
 
 // Breakpoints
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
-$breakpoint-xl: 1200px;
+$screen-sm: 640px;
+$screen-md: 768px;
+$screen-lg: 1024px;
+$screen-xl: 1280px;
+$screen-2xl: 1536px;
 
 // Layout
-$container-max-width: 1200px;
-$container-padding: 1.5rem;
+$container-max: 1400px;
+$container-narrow: 900px;
+$container-wide: 1600px;
 
 // Transitions
-$transition-base: 0.3s ease;
+$ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+$ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+$duration-fast: 150ms;
+$duration-base: 300ms;
+$duration-slow: 500ms;
+$duration-slower: 800ms;
 
+// Shadows
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+$shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
+$shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.7);
+$shadow-glow-orange: 0 0 40px $signal-orange-glow;
+$shadow-glow-cyan: 0 0 40px $plasma-cyan-glow;
+
+// Z-Index Scale
+$z-base: 0;
+$z-above: 10;
+$z-overlay: 100;
+$z-modal: 1000;
+$z-tooltip: 10000;

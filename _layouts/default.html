@@ -6,10 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+    
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ '/assets/images/logo-circle.png' | relative_url }}">
 </head>
 <body>
+    <!-- Animated starfield background -->
+    <div class="stars-container">
+        <canvas id="stars-canvas"></canvas>
+    </div>
+    <div class="gradient-overlay"></div>
+    <div class="grid-overlay"></div>
+    
     {% include header.html %}
     
     <main class="main-content">
@@ -21,4 +36,3 @@
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
 </body>
 </html>
-
