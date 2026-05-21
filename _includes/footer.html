@@ -1,31 +1,32 @@
 <footer class="site-footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>{{ site.title }}</h3>
-                <p>A research-focused aerospace student group at POSTECH, Department of Mechanical Engineering. Building the future of Korean aerospace.</p>
-            </div>
-            <div class="footer-section">
-                <h3>Navigation</h3>
-                <ul>
-                    {% for item in site.navigation %}
-                    <li><a href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Connect</h3>
-                <ul class="social-links">
-                    <li><a href="https://github.com/postech-psi" target="_blank" rel="noopener noreferrer">GitHub →</a></li>
-                    <li><a href="https://www.instagram.com/postech_psi/" target="_blank" rel="noopener noreferrer">Instagram →</a></li>
-                    {% if site.author.email %}
-                    <li><a href="mailto:{{ site.author.email }}">Email →</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+    <div class="container footer-grid">
+        <div>
+            <h2>{{ site.title }}</h2>
+            <p>
+                <span class="i18n-ko">POSTECH 학생 항공우주 연구회. 로켓, 항전, 추진 시험, 비행 운용을 하나의 임무 체계로 연결합니다.</span>
+                <span class="i18n-en">A POSTECH student aerospace research club connecting rockets, avionics, propulsion tests, and flight operations into one mission system.</span>
+            </p>
         </div>
-        <div class="footer-bottom">
-            <p>© {{ 'now' | date: "%Y" }} {{ site.title }} — Pohang, South Korea</p>
+        <div>
+            <h3><span class="i18n-ko">탐색</span><span class="i18n-en">Explore</span></h3>
+            <ul>
+                {% for item in site.navigation %}
+                <li><a href="{{ item.url | relative_url }}"><span class="i18n-ko">{{ item.title_ko }}</span><span class="i18n-en">{{ item.title_en }}</span></a></li>
+                {% endfor %}
+            </ul>
         </div>
+        <div>
+            <h3><span class="i18n-ko">연결</span><span class="i18n-en">Connect</span></h3>
+            <ul>
+                <li><a href="https://github.com/postech-psi" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                <li><a href="https://www.instagram.com/postech_psi/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+                {% if site.author.email %}
+                <li><a href="mailto:{{ site.author.email }}">Email</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <p>© {{ 'now' | date: "%Y" }} {{ site.title }} · Pohang, South Korea</p>
     </div>
 </footer>

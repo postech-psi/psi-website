@@ -1,22 +1,19 @@
-# Site Settings
 title: POSTECH AeroSpace Initiatives
-description: POSTECH AeroSpace Initiatives (PSI) - A research-focused aerospace student group at POSTECH in the Department of Mechanical Engineering
+description: POSTECH AeroSpace Initiatives (PSI) is a student aerospace research club at POSTECH developing rockets, avionics, propulsion test systems, and flight operations capability.
 url: "https://postech-psi.github.io"
 baseurl: "/psi-website"
+lang: ko
 
-# Author Information
 author:
   name: POSTECH AeroSpace Initiatives
   email: "uikangee@postech.ac.kr"
 
-# Build Settings
 markdown: kramdown
 highlighter: rouge
 plugins:
   - jekyll-feed
   - jekyll-sitemap
 
-# Exclude from processing
 exclude:
   - Gemfile
   - Gemfile.lock
@@ -27,32 +24,40 @@ exclude:
   - vendor/ruby/
   - .gitignore
   - README.md
+  - tools/
+  - docs/
 
-# Collections
 collections:
   projects:
     output: true
   team:
     output: true
 
-# Navigation
 navigation:
   - title: Home
+    title_ko: 홈
+    title_en: Home
     url: /
   - title: About
+    title_ko: 미션
+    title_en: Mission
     url: /about
   - title: Projects
+    title_ko: 프로젝트
+    title_en: Projects
     url: /projects
   - title: Team
+    title_ko: 팀
+    title_en: Team
     url: /team
   - title: Events
+    title_ko: 궤적
+    title_en: Trajectory
     url: /events
   - title: Contact
+    title_ko: 참여
+    title_en: Join
     url: /contact
 
-# Theme (minimal theme for GitHub Pages compatibility)
 theme: minima
-
-# GitHub Pages settings
 github: [metadata]
-

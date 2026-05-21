@@ -1,14 +1,16 @@
-<header class="site-header">
-    <div class="container">
-        <div class="header-content">
-            <a href="{{ '/' | relative_url }}" class="site-logo">
-                <img src="{{ '/assets/images/logo-banner.png' | relative_url }}" alt="{{ site.title }}" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="logo-text" style="display: none;">
-                    <h1 class="site-title">PSI</h1>
-                    <p class="site-tagline">POSTECH Aerospace</p>
-                </div>
-            </a>
-            {% include navigation.html %}
+<header class="site-header" data-site-header>
+    <div class="container header-shell">
+        <a href="{{ '/' | relative_url }}" class="site-logo" aria-label="POSTECH AeroSpace Initiatives home">
+            <img src="{{ '/assets/images/logo-banner.png' | relative_url }}" alt="POSTECH AeroSpace Initiatives" class="logo-image">
+        </a>
+        {% include navigation.html %}
+        <div class="header-actions" aria-label="Display preferences">
+            <button class="icon-button language-toggle" type="button" data-language-toggle aria-label="Switch language" aria-pressed="false">
+                <span data-current-lang>KO</span>
+            </button>
+            <button class="icon-button theme-toggle" type="button" data-theme-toggle aria-label="Toggle light mode" aria-pressed="false">
+                <span aria-hidden="true">◐</span>
+            </button>
         </div>
     </div>
 </header>

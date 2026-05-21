@@ -1,17 +1,18 @@
-<nav class="main-nav">
-    <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+<nav class="main-nav" aria-label="Primary navigation">
+    <button class="mobile-menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="primary-menu" data-menu-toggle>
         <span></span>
         <span></span>
         <span></span>
     </button>
-    <ul class="nav-menu">
+    <ul id="primary-menu" class="nav-menu" data-menu>
         {% for item in site.navigation %}
+        {% assign item_url_slash = item.url | append: '/' %}
         <li>
-            <a href="{{ item.url | relative_url }}" {% if page.url == item.url %}class="active"{% endif %}>
-                {{ item.title }}
+            <a href="{{ item.url | relative_url }}" {% if page.url == item.url or page.url == item_url_slash %}class="active" aria-current="page"{% endif %}>
+                <span class="i18n-ko">{{ item.title_ko }}</span>
+                <span class="i18n-en">{{ item.title_en }}</span>
             </a>
         </li>
         {% endfor %}
     </ul>
 </nav>
-

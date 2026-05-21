@@ -1,38 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-    <meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
-    
-    <!-- Preconnect for fonts -->
+    <title>{% if page.title_ko %}{{ page.title_ko }} | {% elsif page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.description_ko %}{{ page.description_ko }}{% elsif page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+    {% if page.title_en %}<meta name="psi-title-ko" content="{{ page.title_ko }} | {{ site.title }}">{% endif %}
+    {% if page.title_en %}<meta name="psi-title-en" content="{{ page.title_en }} | {{ site.title }}">{% endif %}
+    {% if page.description_ko %}<meta name="psi-description-ko" content="{{ page.description_ko }}">{% endif %}
+    {% if page.description_en %}<meta name="psi-description-en" content="{{ page.description_en }}">{% endif %}
+    <meta name="theme-color" content="#070b12">
+    <meta property="og:title" content="{% if page.title_en %}{{ page.title_en }} | {% endif %}{{ site.title }}">
+    <meta property="og:description" content="{% if page.description_en %}{{ page.description_en }}{% else %}{{ site.description }}{% endif %}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ '/assets/images/generated/psi-hero-launch.png' | absolute_url }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
     <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | absolute_url }}">
-    
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ '/assets/images/logo-circle.png' | relative_url }}">
 </head>
 <body>
-    <!-- Animated starfield background -->
-    <div class="stars-container">
-        <canvas id="stars-canvas"></canvas>
-    </div>
-    <div class="gradient-overlay"></div>
-    <div class="grid-overlay"></div>
-    
+    <a class="skip-link" href="#main-content">
+        <span class="i18n-ko">본문으로 이동</span>
+        <span class="i18n-en">Skip to content</span>
+    </a>
     {% include header.html %}
-    
-    <main class="main-content">
+    <main id="main-content" class="main-content">
         {{ content }}
     </main>
-    
     {% include footer.html %}
-    
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
 </body>
 </html>
