@@ -250,7 +250,7 @@ body.theme-light .mobile-menu-toggle {
     .hero-content {
     position: relative;
     max-width: 790px;
-    margin-left: max(20px, calc((100vw - #{$container}) / 2));
+    margin-left: unquote("max(20px, calc((100vw - #{$container}) / 2))");
     margin-right: auto;
 }
 .mission-kicker {
@@ -295,9 +295,9 @@ h3 { font-size: 1.35rem; }
     max-width: 680px;
     margin: 24px 0 0;
 }
-.hero-console {
+    .hero-console {
     position: absolute;
-    right: max(20px, calc((100vw - #{$container}) / 2));
+    right: unquote("max(20px, calc((100vw - #{$container}) / 2))");
     bottom: 70px;
     width: calc(100vw - 40px);
     max-width: 330px;
