@@ -26,7 +26,82 @@ body::before {
     position: fixed;
     inset: 0;
     z-index: -1;
-    pointer-events: none;
+    pointer-events: none;I'll retrieve the job logs to identify the failure and find a solution.Now let me get the SCSS file that's causing the error:The build is failing due to a **SCSS syntax error**. The issue is in `assets/css/main.scss` on line 58:
+
+**Error:** `"calc(100% - 40px)" is not a number for `min'`
+
+This means you're using the CSS `calc()` function as an argument to the SCSS `min()` function, which isn't allowed in the version of Sass being used (jekyll-sass-converter-1.5.2).
+
+Let me check the file to see the exact issue:The build is failing due to a **SCSS syntax error** in your# Solution for SCSS Conversion Error
+
+The job is failing because the Sass compiler (jekyll-sass-converter `assets/css/main.scss` file.
+
+## The Problem
+
+On **line 61**, you have:
+```scss
+width) cannot process the `min()` function with a CSS `calc: min(calc(100% - 40px), $container);
+```
+
+The issue is that the `min()` function in Sass/SCSS expects **numeric values**, but `calc(100% - 40px)` is a CSS calculation expression (a string),()` expression on line 61 of `assets not a number. Your Jekyll Sass converter (v1/css/main.scss`.
+
+## Root Cause
+
+Line 61 uses:
+```scss
+width: min(calc(100% - 40px), $container);
+```
+
+The `min()` function in Sass requires numeric values, but `.5.2) can't evaluate this.
+
+## The Solution
+
+You need to use **CSS's native `min()` function** instead ofcalc(100% - 40px)` is a CSS calc expression (a string), not a number. The jekyll-sass-converter v1.5.2 being used by GitHub Pages doesn't support this modern Sass/ Sass's `min()` function. To do this, you should interpolate or escape the expression so it's treated as CSS rather than Sass. Change line 61 to:
+
+```scss
+width: min(calc(100% - 40px), #{$container});
+```
+
+This usesCSS feature.
+
+## Solution
+
+Replace the `min()` function with a media query approach. Update line 61 and similar instances:
+
+**Before:**
+```scss
+.container {
+    width: min(calc(100% - 40px), $container);
+     Sass's `#{}` interpolation syntax to ensure `$container` is properly evaluated while preserving the `margin: 0 auto;
+}
+```
+
+**After:**
+```scss
+.container {
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    max-width: $calc()` as a CSS expression.
+
+**Additional note:** You have the same pattern on line 841 ancontainer;
+}
+```
+
+Additionally, apply this fix to other affected lines:
+- **Line 248:** `.d 884, which may also need the same fix:
+- Line 841: `width: min(calc(100% - 40px), $container);`
+-hero-content` margin-left
+- **Line 295:** `.hero-console` right position  
+- **Line 297:** `.hero-console` width
+- **Line 841 Line 884: `width: min(calc(100% - 40px), $container);`
+
+Update all three instances, and your build should pass.:** `.hero-console` width (in media query)
+- **Line 884:** `.hero-content` width (in media query)
+- **Line 931:** `.container` width (in media query)
+
+Replace all `min(calc(...), $variable)` patterns with separate `width/max-width` properties or convert to standard CSS media queries that are compatible with the older Sass converter version.
+
+This approach maintains the same responsive behavior while being compatible with GitHub Pages' jekyll-sass-converter v1.5.2.
     background-image:
         linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
@@ -58,7 +133,8 @@ body.lang-en span.i18n-en,
 body.lang-en em.i18n-en { display: inline; }
 
 .container {
-    width: min(calc(100% - 40px), $container);
+    width: calc(100% - 40px);
+    max-width: $container;
     margin: 0 auto;
 }
 
@@ -294,7 +370,8 @@ h3 { font-size: 1.35rem; }
     position: absolute;
     right: max(20px, calc((100vw - #{$container}) / 2));
     bottom: 70px;
-    width: min(330px, calc(100vw - 40px));
+    width: calc(100vw - 40px);
+    max-width: 330px;
     border: 1px solid rgba($accent-2, 0.26);
     background: rgba($void, 0.56);
     backdrop-filter: blur(16px);
@@ -838,7 +915,8 @@ body.theme-light .site-footer a { color: $paper-muted; }
         right: auto;
         bottom: auto;
         margin: 34px auto 0;
-        width: min(calc(100% - 40px), $container);
+        width: calc(100% - 40px);
+        max-width: $container;
     }
 }
 
@@ -881,7 +959,8 @@ body.theme-light .site-footer a { color: $paper-muted; }
     }
     .hero-content {
         margin: 0 auto;
-        width: min(calc(100% - 40px), $container);
+        width: calc(100% - 40px);
+        max-width: $container;
     }
     .orbital-arc { opacity: 0.38; }
     .telemetry-grid,
@@ -928,7 +1007,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
 }
 
 @media (max-width: 520px) {
-    .container { width: min(calc(100% - 28px), $container); }
+    .container { width: calc(100% - 28px); max-width: $container; }
     .logo-image { height: 28px; }
     .site-logo { min-width: 126px; }
     .icon-button,
@@ -940,7 +1019,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
     h2 { font-size: clamp(1.85rem, 10vw, 2.8rem); }
     .page-hero { padding-top: 124px; }
     .mission-kicker span { width: 100%; }
-    .hero-console { width: min(calc(100% - 28px), $container); }
+    .hero-console { width: calc(100% - 28px); max-width: $container; }
 }
 
 @media (prefers-reduced-motion: reduce) {
