@@ -58,7 +58,7 @@ body.lang-en span.i18n-en,
 body.lang-en em.i18n-en { display: inline; }
 
 .container {
-    width: min(100% - 40px, $container);
+    width: min(calc(100% - 40px), $container);
     margin: 0 auto;
 }
 
@@ -242,7 +242,7 @@ body.theme-light .mobile-menu-toggle {
     top: 7%;
     box-shadow: 0 0 28px rgba($accent-2, 0.9);
 }
-.hero-content {
+    .hero-content {
     position: relative;
     max-width: 790px;
     margin-left: max(20px, calc((100vw - #{$container}) / 2));
@@ -838,7 +838,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
         right: auto;
         bottom: auto;
         margin: 34px auto 0;
-        width: min(100% - 40px, $container);
+        width: min(calc(100% - 40px), $container);
     }
 }
 
@@ -881,7 +881,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
     }
     .hero-content {
         margin: 0 auto;
-        width: min(100% - 40px, $container);
+        width: min(calc(100% - 40px), $container);
     }
     .orbital-arc { opacity: 0.38; }
     .telemetry-grid,
@@ -928,7 +928,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
 }
 
 @media (max-width: 520px) {
-    .container { width: min(100% - 28px, $container); }
+    .container { width: min(calc(100% - 28px), $container); }
     .logo-image { height: 28px; }
     .site-logo { min-width: 126px; }
     .icon-button,
@@ -940,7 +940,7 @@ body.theme-light .site-footer a { color: $paper-muted; }
     h2 { font-size: clamp(1.85rem, 10vw, 2.8rem); }
     .page-hero { padding-top: 124px; }
     .mission-kicker span { width: 100%; }
-    .hero-console { width: min(100% - 28px, $container); }
+    .hero-console { width: min(calc(100% - 28px), $container); }
 }
 
 @media (prefers-reduced-motion: reduce) {
