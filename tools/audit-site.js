@@ -6,7 +6,7 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const textExt = new Set([".html", ".md", ".scss", ".css", ".js", ".yml", ".yaml", ".json", ".txt"]);
 const sourceDirs = ["_includes", "_layouts", "_sass", "assets", "."];
-const pages = ["index.md", "about.md", "projects.md", "team.md", "events.md", "contact.md"];
+const pages = ["index.md", "about.md", "projects.md", "team.md", "events.md", "shop.md", "contact.md"];
 const mojibake = [
     new RegExp(String.fromCharCode(0x00e2) + "[^\\s<]*", "g"),
     new RegExp(String.fromCharCode(0x00c2), "g"),
@@ -49,6 +49,8 @@ for (const file of [
     "assets/images/generated/avionics-macro-bay.png",
     "assets/images/generated/propulsion-test.png",
     "assets/images/generated/ground-station-workshop.png",
+    "assets/images/shop/psi-launch-tee-front.png",
+    "assets/images/shop/psi-launch-tee-back.png",
     "assets/js/main.js",
     "assets/css/main.scss",
 ]) {
@@ -69,6 +71,10 @@ for (const file of textFiles) {
     }
 
     if (relative.startsWith("tools/")) continue;
+
+    if (relative === "assets/css/main.scss" && /\bmin\(/.test(content)) {
+        fail("GitHub Pages Sass may treat CSS min() as a Sass function in assets/css/main.scss");
+    }
 
     const imageRefs = [...content.matchAll(/(?:src|href)=["']([^"']+\.(?:png|jpg|jpeg|webp|svg|gif))["']/gi)];
     for (const match of imageRefs) {

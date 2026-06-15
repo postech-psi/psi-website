@@ -54,6 +54,10 @@ navigation:
     title_ko: Trajectory
     title_en: Trajectory
     url: /events
+  - title: Shop
+    title_ko: Shop
+    title_en: Shop
+    url: /shop
   - title: Join
     title_ko: Join
     title_en: Join

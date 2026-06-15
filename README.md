@@ -5,8 +5,9 @@ This repository contains the Jekyll/GitHub Pages website for POSTECH AeroSpace I
 The current site is an English-first public website with:
 
 - A rebuilt technical visual system inspired by student aerospace and robotics teams
-- Mission, project, team, trajectory, and join pages
+- Mission, project, team, trajectory, shop, and join pages
 - Project dossiers for avionics, thrust measurement, and sounding rocket work
+- A static PSI merch storefront with email checkout
 - Generated temporary aerospace visuals under `assets/images/generated/`
 - A lightweight audit script for encoding, links, metadata, assets, navigation, and basic source checks
 
@@ -52,6 +53,17 @@ Current files:
 - `avionics-macro-bay.png`
 - `propulsion-test.png`
 - `ground-station-workshop.png`
+
+Shop mockups live in:
+
+```text
+assets/images/shop/
+```
+
+Current files:
+
+- `psi-launch-tee-front.png`
+- `psi-launch-tee-back.png`
 
 When real PSI photos or videos are available, replace references in the Markdown pages or add new files beside these assets. Keep descriptive filenames and meaningful `alt` text.
 
