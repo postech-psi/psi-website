@@ -1,22 +1,20 @@
 <footer class="site-footer">
     <div class="container footer-grid">
         <div>
-            <h2>{{ site.title }}</h2>
-            <p>
-                <span class="i18n-ko">POSTECH 학생 항공우주 연구회. 로켓, 항전, 추진 시험, 비행 운용을 하나의 임무 체계로 연결합니다.</span>
-                <span class="i18n-en">A POSTECH student aerospace research club connecting rockets, avionics, propulsion tests, and flight operations into one mission system.</span>
-            </p>
+            <p class="footer-kicker">POSTECH AeroSpace Initiatives</p>
+            <h2>Student-built flight systems, tested in public.</h2>
+            <p>PSI connects rockets, avionics, propulsion tests, and flight operations into one engineering culture at POSTECH.</p>
         </div>
         <div>
-            <h3><span class="i18n-ko">탐색</span><span class="i18n-en">Explore</span></h3>
+            <h3>Explore</h3>
             <ul>
                 {% for item in site.navigation %}
-                <li><a href="{{ item.url | relative_url }}"><span class="i18n-ko">{{ item.title_ko }}</span><span class="i18n-en">{{ item.title_en }}</span></a></li>
+                <li><a href="{{ item.url | relative_url }}">{{ item.title_en }}</a></li>
                 {% endfor %}
             </ul>
         </div>
         <div>
-            <h3><span class="i18n-ko">연결</span><span class="i18n-en">Connect</span></h3>
+            <h3>Connect</h3>
             <ul>
                 <li><a href="https://github.com/postech-psi" target="_blank" rel="noopener noreferrer">GitHub</a></li>
                 <li><a href="https://www.instagram.com/postech_psi/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
@@ -27,6 +25,6 @@
         </div>
     </div>
     <div class="container footer-bottom">
-        <p>© {{ 'now' | date: "%Y" }} {{ site.title }} · Pohang, South Korea</p>
+        <p>(c) {{ 'now' | date: "%Y" }} {{ site.title }} / Pohang, South Korea</p>
     </div>
 </footer>

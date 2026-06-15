@@ -95,16 +95,15 @@ for (const file of textFiles) {
 
 for (const page of pages) {
     const content = read(path.join(root, page));
-    if (!/title_ko:/.test(content) || !/title_en:/.test(content)) fail(`Missing bilingual title front matter: ${page}`);
-    if (!/description_ko:/.test(content) || !/description_en:/.test(content)) fail(`Missing bilingual description front matter: ${page}`);
-    if (!/i18n-ko/.test(content) || !/i18n-en/.test(content)) fail(`Missing bilingual content markers: ${page}`);
+    if (!/^title:/m.test(content)) fail(`Missing title front matter: ${page}`);
+    if (!/^description:/m.test(content)) fail(`Missing description front matter: ${page}`);
+    if (!/<section\b/i.test(content)) fail(`Missing visible section markup: ${page}`);
 }
 
 const layout = read(path.join(root, "_layouts/default.html"));
 if (!/id="main-content"/.test(layout)) fail("Layout is missing #main-content target");
 if (!/skip-link/.test(layout)) fail("Layout is missing skip link");
-if (!/data-language-toggle/.test(read(path.join(root, "_includes/header.html")))) fail("Header is missing language toggle");
-if (!/data-theme-toggle/.test(read(path.join(root, "_includes/header.html")))) fail("Header is missing theme toggle");
+if (!/data-menu-toggle/.test(read(path.join(root, "_includes/navigation.html")))) fail("Navigation is missing mobile menu toggle");
 
 for (const page of pages) {
     const content = read(path.join(root, page));
@@ -120,4 +119,4 @@ if (failures.length) {
     process.exit(1);
 }
 
-console.log("Audit passed: encoding, bilingual markers, metadata, links, and generated assets look consistent.");
+console.log("Audit passed: encoding, metadata, links, navigation, and generated assets look consistent.");

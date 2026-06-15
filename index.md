@@ -1,10 +1,7 @@
 ---
 layout: default
 title: Home
-title_ko: 홈
-title_en: Home
-description_ko: POSTECH AeroSpace Initiatives는 로켓, 항전, 추진 시험, 비행 운용을 연구하는 POSTECH 학생 항공우주 연구회입니다.
-description_en: POSTECH AeroSpace Initiatives is a student aerospace research club building rockets, avionics, propulsion test systems, and flight operations capability.
+description: POSTECH AeroSpace Initiatives is a student aerospace research club building rockets, avionics, propulsion test systems, and flight operations capability.
 ---
 
 <section class="hero hero-home">
@@ -12,138 +9,133 @@ description_en: POSTECH AeroSpace Initiatives is a student aerospace research cl
         <img src="{{ '/assets/images/generated/psi-hero-range-v2.png' | relative_url }}" alt="">
     </div>
     <div class="hero-overlay"></div>
-    <div class="orbital-arc" aria-hidden="true"></div>
-    <div class="container hero-content">
-        <p class="mission-kicker">
-            <span>PSI / FLIGHT SYSTEMS LAB</span>
-            <span>Pohang, Republic of Korea</span>
-        </p>
-        <h1>
-            <span class="i18n-ko">우리는 학생 연구를 비행 가능한 시스템으로 번역합니다.</span>
-            <span class="i18n-en">We translate student research into flight-ready systems.</span>
-        </h1>
-        <p class="hero-lede">
-            <span class="i18n-ko">POSTECH AeroSpace Initiatives는 로켓, 항전, 추진 시험, 지상 운용을 하나의 임무 체계로 연결하는 학생 항공우주 연구회입니다.</span>
-            <span class="i18n-en">POSTECH AeroSpace Initiatives connects rockets, avionics, propulsion tests, and ground operations into one student-built mission system.</span>
-        </p>
-        <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ '/projects' | relative_url }}"><span class="i18n-ko">임무 기록 보기</span><span class="i18n-en">View mission records</span></a>
-            <a class="btn btn-secondary" href="{{ '/contact' | relative_url }}"><span class="i18n-ko">팀 참여하기</span><span class="i18n-en">Join the crew</span></a>
+    <div class="container hero-grid">
+        <div>
+            <p class="mission-kicker">
+                <span>PSI / POSTECH</span>
+                <span>Student Aerospace Lab</span>
+            </p>
+            <h1>Building the next generation of flight systems.</h1>
+            <p class="hero-lede">POSTECH AeroSpace Initiatives connects rockets, avionics, propulsion tests, and ground operations into one student-built mission system.</p>
+            <div class="hero-actions">
+                <a class="btn btn-primary" href="{{ '/projects' | relative_url }}">View Projects</a>
+                <a class="btn btn-secondary" href="{{ '/contact' | relative_url }}">Join The Team</a>
+            </div>
         </div>
-    </div>
-    <aside class="hero-console" aria-label="Mission telemetry snapshot">
-        <div><span>STATUS</span><strong>ACTIVE</strong></div>
-        <div><span>VEHICLE</span><strong>PSLV-I</strong></div>
-        <div><span>STACK</span><strong>AVIONICS / TMS</strong></div>
-        <div><span>MODE</span><strong>RESEARCH</strong></div>
-    </aside>
-</section>
-
-<section class="telemetry-strip" aria-label="PSI mission metrics">
-    <div class="container telemetry-grid">
-        <div class="telemetry-cell"><span>T+00</span><strong>2024</strong><em class="i18n-ko">창립</em><em class="i18n-en">Founded</em></div>
-        <div class="telemetry-cell"><span>SYS</span><strong>3</strong><em class="i18n-ko">핵심 연구 축</em><em class="i18n-en">Core tracks</em></div>
-        <div class="telemetry-cell"><span>FLT</span><strong>PSLV-I</strong><em class="i18n-ko">발사 경험</em><em class="i18n-en">Launch record</em></div>
-        <div class="telemetry-cell"><span>DATA</span><strong>OPEN</strong><em class="i18n-ko">공개 기록</em><em class="i18n-en">Public records</em></div>
+        <aside class="hero-console" aria-label="Mission telemetry snapshot">
+            <div><span>Status</span><strong>Active</strong></div>
+            <div><span>Vehicle</span><strong>PSLV-I</strong></div>
+            <div><span>Tracks</span><strong>Rocket / Avionics / Test</strong></div>
+            <div><span>Base</span><strong>Pohang, Korea</strong></div>
+        </aside>
     </div>
 </section>
 
-<section class="section systems-section" id="mission">
+<section class="stat-band" aria-label="PSI mission metrics">
+    <div class="container stat-grid">
+        <article class="stat-card"><p class="label">Founded</p><strong>2024</strong><span>Student research organization at POSTECH</span></article>
+        <article class="stat-card"><p class="label">Core Tracks</p><strong>3</strong><span>Rocket systems, avionics, and test operations</span></article>
+        <article class="stat-card"><p class="label">Flight Record</p><strong>PSLV-I</strong><span>Sounding rocket launch experience</span></article>
+        <article class="stat-card"><p class="label">Culture</p><strong>Open</strong><span>Public records, repositories, and technical reviews</span></article>
+    </div>
+</section>
+
+<section class="section" id="mission">
     <div class="container">
         <div class="section-header split">
             <div>
-                <p class="eyebrow">Mission Architecture</p>
-                <h2><span class="i18n-ko">PSI의 프로젝트는 따로 놓인 과제가 아니라 하나의 비행체를 향한 하위 시스템입니다.</span><span class="i18n-en">PSI projects are not isolated tasks. They are subsystems moving toward one flight vehicle.</span></h2>
+                <p class="section-index">01 / Who We Are</p>
+                <h2>A student aerospace team turning classroom knowledge into hardware.</h2>
             </div>
-            <p><span class="i18n-ko">각 팀은 설계, 제작, 시험, 데이터 리뷰를 반복하며 실제 운용 가능한 절차와 하드웨어를 남깁니다.</span><span class="i18n-en">Each team repeats design, fabrication, testing, and data review to leave behind hardware and procedures that can actually operate.</span></p>
+            <p class="section-copy">PSI is built for students who want to design, fabricate, test, and review real aerospace systems. The work is hands-on, but the standard is engineering discipline: requirements, procedures, data, and iteration.</p>
         </div>
         <div class="systems-map">
             <article class="system-node">
-                <span>01 / Vehicle</span>
-                <h3><span class="i18n-ko">로켓 시스템</span><span class="i18n-en">Rocket Systems</span></h3>
-                <p><span class="i18n-ko">구조, 회수, 추진기관 통합, 발사 준비 절차를 하나의 물리적 시스템으로 묶습니다.</span><span class="i18n-en">Structures, recovery, propulsion integration, and launch readiness become one physical system.</span></p>
+                <p class="label">01 / Vehicle</p>
+                <h3>Rocket Systems</h3>
+                <p>Structures, recovery, propulsion integration, fabrication checks, and launch readiness procedures.</p>
             </article>
             <article class="system-node">
-                <span>02 / Brain</span>
+                <p class="label">02 / Brain</p>
                 <h3>Avionics</h3>
-                <p><span class="i18n-ko">센서 융합, 비행 단계 판단, 텔레메트리, 회수 명령을 담당하는 비행 소프트웨어를 만듭니다.</span><span class="i18n-en">Flight software handles sensor fusion, stage logic, telemetry, and recovery commands.</span></p>
+                <p>Flight computers, sensor fusion, stage logic, telemetry, recovery commands, and ground-station tools.</p>
             </article>
             <article class="system-node">
-                <span>03 / Ground Truth</span>
-                <h3><span class="i18n-ko">시험 계측</span><span class="i18n-en">Test Instrumentation</span></h3>
-                <p><span class="i18n-ko">정적 연소와 지상 시험에서 다음 설계를 판단할 수 있는 신뢰도 높은 데이터를 확보합니다.</span><span class="i18n-en">Static-fire and ground tests produce reliable data for the next design decision.</span></p>
+                <p class="label">03 / Ground Truth</p>
+                <h3>Test Operations</h3>
+                <p>Static-fire instrumentation, thrust measurement, safety zones, checklists, and post-test reviews.</p>
             </article>
         </div>
     </div>
 </section>
 
-<section class="section image-feature">
+<section class="section toned">
     <div class="container image-feature-grid">
         <div class="image-frame">
-            <img src="{{ '/assets/images/generated/ground-station-workshop.png' | relative_url }}" alt="Students reviewing telemetry in a dark aerospace workshop with ground station electronics" loading="lazy">
+            <img src="{{ '/assets/images/generated/ground-station-workshop.png' | relative_url }}" alt="Students reviewing telemetry in an aerospace workshop" loading="lazy">
         </div>
-        <div class="prose dossier-copy">
-            <p class="eyebrow">Inside The Loop</p>
-            <h2><span class="i18n-ko">멋진 순간보다 중요한 것은 반복 가능한 임무 루프입니다.</span><span class="i18n-en">More important than a dramatic moment is a repeatable mission loop.</span></h2>
-            <p><span class="i18n-ko">PSI는 시험 전 체크리스트, 지상국 로그, 센서 데이터, 설계 리뷰를 한 흐름으로 연결합니다. 실패와 성공은 모두 다음 비행체의 입력값입니다.</span><span class="i18n-en">PSI connects pre-test checklists, ground-station logs, sensor data, and design reviews into one flow. Both failures and successes become inputs to the next vehicle.</span></p>
-            <a class="text-link" href="{{ '/about' | relative_url }}"><span class="i18n-ko">운영 방식 보기</span><span class="i18n-en">See how PSI works</span></a>
+        <div>
+            <p class="section-index">02 / Mission Loop</p>
+            <h2>Every result becomes input for the next vehicle.</h2>
+            <p class="section-copy">A launch is only one moment in a longer loop: define requirements, build a subsystem, test it, review the data, and leave records that the next team can use.</p>
+            <a class="text-link" href="{{ '/about' | relative_url }}">See How PSI Works</a>
         </div>
     </div>
 </section>
 
-<section class="section projects-preview" id="projects">
+<section class="section" id="projects">
     <div class="container">
         <div class="section-header split">
             <div>
-                <p class="eyebrow">Mission Records</p>
-                <h2><span class="i18n-ko">공개 가능한 프로젝트 기록</span><span class="i18n-en">Public project records</span></h2>
+                <p class="section-index">03 / Current Work</p>
+                <h2>Project dossiers for flight, measurement, and operations.</h2>
             </div>
-            <p><span class="i18n-ko">각 프로젝트는 목표, 제약, 하드웨어, 데이터, 다음 마일스톤을 기준으로 읽히도록 정리합니다.</span><span class="i18n-en">Each project is organized around objective, constraints, hardware, data, and the next milestone.</span></p>
+            <p class="section-copy">Inspired by mission programs, each PSI project is presented as a record: objective, role in the system, constraints, hardware, and next milestone.</p>
         </div>
-        <div class="program-grid cinematic">
-            <article class="program-card featured">
-                <img src="{{ '/assets/images/generated/avionics-macro-bay.png' | relative_url }}" alt="Macro view of avionics hardware inside a compact rocket avionics bay" loading="lazy">
-                <div class="program-card-body">
-                    <p class="status active">Active Development</p>
+        <div class="records-grid">
+            <article class="record-card featured">
+                <img src="{{ '/assets/images/generated/avionics-macro-bay.png' | relative_url }}" alt="Avionics hardware inside a compact rocket avionics bay" loading="lazy">
+                <div class="record-body">
+                    <p class="status">Active Development</p>
                     <h3>Avionics Flight Computer</h3>
-                    <p><span class="i18n-ko">비행체의 상태를 추정하고, 텔레메트리를 송신하며, 회수 판단을 내리는 로켓의 신경계입니다.</span><span class="i18n-en">The vehicle's nervous system: state estimation, telemetry, and recovery decisions.</span></p>
+                    <p>The vehicle's nervous system: state estimation, telemetry, and recovery decisions.</p>
                 </div>
             </article>
-            <article class="program-card">
+            <article class="record-card">
                 <img src="{{ '/assets/images/generated/propulsion-test.png' | relative_url }}" alt="Static fire test stand and data acquisition equipment" loading="lazy">
-                <div class="program-card-body">
-                    <p class="status active">Active Development</p>
-                    <h3>TMS - Thrust Measurement System</h3>
-                    <p><span class="i18n-ko">추진기관의 실제 성능을 곡선으로 남기는 지상 시험 계측 시스템입니다.</span><span class="i18n-en">A ground-test instrument that turns motor performance into usable thrust curves.</span></p>
+                <div class="record-body">
+                    <p class="status">Active Development</p>
+                    <h3>Thrust Measurement System</h3>
+                    <p>A ground-test instrument that turns motor performance into usable thrust curves.</p>
                 </div>
             </article>
-            <article class="program-card text-only">
-                <div class="program-card-body">
+            <article class="record-card">
+                <div class="record-body">
                     <p class="status complete">Flight Record</p>
                     <h3>PSLV-I Sounding Rocket</h3>
-                    <p><span class="i18n-ko">초기 발사 경험을 만든 PSI의 사운딩 로켓 프로그램입니다.</span><span class="i18n-en">The sounding rocket program that created PSI's first launch operations record.</span></p>
+                    <p>The sounding rocket program that created PSI's first integrated launch operations record.</p>
                 </div>
             </article>
         </div>
         <div class="section-cta">
-            <a class="btn btn-primary" href="{{ '/projects' | relative_url }}"><span class="i18n-ko">프로젝트 도시에 보기</span><span class="i18n-en">Open project dossiers</span></a>
+            <a class="btn btn-primary" href="{{ '/projects' | relative_url }}">Open Project Dossiers</a>
         </div>
     </div>
 </section>
 
-<section class="section trajectory-section">
+<section class="section toned">
     <div class="container">
         <div class="section-header">
-            <p class="eyebrow">Trajectory</p>
-            <h2><span class="i18n-ko">짧은 시간 안에 실제 시험과 발사를 남겼습니다.</span><span class="i18n-en">A short history, already marked by real tests and launches.</span></h2>
+            <p class="section-index">04 / Trajectory</p>
+            <h2>A young team, already shaped by tests and launches.</h2>
         </div>
-        <ol class="trajectory-list">
-            <li><time>2024.02</time><strong>PSI Founded</strong><span class="i18n-ko">POSTECH 항공우주 학생 연구회 출범</span><span class="i18n-en">POSTECH aerospace student research club founded</span></li>
-            <li><time>2024.11</time><strong>PSLV-I Test Flight</strong><span class="i18n-ko">고흥 시험 발사 성공</span><span class="i18n-en">Goheung test flight success</span></li>
-            <li><time>2025.07</time><strong>NURA Academic Conference</strong><span class="i18n-ko">KARI 원장상 수상</span><span class="i18n-en">KARI President's Award</span></li>
-            <li><time>2025.08</time><strong>NURA Launch Competition</strong><span class="i18n-ko">PSLV-I 발사 성공</span><span class="i18n-en">PSLV-I launch success</span></li>
+        <ol class="timeline-list">
+            <li><time>2024.02</time><strong>PSI Founded</strong><span>POSTECH aerospace student research club begins operations.</span></li>
+            <li><time>2024.11</time><strong>PSLV-I Test Flight</strong><span>Successful test flight at the KARI Goheung test range.</span></li>
+            <li><time>2025.07</time><strong>NURA Academic Conference</strong><span>PSLV-I technical presentation and KARI President's Award.</span></li>
+            <li><time>2025.08</time><strong>NURA Launch Competition</strong><span>PSLV-I launch success and public competition record.</span></li>
         </ol>
-        <a class="text-link" href="{{ '/events' | relative_url }}"><span class="i18n-ko">전체 궤적 보기</span><span class="i18n-en">See full trajectory</span></a>
+        <a class="text-link" href="{{ '/events' | relative_url }}">See Full Timeline</a>
     </div>
 </section>
 
@@ -151,8 +143,8 @@ description_en: POSTECH AeroSpace Initiatives is a student aerospace research cl
     <div class="container join-inner">
         <div>
             <p class="eyebrow">Join The Mission</p>
-            <h2><span class="i18n-ko">관객으로 남지 말고, 다음 비행체의 일부를 만드세요.</span><span class="i18n-en">Do not stay in the audience. Build part of the next vehicle.</span></h2>
+            <h2>Do not stay in the audience. Build part of the next vehicle.</h2>
         </div>
-        <a class="btn btn-primary" href="{{ '/contact' | relative_url }}"><span class="i18n-ko">참여 문의</span><span class="i18n-en">Join PSI</span></a>
+        <a class="btn btn-primary" href="{{ '/contact' | relative_url }}">Join PSI</a>
     </div>
 </section>

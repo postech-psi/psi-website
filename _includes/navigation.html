@@ -9,8 +9,7 @@
         {% assign item_url_slash = item.url | append: '/' %}
         <li>
             <a href="{{ item.url | relative_url }}" {% if page.url == item.url or page.url == item_url_slash %}class="active" aria-current="page"{% endif %}>
-                <span class="i18n-ko">{{ item.title_ko }}</span>
-                <span class="i18n-en">{{ item.title_en }}</span>
+                {{ item.title_en }}
             </a>
         </li>
         {% endfor %}
