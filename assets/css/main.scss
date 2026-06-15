@@ -37,12 +37,14 @@ img { max-width: 100%; display: block; }
 a { color: inherit; }
 
 .container {
-    width: min(calc(100% - 40px), $container);
+    width: calc(100% - 40px);
+    max-width: $container;
     margin: 0 auto;
 }
 
 .container-wide {
-    width: min(calc(100% - 32px), $container-wide);
+    width: calc(100% - 32px);
+    max-width: $container-wide;
     margin: 0 auto;
 }
 
@@ -748,7 +750,7 @@ p { margin: 0; }
 }
 
 @media (max-width: 540px) {
-    .container { width: min(calc(100% - 28px), $container); }
+    .container { width: calc(100% - 28px); }
     .logo-image { height: 28px; }
     .site-logo { min-width: 132px; }
     h1 { font-size: clamp(2.45rem, 13vw, 3.6rem); }
