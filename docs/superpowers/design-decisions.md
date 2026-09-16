@@ -1,0 +1,42 @@
+# PSI redesign: decisions visible in the page
+
+Status: local review build; not published or merged into the live site.
+
+## Design skills and their concrete effect
+
+- **Frontend design:** the actual launch scene is the opening composition. The tall vehicle photograph and hardware close-up establish a layout specific to rockets. Following the user's logo-led request, the unsupported navy/blue UI was replaced by neutral white/light grey and black/charcoal themes. The official black-and-white wordmark is unchanged and more legible in a black header.
+- **Actual typography comparison:** Red Hat Display and Barlow Semi Condensed600 were rendered with real launch/Avionics/TMS headings at320/390/1440. Barlow was selected for a stronger, more compact Latin display rhythm; Pretendard remains the Korean/body face. Both runtime fonts are local and licensed. The former Red Hat runtime file was removed and remains recoverable from Git.
+- **Web interface guidelines:** keyboard-visible focus, correctly associated tabs, theme-aware contrast, real destinations, reduced-motion behavior and intentional video playback are checked alongside the layout. A passing screenshot is not sufficient evidence of functioning controls.
+- **Brainstorming and planning:** the user-approved launch-site direction is the design constraint. Subsequent source material enriches the same design rather than restarting it or silently choosing a different direction.
+- **Browser testing and verification:** the site is rendered in a fresh browser, with real video playback, language and theme changes, mobile navigation and research filters exercised. Desktop/mobile screenshots are inspected rather than treating generated HTML as a completed design.
+
+## References translated, not copied
+
+- EPFL Rocket Team: immediate, authentic field imagery.
+- Stoke: hardware explanations tied to visible details.
+- Varda: a selected state that changes meaningful media and content.
+- ETH Robotics: actual people and community rather than stock imagery.
+- [Awesome Web Design](https://github.com/nicolesaidy/awesome-web-design): used as a resource directory, not misrepresented as an installable skill. Typescale informed the responsive hierarchy; Typewolf informed wordmark/image emphasis; Material icon-button guidance informed the native44px sun/moon/monitor control; Apple motion guidance and Framer media guidance supported optional, interruptible motion.
+
+No reference-site images, branding or code are reused. These influences do not establish quality by themselves; the rendered result remains the test.
+
+## Content and source boundaries
+
+The local review build contains twenty-two English/Korean routes, including dedicated Avionics and TMS case studies. Content includes five current manuscript studies, fifteen separately labelled historical research records and fourteen unique photos across six events. Pinned public GitHub avionics/TMS code anchors technical descriptions; manuscript work, configured software behavior, recorded results and validated demonstrations are not conflated. Original club photographs and launch/onboard films supply the imagery.
+
+Avionics explains core responsibilities, measurements versus estimates, logging and the ground station, then offers a recorded 343-sample excerpt with visible gaps and source limitations. TMS follows acquisition through calibration and offline processing to four dated results. Two authentic source figures are shown full-frame; native calibration size is respected and original-size links remain available. The published results portal is the primary visitor destination, with implementation and original experiment notes retained as separate provenance links.
+
+The supplied manuscript and ground-station recording inform the account without publishing their raw files, precise coordinates or internal logs. The manuscript's vehicle naming and the public timeline differ, so manuscript performance values are not assigned to a particular PSLV generation. Current recruitment dates are not invented.
+
+## Operational decisions and tradeoffs
+
+1. Keep the worktree ignore in local Git configuration, leaving the production ignore file unchanged. Another checkout may need the same local configuration.
+2. Use bundled Node/Playwright rather than adding a package installation. Another machine needs an equivalent test runtime.
+3. Record the already-approved chat direction in the written specification. Later source-backed copy may still need editorial review before publication.
+4. Separate the initial CSS and behavior implementation into sequential checkpoints to obtain an earlier render. This required an extra CSS/JavaScript integration check.
+5. Add a bounded homepage refinement after the user's renewed critique. It is reversible, but further art-direction changes may still be needed after user review.
+6. Retain the native theme select beneath a decorative icon control. System preference is shown by a monitor even when the resolved palette is dark. Keyboard, storage, OS changes and forced-colours focus remain functional.
+7. Use the real published [test-results portal](https://postech-psi.github.io/test-results/) as the visitor-facing destination; GitHub remains provenance. The portal has no established embed/resize/theme contract, so a direct link is preferable to a fragile framed dashboard.
+8. Keep motion purposeful: actual launch footage, chosen viewpoints, photo navigation and received-record replay. Respect explicit pause and reduced motion; no invented live flight data, animated performance counters or scroll hijacking.
+9. Use the stronger existing neutral secondary token for research input boundaries. Decorative divider tokens remain subdued, while the controls now achieve measured 7.10:1 light /9.44:1 dark boundary contrast.
+10. Match chapter anchor spacing to a nonsticky header. Responsive heading breaks retain real spaces, and native scientific figures are neither recolored for dark mode nor enlarged beyond their available detail.
