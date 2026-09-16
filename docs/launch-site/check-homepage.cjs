@@ -37,7 +37,24 @@ async function checkHomepage(browser) {
       }
       assert.equal(await page.locator('[data-activity][tabindex="0"]').count(),1);
     });
+    await check(`${locale || 'en/'} horizontal activity tabs preserve vertical keyboard scrolling after resize`, async () => {
+      await page.setViewportSize({width:390,height:844});
+      await page.locator('[data-activity="projects"]').click();
+      const beforeDown = await page.evaluate(() => scrollY);
+      await page.keyboard.press('ArrowDown');
+      assert.equal(await page.locator('[data-activity][aria-selected="true"]').getAttribute('data-activity'),'projects','Horizontal tabs must not select with ArrowDown');
+      assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'projects');
+      await page.waitForFunction(before => scrollY > before, beforeDown);
+      await page.keyboard.press('ArrowUp');
+      assert.equal(await page.locator('[data-activity][aria-selected="true"]').getAttribute('data-activity'),'projects','Horizontal tabs must not select with ArrowUp');
+      await page.keyboard.press('ArrowRight');
+      assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'research');
+      await page.setViewportSize({width:1440,height:1000});
+      await page.keyboard.press('ArrowDown');
+      assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'learning','Vertical arrow handling returns after widening');
+    });
     await check(`${locale || 'en/'} hero exposes one playback interface and preserves keyboard focus`, async () => {
+      await page.setViewportSize({width:1440,height:1000});
       await page.goto(`${base}/${locale}index.html`);
       const video = page.locator('[data-flight-video]');
       const play = page.locator('[data-media-play]');
@@ -64,6 +81,31 @@ async function checkHomepage(browser) {
       await page.locator('[data-media="pad"]').click();
       assert.ok((await video.getAttribute('poster')).endsWith('launch-poster.webp'));
       assert.ok(await video.evaluate(v => v.paused));
+    });
+    await check(`${locale || 'en/'} failed-video link has a visible keyboard outline in both themes`, async () => {
+      await page.route('**/assets/onboard.mp4', route => route.abort());
+      await page.goto(`${base}/${locale}index.html`);
+      await page.locator('[data-media="onboard"]').click();
+      const failure = page.locator('[data-media-failure]');
+      await failure.waitFor({state:'visible'});
+      for (const theme of ['light','dark']) {
+        await page.locator('[data-theme-select]').selectOption(theme);
+        await page.keyboard.press('Tab');
+        const link = failure.locator('a');
+        await link.focus();
+        const contrast = await link.evaluate(node => {
+          const luminance = color => color.match(/[\d.]+/g).slice(0,3).map(Number).map(value => {
+            const c = value / 255;
+            return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4;
+          }).reduce((sum,c,i) => sum + c * [.2126,.7152,.0722][i],0);
+          const style = getComputedStyle(node);
+          const foreground = luminance(style.outlineColor);
+          const background = luminance(getComputedStyle(node.closest('[data-media-failure]')).backgroundColor);
+          return {visible:node.matches(':focus-visible') && style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0,ratio:(Math.max(foreground,background)+.05)/(Math.min(foreground,background)+.05)};
+        });
+        assert.ok(contrast.visible,'Error link must show a keyboard focus indicator');
+        assert.ok(contrast.ratio >= 3,`${theme} error-link outline contrast ${contrast.ratio.toFixed(2)}:1 must reach 3:1`);
+      }
     });
     await context.close();
     const fallback = await browser.newContext({javaScriptEnabled:false});

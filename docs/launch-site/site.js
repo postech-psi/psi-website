@@ -42,8 +42,9 @@
   menuBreakpoint.addEventListener('change', () => setMenu(false));
   window.addEventListener('pageshow', () => setMenu(false));
 
-  function tabKeyboard(buttons, vertical = false) {
+  function tabKeyboard(buttons) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {
+      const vertical = button.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical';
       let next;
       if (event.key === 'ArrowRight' || (vertical && event.key === 'ArrowDown')) next = (index + 1) % buttons.length;
       if (event.key === 'ArrowLeft' || (vertical && event.key === 'ArrowUp')) next = (index - 1 + buttons.length) % buttons.length;
@@ -77,7 +78,7 @@
     const setOrientation = () => tablist.setAttribute('aria-orientation', compact.matches ? 'horizontal' : 'vertical');
     setOrientation();
     compact.addEventListener('change', setOrientation);
-    tabKeyboard(tabs, true);
+    tabKeyboard(tabs);
   });
 
   document.querySelectorAll('[data-media-stage]').forEach(stage => {

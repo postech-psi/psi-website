@@ -69,7 +69,7 @@ html[lang=ko] h1,html[lang=ko] h2,html[lang=ko] h3,html[lang=ko] h4{letter-spaci
 .hero-media[data-started=true] .media-screen:after,.hero-media[data-view=onboard] .media-screen:after{display:none}
 .hero-media[data-view=onboard] .hero-identity{visibility:hidden}
 .hero-media[data-view=onboard] .media-screen video{object-fit:contain}
-.hero-media :focus-visible{outline-color:#fff}.hero-media .media-bar :focus-visible{outline-color:var(--action)}
+.hero-media :focus-visible{outline-color:#fff}.hero-media .media-bar :focus-visible,.hero-media .media-failure :focus-visible{outline-color:var(--action)}
 @media(max-width:900px){.hero-identity{width:36%;bottom:108px}.hero-identity h1{font-size:40px}.hero-identity p{font-size:16px;margin-top:16px}.hero-identity .text-link{margin-top:14px}.hero-media .media-play{bottom:28px}}
 @media(max-width:650px){
  .hero-media .media-screen{background:var(--canvas);overflow:visible}
