@@ -4,6 +4,7 @@ const path = require('node:path');
 const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const { checkAccessibility } = require('./check-accessibility.cjs');
 const { checkHomepage } = require('./check-homepage.cjs');
+const { checkCurrentContent } = require('./check-current-content.cjs');
 const routes = ['index','projects','pslv','research','learning','about','news','join'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
 (async () => {
@@ -12,6 +13,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
   const errors = [];
   try {
     await checkHomepage(browser);
+    await checkCurrentContent(browser);
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));

@@ -2,8 +2,10 @@ export const routes = ['index','projects','pslv','research','learning','about','
 export const text = (en,ko) => ({en,ko});
 export const sources = {
   github:'https://github.com/postech-psi', legacy:'https://sites.google.com/view/mechanicslab/PSI',
-  instagram:'https://www.instagram.com/postech_psi/', avionics:'https://github.com/postech-psi/Avionics',
-  tms:'https://github.com/postech-psi/TMS', motor:'https://github.com/postech-psi/SRM-Solid-Rocket-Motor',
+  instagram:'https://www.instagram.com/postech_psi/', avionics:'https://github.com/postech-psi/Avionics/tree/7cfb5be044e539c2e3c6d79a6538416a2741cd67',
+  flightSoftware:'https://github.com/postech-psi/Avionics/blob/7cfb5be044e539c2e3c6d79a6538416a2741cd67/flight-computer/README.md',
+  groundStation:'https://github.com/postech-psi/Avionics/blob/7cfb5be044e539c2e3c6d79a6538416a2741cd67/ground-station/README.md',
+  tms:'https://github.com/postech-psi/TMS/tree/abb02a09bca4e7835425dc67b2c28234ef887992', motor:'https://github.com/postech-psi/SRM-Solid-Rocket-Motor',
   tests:'https://github.com/postech-psi/test-results', learning:'https://github.com/postech-psi/psintelligence',
   tvc:'https://github.com/postech-psi/tvc-testbed', tvcData:'https://github.com/postech-psi/tvc-data',
   article:'https://www.postech.ac.kr/kor/newscenter/university-blog.do?articleNo=47318&mode=view',
@@ -16,7 +18,7 @@ export const nav = [
 export const pageTitles = {
   index:text('PSI — Student aerospace at POSTECH','PSI — 포스텍 항공우주연구회'),
   projects:text('Projects','프로젝트'),pslv:text('PSLV rocket programme','PSLV 로켓 프로젝트'),
-  research:text('Research archive','연구 아카이브'),learning:text('Learning at PSI','PSI에서 배우기'),
+  research:text('Research','연구'),learning:text('Learning at PSI','PSI에서 배우기'),
   about:text('About PSI','PSI 소개'),news:text('News & records','소식과 기록'),join:text('Join PSI','PSI와 함께하기')
 };
 const drive = id => `https://drive.google.com/file/d/${id}/view`;
@@ -49,13 +51,6 @@ export const tests=[
  {date:'2026-04-08',thrust:'203.00',impulse:'387.07',note:text('No special issue was listed in this report. The record includes plots and processed measurements.','보고서에 별도 특이사항이 기재되어 있지 않습니다. 그래프와 처리된 측정 데이터를 함께 공개합니다.')},
  {date:'2026-04-03',thrust:'174.42',impulse:'368.74',note:text('The report records apparatus movement, a post-burn fire, a pressure spike and possible corrosion.','시험 장치의 움직임, 연소 후 화재, 압력 급상승과 부식 가능성이 보고서에 기록되어 있습니다.')}
 ].map(item=>({...item,url:`${sources.tests}/blob/main/tests/${item.date}/index.md`}));
-export const selections=[
- {topic:text('Stability during stage separation','단 분리 과정의 동적 안정성'),body:text('How can structural design improve dynamic stability while a rocket’s stages separate?','로켓의 단이 분리되는 동안 구조 설계로 동적 안정성을 높일 수 있을까?'),original:'단분리 과정에서의 동적 안정성 향상을 위한 구조 설계 연구'},
- {topic:text('Landing on a moving platform','움직이는 플랫폼 위의 착륙'),body:text('Studying reinforcement learning for autonomous quadrotor landing on a moving platform.','강화학습을 이용해 움직이는 플랫폼 위에 쿼드로터를 자율 착륙시키는 방법을 연구합니다.'),original:'Autonomous Landing of a Quadrotor on a Moving Platform via Reinforcement Learning'},
- {topic:text('Electric-model thrust-vector control','전기식 모델 로켓의 추력 편향 제어'),body:text('Developing and assessing attitude stabilisation for an electric model rocket using thrust-vector control.','추력 편향 제어를 이용해 전기식 모델 로켓의 자세 안정화 시스템을 개발하고 성능 특성을 분석합니다.'),original:'TVC 기반 전기식 모델 로켓의 자세 안정화 제어 시스템 개발과 성능 특성 분석'},
- {topic:text('Hybrid-propulsion geometry','하이브리드 추진의 형상'),body:text('A provisional research question on hybrid-propulsion grain geometry and injector optimisation.','하이브리드 추진제의 그레인 형상과 인젝터 최적화를 탐구하는 잠정적인 연구 주제입니다.'),original:'하이브리드 그레인 모양 인젝터 최적화?'},
- {topic:text('Canard-based attitude control','카나드를 이용한 자세 제어'),body:text('Developing canard-based attitude control for a small subsonic sounding rocket.','아음속 소형 사운딩 로켓의 자세를 제어하는 카나드 시스템을 개발하는 연구입니다.'),original:'아음속 소형 사운딩로켓용 카나드 자세 제어 시스템 개발'}
-];
 export const news=[
  {date:'2026-02-06',kind:text('Research awards','연구 수상'),title:text('Three teams recognised for 2025 UGRP research','2025년 UGRP 연구, 세 팀 수상'),body:text('Avionics sensor fusion, swirl-injector mixing and staged-rocket control were recognised. The research year is 2025; the award ceremony took place in 2026.','센서 퓨전 에비오닉스, 스월 인젝터 혼합, 다단 로켓 제어 연구가 수상했습니다. 연구 연도는 2025년이며 수상 행사는 2026년에 열렸습니다.'),url:sources.github},
  {date:'2025-12-05',kind:text('Flight','비행'),title:text('PSLV-II launch and recovery mission','PSLV-II 발사 및 회수 임무'),body:text('The public timeline records a launch at KARI Goheung and completion of parachute and 360-degree video missions.','공개 연혁에 고흥에서의 발사와 낙하산·360도 영상 촬영 임무 완료가 기록되어 있습니다.'),url:sources.flight2},
