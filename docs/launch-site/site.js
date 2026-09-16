@@ -42,16 +42,43 @@
   menuBreakpoint.addEventListener('change', () => setMenu(false));
   window.addEventListener('pageshow', () => setMenu(false));
 
-  function tabKeyboard(buttons) {
+  function tabKeyboard(buttons, vertical = false) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {
       let next;
-      if (event.key === 'ArrowRight') next = (index + 1) % buttons.length;
-      if (event.key === 'ArrowLeft') next = (index - 1 + buttons.length) % buttons.length;
+      if (event.key === 'ArrowRight' || (vertical && event.key === 'ArrowDown')) next = (index + 1) % buttons.length;
+      if (event.key === 'ArrowLeft' || (vertical && event.key === 'ArrowUp')) next = (index - 1 + buttons.length) % buttons.length;
       if (event.key === 'Home') next = 0;
       if (event.key === 'End') next = buttons.length - 1;
       if (next !== undefined) { event.preventDefault(); buttons[next].focus(); buttons[next].click(); }
     }));
   }
+
+  document.querySelectorAll('[data-activity-selector]').forEach(selector => {
+    const tablist = selector.querySelector('[data-activity-tabs]');
+    const tabs = [...selector.querySelectorAll('[data-activity]')];
+    const panels = [...selector.querySelectorAll('[data-activity-panel]')];
+    const select = tab => {
+      tabs.forEach(other => {
+        const selected = other === tab;
+        other.setAttribute('aria-selected', String(selected));
+        other.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(panel => { panel.hidden = panel.dataset.activityPanel !== tab.dataset.activity; });
+    };
+    panels.forEach(panel => {
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', `activity-tab-${panel.dataset.activityPanel}`);
+      panel.tabIndex = 0;
+    });
+    tabs.forEach(tab => tab.addEventListener('click', () => select(tab)));
+    select(tabs[0]);
+    tablist.hidden = false;
+    const compact = matchMedia('(max-width: 650px)');
+    const setOrientation = () => tablist.setAttribute('aria-orientation', compact.matches ? 'horizontal' : 'vertical');
+    setOrientation();
+    compact.addEventListener('change', setOrientation);
+    tabKeyboard(tabs, true);
+  });
 
   document.querySelectorAll('[data-media-stage]').forEach(stage => {
     const video = stage.querySelector('[data-flight-video]');
@@ -62,6 +89,7 @@
     const tabs = [...stage.querySelectorAll('[data-media]')];
     const panel = stage.querySelector('.media-screen');
     const asset = stage.dataset.assetBase;
+    let started = false;
     let current = 'pad';
     let selectionVersion = 0;
     const views = {
@@ -79,17 +107,17 @@
       }
     };
     const setPlaying = playing => {
+      if (playing) started = true;
+      video.controls = started;
       // Preserve the keyboard position before CSS or hidden removes the overlay.
       if (playing && document.activeElement === play) video.focus({preventScroll: true});
       stage.dataset.playing = String(playing);
-      play.hidden = playing;
-      if (!playing && video.currentTime > 0 && !video.ended) {
-        playLabel.textContent = t('Resume video', '영상 계속 보기');
-        play.setAttribute('aria-label', t('Resume video', '영상 계속 보기'));
-      }
+      stage.dataset.started = String(started);
+      play.hidden = started;
     };
     stage.dataset.view = current;
     stage.dataset.playing = 'false';
+    setPlaying(false);
     description.textContent = views.pad.description;
     tabs.forEach(tab => tab.addEventListener('click', () => {
       if (tab.dataset.media === current) return;
@@ -113,6 +141,7 @@
       failure.querySelector('a').href = `${asset}${view.file}`;
       failure.querySelector('a').textContent = t('Open this video file', '이 영상 파일 열기');
       video.load();
+      started = false;
       playLabel.textContent = view.action;
       play.setAttribute('aria-label', view.action);
       setPlaying(false);

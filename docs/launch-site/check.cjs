@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const { checkAccessibility } = require('./check-accessibility.cjs');
+const { checkHomepage } = require('./check-homepage.cjs');
 const routes = ['index','projects','pslv','research','learning','about','news','join'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
 (async () => {
@@ -10,6 +11,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
   const browser = await chromium.launch({channel:'msedge',headless:true});
   const errors = [];
   try {
+    await checkHomepage(browser);
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));
@@ -47,7 +49,8 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
     await page.locator('[data-media-play]').click();
     await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2, {timeout:15000});
     await page.locator('[data-flight-video]').evaluate(video => video.pause());
-    assert.ok(await page.locator('[data-media-play]').isVisible(),'Paused video should offer resume');
+    assert.equal(await page.locator('[data-media-play]').isVisible(),false,'Paused video retains native controls without a competing overlay');
+    assert.ok(await page.locator('[data-flight-video]').evaluate(video => video.controls),'Native controls offer resume');
     await page.locator('[data-media="onboard"]').click();
     assert.ok((await page.locator('[data-flight-video]').getAttribute('src')).endsWith('onboard.mp4'));
     assert.ok((await page.locator('[data-flight-video]').getAttribute('poster')).endsWith('onboard-poster.webp'));
