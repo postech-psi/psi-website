@@ -32,7 +32,10 @@ async function checkCurrentContent(browser) {
         for (const title of titles) assert.ok(text.includes(title),`Missing current manuscript: ${title}`);
         assert.doesNotMatch(text,/canard|카나드|moving.platform landing/i,'Old April topics must not replace current research');
         assert.equal(await current.locator('.current-stage:visible').count(),5,'Stage boundaries stay visible when details are closed');
-        assert.match(await current.locator('.current-research-status').textContent(),/Ongoing|진행 중/);
+        assert.equal(await current.locator('.current-research-status').textContent(),locale
+          ? '진행 중인 학회 원고 연구입니다. 게재 확정·출판 여부는 확인되지 않았습니다.'
+          : 'Ongoing conference manuscripts; acceptance and publication status have not been verified.',
+          'Unknown acceptance/publication status must not be presented as confirmed nonacceptance');
         const details = current.locator('details').first();
         await details.locator('summary').focus();
         await page.keyboard.press('Enter');

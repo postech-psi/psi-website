@@ -61,3 +61,23 @@ All exit 0. Generated 24 research-opening, expanded-study and Avionics captures 
 ## Remaining scope
 
 The next phase owns film motion, event gallery and real telemetry replay. Current paper manuscripts remain private; their on-page summaries do not imply publication. No external endpoint uptime, hardware performance, manuscript results or flight qualification is established by these UI tests. Root-owned media, specs and review artifacts were left untouched and excluded from this commit.
+
+## Independent review correction — publication status
+
+The source notes establish ongoing manuscript work but do not establish acceptance or publication status. Corrected the research-section notice from confirmed nonacceptance to explicitly unverified status in both languages. No interaction, content-record, style or route change was made. Receiving-code-review verified the distinction against the source note; TDD added the requested reader-visible wording regression before changing the renderer.
+
+RED: ran the following against the previously generated pages; exit 1 with exactly the English and Korean acceptance-status assertions failing:
+
+```powershell
+& 'C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' docs/launch-site/check-current-content.cjs
+```
+
+GREEN after the exact bilingual wording change:
+
+```powershell
+& 'C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' docs/launch-site/build.mjs
+& 'C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe' docs/launch-site/check-current-content.cjs
+git diff --check
+```
+
+Build generated 16 pages; all 24 focused checks passed, including the new source-status assertion, five records, historical filters, keyboard/no-JavaScript access, initial-viewport placement and light/dark overflow at four widths. Diff check passed. Full suite was not rerun for this wording-only correction, as requested; the prior complete run is recorded above.
