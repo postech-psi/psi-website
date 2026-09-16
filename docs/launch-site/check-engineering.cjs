@@ -17,6 +17,7 @@ async function checkEngineering(browser){
     assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../avionics.html':'ko/avionics.html');
     for(const id of ['architecture','estimation','ground-station','flight-record'])assert.equal(await page.locator(`#${id}`).count(),1);
     const text=await page.locator('main').innerText();
+    if(!locale)assert.ok(text.includes('A separate transmission thread forwards framed, checksum-checked inter-core messages containing measurements and status.'),'Transmission thread forwards queued frames; it does not assemble them');
     for(const term of ['M7','M4','100 Hz','50 Hz','25 Hz','IMU','BMP390','GNSS','UKF','microSD','XBee'])assert.ok(text.includes(term),term);
     assert.match(await page.locator('[data-gnss-boundary]').innerText(),locale?/입력.*아닙니다/:/not inputs/);
     assert.equal(await page.locator('[data-architecture-flow] li').count(),4,'Four actual responsibility stages are readable');

@@ -1,5 +1,17 @@
 # Task 2 — Engineering case studies and public results
 
+## Final review follow-up — transmission responsibility
+
+Task 2 implementation commit: `d3a2a5fc4601fd1d46cdb66231bf413a5f69806f`. Independent review identified one narrow English source-semantic correction. Parent verified pinned M7 lines 231–280: `ipcSendData`/`ipcSend` assemble and enqueue messages, while `txThreadFn` pops them and calls `RPC.write`. The text now says the separate transmission thread **forwards** framed messages containing measurements/status, rather than claiming the thread packages them. Korean wording already described sending and is unchanged. No architecture, behavior, data, style or other copy changed.
+
+The requested rendered-copy regression was added before the correction. From `docs/launch-site`, exact executable invocation prefix was `& 'C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node.exe'`:
+
+- RED `check-engineering.cjs`, exit 1: `en/ Avionics chapters and source boundaries: Transmission thread forwards queued frames; it does not assemble them`.
+- GREEN `build.mjs`, exit 0: `Built 22 PSI pages in docs/launch-site.`
+- GREEN `check-engineering.cjs`, exit 0: all 14 EN/KO groups passed, including source boundaries, figures/results, anchors, four widths/two themes and static content.
+- GREEN `review/links.mjs`, exit 0: `pages: 22`, `checkedLocalLinks: 564`, `failures: []`.
+- `git diff --check`, exit 0. Only the source sentence, generated English Avionics sentence, focused assertion and this report are in the follow-up delta. The receiving-code-review and TDD skills informed verification and the requested RED/GREEN sequence. No new visual-design claim; ownership released after scoped commit.
+
 Base: `34737da9fa3cccbdf72a9213470e273161e936b1`. Local review only; no deployment, push, main-branch operation or user-browser interaction.
 
 ## Delivered
