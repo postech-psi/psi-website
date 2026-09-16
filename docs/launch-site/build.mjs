@@ -8,4 +8,4 @@ await mkdir(`${root}/assets`, {recursive:true});
 for (const lang of ['en','ko']) for (const page of routes) {
   await writeFile(`${root}/${lang==='ko'?'ko/':''}${page}.html`,render(page,lang));
 }
-console.log('Built 16 PSI pages in docs/launch-site.');
+console.log(`Built ${routes.length * 2} PSI pages in docs/launch-site.`);

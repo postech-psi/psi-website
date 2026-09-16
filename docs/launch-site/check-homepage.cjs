@@ -54,6 +54,7 @@ async function checkHomepage(browser) {
       assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'learning','Vertical arrow handling returns after widening');
     });
     await check(`${locale || 'en/'} hero exposes one playback interface and preserves keyboard focus`, async () => {
+      await page.emulateMedia({reducedMotion:'reduce'});
       await page.setViewportSize({width:1440,height:1000});
       await page.goto(`${base}/${locale}index.html`);
       const video = page.locator('[data-flight-video]');

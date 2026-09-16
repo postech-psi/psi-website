@@ -1,4 +1,4 @@
-export const routes = ['index','projects','pslv','research','learning','about','news','join'];
+export const routes = ['index','projects','pslv','research','learning','about','news','join','gallery'];
 export const text = (en,ko) => ({en,ko});
 export const sources = {
   github:'https://github.com/postech-psi', legacy:'https://sites.google.com/view/mechanicslab/PSI',
@@ -16,6 +16,7 @@ export const nav = [
   ['about','About PSI','PSI 소개'],['news','News & records','소식과 기록'],['join','Join PSI','함께하기']
 ];
 export const pageTitles = {
+  gallery:text('Photo archive','활동 사진'),
   index:text('PSI — Student aerospace at POSTECH','PSI — 포스텍 항공우주연구회'),
   projects:text('Projects','프로젝트'),pslv:text('PSLV rocket programme','PSLV 로켓 프로젝트'),
   research:text('Research','연구'),learning:text('Learning at PSI','PSI에서 배우기'),
