@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { checkAccessibility } = require('./check-accessibility.cjs');
 const routes = ['index','projects','pslv','research','learning','about','news','join'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
 (async () => {
@@ -12,6 +13,8 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));
+    await checkAccessibility(page);
+    await page.evaluate(() => localStorage.removeItem('psi-theme'));
     await page.goto(`${base}/index.html`);
     await page.evaluate(() => document.fonts.ready);
     assert.ok(await page.evaluate(() => [...document.fonts].some(font => font.family.includes('Pretendard') && font.status === 'loaded')),'Korean body font should load');

@@ -25,5 +25,5 @@ html[data-theme=dark]{--canvas:#091C32;--surface:#102A45;--text:#F0F5FB;--second
 @media(max-width:900px){.brand{flex-basis:86px}.brand img{width:86px;height:54px}}
 @media(max-width:650px){.brand{flex-basis:70px}.brand img{width:70px;height:46px}}
 @media(max-width:360px){.brand{flex-basis:52px}.brand img{width:52px;height:42px}}
-.test-plot{margin-top:52px}.test-plot img{width:100%;height:auto;background:#fff}.test-plot figcaption{max-width:95ch}.test-plot figcaption>span{display:flex;gap:24px;flex-wrap:wrap;margin-top:12px}.test-plot .text-link{font-size:15px}.testing-feature .test-plot figcaption{color:#b6c6d9}.testing-feature .test-plot .text-link{color:#91b8ff}
+.test-plot{margin-top:52px}.test-plot img{width:100%;height:auto;background:#fff}.test-plot figcaption{max-width:95ch}.test-plot figcaption>span{display:flex;gap:24px;flex-wrap:wrap;margin-top:12px}.test-plot .text-link{font-size:15px}.testing-feature .test-plot figcaption{color:var(--secondary)}.testing-feature .test-plot .text-link{color:var(--action)}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}

@@ -79,6 +79,8 @@
       }
     };
     const setPlaying = playing => {
+      // Preserve the keyboard position before CSS or hidden removes the overlay.
+      if (playing && document.activeElement === play) video.focus({preventScroll: true});
       stage.dataset.playing = String(playing);
       play.hidden = playing;
       if (!playing && video.currentTime > 0 && !video.ended) {
