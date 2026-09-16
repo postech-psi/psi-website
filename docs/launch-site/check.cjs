@@ -1,0 +1,78 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const routes = ['index','projects','pslv','research','learning','about','news','join'];
+const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
+(async () => {
+  for (const lang of ['', 'ko/']) for (const route of routes) assert.ok(fs.existsSync(path.join(__dirname,lang,`${route}.html`)),`Missing page: ${lang}${route}.html`);
+  const browser = await chromium.launch({channel:'msedge',headless:true});
+  const errors = [];
+  try {
+    const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
+    const page = await context.newPage();
+    page.on('pageerror', e => errors.push(e.message));
+    await page.goto(`${base}/index.html`);
+    await page.evaluate(() => document.fonts.ready);
+    assert.ok(await page.evaluate(() => [...document.fonts].some(font => font.family.includes('Pretendard') && font.status === 'loaded')),'Korean body font should load');
+    assert.ok(await page.evaluate(() => [...document.fonts].some(font => font.family.includes('Red Hat Display') && font.status === 'loaded')),'Display font should load');
+    assert.equal(await page.locator('html').getAttribute('data-theme'),'dark','Initial theme should follow system');
+    await page.locator('[data-theme-select]').selectOption('light');
+    await page.reload();
+    assert.equal(await page.locator('html').getAttribute('data-theme'),'light','Explicit theme should persist');
+    await page.goto(`${base}/projects.html`);
+    await page.locator('[data-language-link]').click();
+    assert.ok(page.url().endsWith('/ko/projects.html'),'Language switch must keep page');
+    await page.goto(`${base}/research.html`);
+    assert.equal(await page.locator('[data-research-item]:visible').count(),15);
+    await page.locator('[data-filter-topic]').selectOption('avionics');
+    const filtered = await page.locator('[data-research-item]:visible').count();
+    assert.ok(filtered > 0 && filtered < 15,'Topic filter reduces real records');
+    await page.locator('[data-filter-reset]').click();
+    assert.equal(await page.locator('[data-research-item]:visible').count(),15);
+    await page.locator('[data-filter-search]').fill('nonexistent-zx987');
+    assert.equal(await page.locator('[data-research-item]:visible').count(),0);
+    assert.ok(await page.locator('[data-no-results]').isVisible());
+    await page.locator('[data-filter-reset]').click();
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('[data-menu-toggle]').click();
+    assert.equal(await page.locator('[data-menu-toggle]').getAttribute('aria-expanded'),'true');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('[data-menu-toggle]').getAttribute('aria-expanded'),'false');
+    assert.notEqual(await page.locator('body').evaluate(el => getComputedStyle(el).overflow),'hidden');
+    await page.goto(`${base}/pslv.html`);
+    await page.locator('[data-media-play]').click();
+    await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2, {timeout:15000});
+    await page.locator('[data-flight-video]').evaluate(video => video.pause());
+    assert.ok(await page.locator('[data-media-play]').isVisible(),'Paused video should offer resume');
+    await page.locator('[data-media="onboard"]').click();
+    assert.ok((await page.locator('[data-flight-video]').getAttribute('src')).endsWith('onboard.mp4'));
+    assert.ok((await page.locator('[data-flight-video]').getAttribute('poster')).endsWith('onboard-poster.webp'));
+    assert.ok(await page.locator('[data-flight-video]').evaluate(el => el.paused),'Onboard must not autoplay');
+    assert.ok((await page.locator('[data-media-description]').textContent()).includes('rapid'),'Onboard rotation warning should be visible');
+    await page.locator('[data-media-play]').click();
+    await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2, {timeout:15000});
+    await page.locator('[data-flight-video]').evaluate(video => video.pause());
+    await page.locator('[data-hardware="electronics"]').click();
+    assert.equal(await page.locator('[data-hardware="electronics"]').getAttribute('aria-selected'),'true');
+    for (const width of [320,390,768,1440]) {
+      await page.setViewportSize({width,height:1000});
+      for (const lang of ['', 'ko/']) for (const route of routes) {
+        await page.goto(`${base}/${lang}${route}.html`);
+        assert.equal(await page.locator('h1').count(),1,`One h1: ${lang}${route}`);
+        assert.equal(await page.locator('html').getAttribute('lang'),lang?'ko':'en');
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+        assert.equal(overflow,false,`Overflow at ${width}: ${lang}${route}`);
+        const broken = await page.locator('img').evaluateAll(imgs => imgs.filter(i=>i.complete && i.naturalWidth===0).map(i=>i.src));
+        assert.deepEqual(broken,[],`Missing images: ${lang}${route}`);
+      }
+    }
+    await page.setViewportSize({width:1440,height:1000});
+    await page.goto(`${base}/index.html`);
+    await page.screenshot({path:path.join(__dirname,'qa-desktop.png')});
+    await page.setViewportSize({width:390,height:844});
+    await page.screenshot({path:path.join(__dirname,'qa-mobile.png')});
+    assert.deepEqual(errors,[],'Browser errors');
+    console.log('PASS: 16 bilingual routes; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error);process.exitCode=1; });
