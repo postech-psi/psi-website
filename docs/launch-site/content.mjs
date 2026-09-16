@@ -1,4 +1,4 @@
-export const routes = ['index','projects','pslv','research','learning','about','news','join','gallery'];
+export const routes = ['index','projects','pslv','research','learning','about','news','join','gallery','avionics','tms'];
 export const text = (en,ko) => ({en,ko});
 export const sources = {
   github:'https://github.com/postech-psi', legacy:'https://sites.google.com/view/mechanicslab/PSI',
@@ -6,7 +6,7 @@ export const sources = {
   flightSoftware:'https://github.com/postech-psi/Avionics/blob/7cfb5be044e539c2e3c6d79a6538416a2741cd67/flight-computer/README.md',
   groundStation:'https://github.com/postech-psi/Avionics/blob/7cfb5be044e539c2e3c6d79a6538416a2741cd67/ground-station/README.md',
   tms:'https://github.com/postech-psi/TMS/tree/abb02a09bca4e7835425dc67b2c28234ef887992', motor:'https://github.com/postech-psi/SRM-Solid-Rocket-Motor',
-  tests:'https://github.com/postech-psi/test-results', learning:'https://github.com/postech-psi/psintelligence',
+  tests:'https://github.com/postech-psi/test-results', testPortal:'https://postech-psi.github.io/test-results/', learning:'https://github.com/postech-psi/psintelligence',
   tvc:'https://github.com/postech-psi/tvc-testbed', tvcData:'https://github.com/postech-psi/tvc-data',
   article:'https://www.postech.ac.kr/kor/newscenter/university-blog.do?articleNo=47318&mode=view',
   flight1:'https://www.youtube.com/watch?v=shCFnkVdeV8', flight2:'https://www.youtube.com/watch?v=j5gvQXlkA6I'
@@ -17,6 +17,7 @@ export const nav = [
 ];
 export const pageTitles = {
   gallery:text('Photo archive','활동 사진'),
+  avionics:text('Avionics','비행 전자장치'),tms:text('Thrust Measurement System','추력 측정 시스템'),
   index:text('PSI — Student aerospace at POSTECH','PSI — 포스텍 항공우주연구회'),
   projects:text('Projects','프로젝트'),pslv:text('PSLV rocket programme','PSLV 로켓 프로젝트'),
   research:text('Research','연구'),learning:text('Learning at PSI','PSI에서 배우기'),
@@ -51,7 +52,7 @@ export const tests=[
  {date:'2026-05-28',thrust:'174.19',impulse:'366.33',note:text('A separate experiment in the published test series. Test conditions must be checked before comparing measurements.','공개 시험 기록 중 별도의 실험입니다. 다른 시험과 측정값을 비교하기 전에 각 시험 조건을 확인해야 합니다.')},
  {date:'2026-04-08',thrust:'203.00',impulse:'387.07',note:text('No special issue was listed in this report. The record includes plots and processed measurements.','보고서에 별도 특이사항이 기재되어 있지 않습니다. 그래프와 처리된 측정 데이터를 함께 공개합니다.')},
  {date:'2026-04-03',thrust:'174.42',impulse:'368.74',note:text('The report records apparatus movement, a post-burn fire, a pressure spike and possible corrosion.','시험 장치의 움직임, 연소 후 화재, 압력 급상승과 부식 가능성이 보고서에 기록되어 있습니다.')}
-].map(item=>({...item,url:`${sources.tests}/blob/main/tests/${item.date}/index.md`}));
+].map(item=>({...item,url:`${sources.testPortal}tests/${item.date}/index.html`,sourceUrl:`${sources.tests}/blob/main/tests/${item.date}/index.md`}));
 export const news=[
  {date:'2026-02-06',kind:text('Research awards','연구 수상'),title:text('Three teams recognised for 2025 UGRP research','2025년 UGRP 연구, 세 팀 수상'),body:text('Avionics sensor fusion, swirl-injector mixing and staged-rocket control were recognised. The research year is 2025; the award ceremony took place in 2026.','센서 퓨전 에비오닉스, 스월 인젝터 혼합, 다단 로켓 제어 연구가 수상했습니다. 연구 연도는 2025년이며 수상 행사는 2026년에 열렸습니다.'),url:sources.github},
  {date:'2025-12-05',kind:text('Flight','비행'),title:text('PSLV-II launch and recovery mission','PSLV-II 발사 및 회수 임무'),body:text('The public timeline records a launch at KARI Goheung and completion of parachute and 360-degree video missions.','공개 연혁에 고흥에서의 발사와 낙하산·360도 영상 촬영 임무 완료가 기록되어 있습니다.'),url:sources.flight2},

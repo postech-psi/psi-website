@@ -7,7 +7,8 @@ const { checkHomepage } = require('./check-homepage.cjs');
 const { checkCurrentContent } = require('./check-current-content.cjs');
 const { checkMotionGallery } = require('./check-motion-gallery.cjs');
 const { checkBrand } = require('./check-brand.cjs');
-const routes = ['index','projects','pslv','research','learning','about','news','join','gallery'];
+const { checkEngineering } = require('./check-engineering.cjs');
+const routes = ['index','projects','pslv','research','learning','about','news','join','gallery','avionics','tms'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
 (async () => {
   for (const lang of ['', 'ko/']) for (const route of routes) assert.ok(fs.existsSync(path.join(__dirname,lang,`${route}.html`)),`Missing page: ${lang}${route}.html`);
@@ -18,6 +19,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
     await checkCurrentContent(browser);
     await checkMotionGallery(browser);
     await checkBrand(browser);
+    await checkEngineering(browser);
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));
@@ -85,6 +87,6 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
     await page.setViewportSize({width:390,height:844});
     await page.screenshot({path:path.join(__dirname,'qa-mobile.png')});
     assert.deepEqual(errors,[],'Browser errors');
-    console.log('PASS: 18 bilingual routes; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.');
+    console.log('PASS: 22 bilingual routes; 4 widths; theme persistence; language parity; archive filters/reset/empty state; mobile menu/Escape; intentional media switch; actual pad/onboard playback; hardware tabs; font/image loading; browser errors.');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error);process.exitCode=1; });

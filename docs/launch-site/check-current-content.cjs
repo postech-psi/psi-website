@@ -59,14 +59,15 @@ async function checkCurrentContent(browser) {
         assert.ok((await first.locator('.current-stage').boundingBox()).y<792,'The first stage boundary begins in the initial viewport');
       });
       await check(`${locale || 'en/'} current Avionics responsibilities and pinned versions are delivered`, async () => {
-        await page.goto(`${base}/${locale}projects.html#avionics`);
-        const avionics = page.locator('#avionics');
+        await page.goto(`${base}/${locale}avionics.html`);
+        const avionics = page.locator('main');
         const text = await avionics.textContent();
         assert.match(text,/M7/); assert.match(text,/M4/);
         assert.match(text,/100\s?Hz/); assert.match(text,/50\s?Hz/); assert.match(text,/25\s?Hz/);
         assert.match(text,/integrated|통합/);
         assert.doesNotMatch(text,/three.axis acceleration plots|three separate windows|three.window|3D 자세 모델과 비행 상태, GNSS 기반 경로, 3축 가속도 그래프/);
         assert.ok(await avionics.locator('a[href*="7cfb5be044e539c2e3c6d79a6538416a2741cd67"]').count()>0,'Current source is pinned');
+        await page.goto(`${base}/${locale}projects.html`);
         assert.ok(await page.locator('#tms a[href*="abb02a09bca4e7835425dc67b2c28234ef887992"]').count()>0,'TMS retains its verified version');
         assert.equal(await page.locator('.selection-list').count(),0,'Stale April team-selection section is replaced');
       });
