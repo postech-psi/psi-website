@@ -15,13 +15,13 @@ async function checkMotionGallery(browser, only = 'all') {
       ['theme',async()=>{
         await page.goto(`${base}/${locale}index.html`);
         assert.equal(await page.locator('meta[name="theme-color"]').count(),1,'Browser theme color is present');
-        for(const [theme,color] of [['dark','#091C32'],['light','#F6F8FB']]) {
+        for(const [theme,color] of [['dark','#000000'],['light','#FFFFFF']]) {
           await page.locator('[data-theme-select]').selectOption(theme);
           assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),color);
           await page.reload();assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),color);
         }
         await page.emulateMedia({colorScheme:'dark'});await page.locator('[data-theme-select]').selectOption('system');
-        assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),'#091C32');
+        assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),'#000000');
       }],
       ['handoff',async()=>{
         await page.emulateMedia({reducedMotion:'no-preference'});

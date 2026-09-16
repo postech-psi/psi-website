@@ -9,9 +9,10 @@
   if (!['light', 'dark', 'system'].includes(theme)) theme = 'system';
   const applyTheme = () => {
     const resolved = theme === 'system' ? (systemTheme.matches ? 'dark' : 'light') : theme;
+    document.documentElement.dataset.themeChoice = theme;
     document.documentElement.dataset.theme = resolved;
     const chrome = document.querySelector('meta[name="theme-color"]');
-    if (chrome) chrome.content = resolved === 'dark' ? '#091C32' : '#F6F8FB';
+    if (chrome) chrome.content = resolved === 'dark' ? '#000000' : '#FFFFFF';
   };
   applyTheme();
   if (themeSelect) {
@@ -28,7 +29,7 @@
   const navigation = document.querySelector('#site-navigation');
   const main = document.querySelector('main');
   const footer = document.querySelector('footer');
-  const menuBreakpoint = matchMedia('(max-width: 900px)');
+  const menuBreakpoint = matchMedia('(max-width: 1100px)');
   const setMenu = (open, restoreFocus = false) => {
     if (!menu || !navigation) return;
     menu.setAttribute('aria-expanded', String(open));
