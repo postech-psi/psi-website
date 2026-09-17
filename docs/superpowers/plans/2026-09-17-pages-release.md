@@ -49,3 +49,5 @@
 **Rollback:** If the deployment or essential homepage/theme/media/route smoke checks fail, investigate first. The pre-release known-good main is076d52832c77c4c7d8747a3ee7625a6b677767b1. A normal revert of the release integration is the recoverable rollback; never reset or force-push history.
 
 No database, feature flags, on-call service or production telemetry dashboard exists for this static site. Verification uses the Pages run and repeated public HTTP/browser smoke checks rather than inventing unavailable metrics.
+
+Pre-push repeat testing found a test timing race after native dialog Escape. A20-cycle diagnostic confirmed that `open` clears before the queued close event, and every cycle restored scrolling;19 immediate observations preceded the close event. The gallery check now waits for the actual closed/unlocked state with a1-second failure bound before asserting focus and scroll recovery. No runtime behavior or release asset changed.

@@ -73,6 +73,9 @@ async function checkMotionGallery(browser, only = 'all') {
         const opener=page.locator('#launch-dec-2025 [data-gallery-open]').first();
         await opener.click();
         const dialog=page.locator('#photo-dialog');assert.ok(await dialog.isVisible());
+        // Native Escape removes `open` before its queued close event restores
+        // body scrolling. Wait for that real state, not an arbitrary delay.
+        const waitForClose=()=>page.waitForFunction(()=>!document.querySelector('#photo-dialog').open&&!document.body.classList.contains('dialog-open'),null,{timeout:1000});
         assert.match(await page.locator('[data-gallery-count]').textContent(),/1\s*\/\s*5/);
         const first=await dialog.locator('img').getAttribute('src');
         await page.keyboard.press('ArrowRight');
@@ -82,18 +85,18 @@ async function checkMotionGallery(browser, only = 'all') {
         assert.equal(await dialog.locator('img').evaluate(img=>getComputedStyle(img).objectFit),'contain');
         for(let i=0;i<6;i++)await page.keyboard.press('Tab');
         assert.ok(await dialog.evaluate(el=>el.contains(document.activeElement)),'Dialog traps focus');
-        await page.keyboard.press('Escape');assert.equal(await dialog.isVisible(),false);
+        await page.keyboard.press('Escape');await waitForClose();assert.equal(await dialog.isVisible(),false);
         assert.ok(await opener.evaluate(el=>el===document.activeElement));
         assert.notEqual(await page.locator('body').evaluate(el=>getComputedStyle(el).overflow),'hidden');
         await page.locator('#rocket-dec-2025 [data-gallery-open]').click();
         assert.ok(await page.locator('[data-gallery-next]').isDisabled());
         assert.ok(await page.locator('[data-gallery-prev]').isDisabled());
-        await page.locator('[data-gallery-close]').click();
+        await page.locator('[data-gallery-close]').click();await waitForClose();
         await page.setViewportSize({width:390,height:844});
         await page.locator('#nura-aug-2025 [data-gallery-open]').first().click();
         await page.locator('[data-gallery-next]').click();
         assert.match(await page.locator('[data-gallery-count]').textContent(),/2\s*\/\s*4/);
-        await page.locator('[data-gallery-close]').click();
+        await page.locator('[data-gallery-close]').click();await waitForClose();
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       }],
       ['loading',async()=>{
