@@ -1,6 +1,7 @@
+const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
 const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
+const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 const still = async page => {
   const before = await page.locator('[data-flight-video]').evaluate(v => v.currentTime);
   await page.waitForTimeout(300);
@@ -16,11 +17,11 @@ async function checkMotionGallery(browser, only = 'all') {
         await page.goto(`${base}/${locale}index.html`);
         assert.equal(await page.locator('meta[name="theme-color"]').count(),1,'Browser theme color is present');
         for(const [theme,color] of [['dark','#000000'],['light','#FFFFFF']]) {
-          await page.locator('[data-theme-select]').selectOption(theme);
+          await setTheme(page,theme);
           assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),color);
           await page.reload();assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),color);
         }
-        await page.emulateMedia({colorScheme:'dark'});await page.locator('[data-theme-select]').selectOption('system');
+        await page.emulateMedia({colorScheme:'dark'});await setTheme(page,'system');
         assert.equal(await page.locator('meta[name="theme-color"]').getAttribute('content'),'#000000');
       }],
       ['handoff',async()=>{
@@ -65,10 +66,10 @@ async function checkMotionGallery(browser, only = 'all') {
       ['gallery',async()=>{
         const response=await page.goto(`${base}/${locale}gallery.html`);
         assert.equal(response.status(),200,'Gallery route exists');
-        assert.equal(await page.locator('[data-gallery-event]').count(),6);
-        assert.equal(await page.locator('[data-gallery-open]').count(),14);
+        assert.equal(await page.locator('[data-gallery-event]').count(),5);
+        assert.equal(await page.locator('[data-gallery-open]').count(),13);
         const links=await page.locator('[data-gallery-open]').evaluateAll(els=>els.map(el=>el.href));
-        assert.equal(new Set(links).size,14,'Gallery shows fourteen distinct photos');
+        assert.equal(new Set(links).size,13,'Gallery shows thirteen distinct photos');
         const opener=page.locator('#launch-dec-2025 [data-gallery-open]').first();
         await opener.click();
         const dialog=page.locator('#photo-dialog');assert.ok(await dialog.isVisible());
@@ -155,7 +156,7 @@ async function checkMotionGallery(browser, only = 'all') {
         const plain=await browser.newContext({javaScriptEnabled:false,reducedMotion:'reduce'});
         try {
           const p=await plain.newPage();await p.goto(`${base}/${locale}gallery.html`);
-          assert.equal(await p.locator('[data-gallery-open]').count(),14);
+          assert.equal(await p.locator('[data-gallery-open]').count(),13);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
           await p.goto(`${base}/${locale}avionics.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
           await p.evaluate(()=>document.fonts.ready);

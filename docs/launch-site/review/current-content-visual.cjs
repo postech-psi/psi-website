@@ -1,7 +1,8 @@
+const {setTheme} = require('../test-helpers.cjs');
 // Reproducible visual checkpoints for the current-content task, not published assets.
 const path = require('node:path');
 const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
+const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
   const browser = await chromium.launch({channel:'msedge',headless:true});
   try {
@@ -9,7 +10,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
       const context = await browser.newContext({viewport:{width,height:1000}});
       const page = await context.newPage();
       await page.goto(`${base}/${locale}research.html`);
-      await page.locator('[data-theme-select]').selectOption(theme);
+      await setTheme(page,theme);
       await page.evaluate(()=>document.fonts.ready);
       await page.screenshot({path:path.join(__dirname,`current-research-${locale?'ko':'en'}-${width}-${theme}.png`)});
       await page.locator('[data-current-research] summary').first().click();

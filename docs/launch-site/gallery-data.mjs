@@ -27,6 +27,5 @@ export const events=[
   {id:'test-may-2025',date:'2025-05',dateLabel:text('May 2025','2025년 5월'),label:text('Test preparation, together','시험 준비와 팀 활동'),description:text('Assembly, inspection and the team around the apparatus. These are preparation photographs, not firing results; the month follows the activity archive.','시험 장치의 조립과 점검, 함께한 팀의 모습입니다. 연소 결과 사진이 아닌 준비 기록이며 활동 아카이브의 월별 분류를 따릅니다.'),photos:[
     photo('test-workshop-2025.webp','Members assembling and inspecting the test apparatus.','시험 장치를 조립하고 점검하는 구성원들.'),
     photo('test-team-2025.webp','The PSI team with the apparatus during combustion-test activity.','연소실험 활동에서 시험 장치와 함께한 PSI 팀.')
-  ]},
-  {id:'community-apr-2025',date:null,dateLabel:text('Spring 2025','2025년 봄'),label:text('A spring gathering','봄 MT'),description:text('Time together outside the workshop. Season attributed from the club archive; exact capture date is unverified.','작업실 밖에서 함께 보낸 시간입니다. 동아리 아카이브의 계절별 분류를 따르며 정확한 촬영일은 확인되지 않았습니다.'),photos:[photo('spring-community-2025.webp','PSI members spending time together at the spring club gathering.','봄 MT에서 함께 시간을 보낸 PSI 구성원들.')]}
+  ]}
 ];

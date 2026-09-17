@@ -71,3 +71,12 @@ export const curriculum=[
  {title:text('Study rocket-apogee prediction','로켓 최고 고도 예측 연구'),body:text('PSIntelligence introduces physics-informed models and sequence models for apogee prediction, alongside uncertainty estimation. These are learning resources and research directions.','PSIntelligence는 최고 고도 예측을 위한 물리 기반 학습 모델과 시퀀스 모델, 불확실성 추정을 다룹니다. 학습 자료이자 연구 방향으로 살펴볼 수 있습니다.')},
  {title:text('Think about onboard deployment','탑재 환경까지 생각하기'),body:text('Consider the practical step from a notebook to onboard computation: timing, limited resources and the meaning of a reliable estimate. The curriculum does not claim that every model has flown.','노트북의 코드를 비행체에 탑재할 때 필요한 계산 시간, 제한된 자원, 추정값의 신뢰성을 생각합니다. 교육 과정의 모든 모델이 실제 비행에 사용되었다는 뜻은 아닙니다.')}
 ];
+
+// Current roles supplied by PSI in this design review; English names are editorial romanizations.
+export const leadership=[
+ {role:'President',name:'Uikang Joo'},
+ {role:'Vice President',name:'Yeonho Kim'},
+ {role:'Secretary',name:'Taeho Lee'},
+ {role:'Avionics & TMS Lead',name:'Jaeyoung Park'},
+ {role:'Faculty advisor',name:'Jin-Tae Kim'}
+];

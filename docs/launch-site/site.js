@@ -2,7 +2,7 @@
   'use strict';
   const ko = document.documentElement.lang === 'ko';
   const t = (en, kr) => ko ? kr : en;
-  const themeSelect = document.querySelector('[data-theme-select]');
+  const themeButton = document.querySelector('[data-theme-toggle]');
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   let theme = 'system';
   try { theme = localStorage.getItem('psi-theme') || 'system'; } catch {}
@@ -13,17 +13,45 @@
     document.documentElement.dataset.theme = resolved;
     const chrome = document.querySelector('meta[name="theme-color"]');
     if (chrome) chrome.content = resolved === 'dark' ? '#000000' : '#FFFFFF';
+    if (themeButton) {
+      themeButton.hidden = false;
+      themeButton.setAttribute('aria-pressed', String(resolved === 'dark'));
+      themeButton.setAttribute('aria-label', t('Dark mode', '다크 모드'));
+      themeButton.title = resolved === 'dark' ? t('Switch to light mode', '라이트 모드로 전환') : t('Switch to dark mode', '다크 모드로 전환');
+    }
   };
   applyTheme();
-  if (themeSelect) {
-    themeSelect.value = theme;
-    themeSelect.addEventListener('change', () => {
-      theme = themeSelect.value;
+  if (themeButton) {
+    themeButton.addEventListener('click', () => {
+      theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       try { localStorage.setItem('psi-theme', theme); } catch {}
       applyTheme();
     });
   }
   systemTheme.addEventListener('change', applyTheme);
+
+  // One photographic scene follows the reader. It never hides or gates content.
+  const scene = document.querySelector('[data-rocket-scene]');
+  const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  if (scene) {
+    const portrait = scene.querySelector('[data-rocket-motion]');
+    const wide = matchMedia('(min-width: 901px)');
+    let inView = false, frame = 0;
+    const update = () => {
+      frame = 0;
+      if (motionPreference.matches || !wide.matches) { portrait.style.removeProperty('--scene-shift'); return; }
+      const box = scene.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, (innerHeight - box.top) / (innerHeight + box.height)));
+      portrait.style.setProperty('--scene-shift', `${(1 - progress * 2) * 42}px`);
+    };
+    const schedule = () => { if (inView && !frame) frame = requestAnimationFrame(update); };
+    const observer = new IntersectionObserver(entries => { inView = entries[0].isIntersecting; if (inView) schedule(); }, {rootMargin:'120px'});
+    observer.observe(scene);
+    addEventListener('scroll', schedule, {passive:true});
+    addEventListener('resize', schedule, {passive:true});
+    motionPreference.addEventListener('change', update);
+    wide.addEventListener('change', update);
+  }
 
   const menu = document.querySelector('[data-menu-toggle]');
   const navigation = document.querySelector('#site-navigation');
@@ -48,9 +76,9 @@
   menuBreakpoint.addEventListener('change', () => setMenu(false));
   window.addEventListener('pageshow', () => setMenu(false));
 
-  function tabKeyboard(buttons) {
+  function tabKeyboard(buttons, currentOrientation) {
     buttons.forEach((button, index) => button.addEventListener('keydown', event => {
-      const vertical = button.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical';
+      const vertical = currentOrientation ? currentOrientation() : button.closest('[role="tablist"]')?.getAttribute('aria-orientation') === 'vertical';
       let next;
       if (event.key === 'ArrowRight' || (vertical && event.key === 'ArrowDown')) next = (index + 1) % buttons.length;
       if (event.key === 'ArrowLeft' || (vertical && event.key === 'ArrowUp')) next = (index - 1 + buttons.length) % buttons.length;
@@ -77,14 +105,27 @@
       panel.setAttribute('aria-labelledby', `activity-tab-${panel.dataset.activityPanel}`);
       panel.tabIndex = 0;
     });
-    tabs.forEach(tab => tab.addEventListener('click', () => select(tab)));
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      const changed = tab.getAttribute('aria-selected') !== 'true';
+      select(tab);
+      const active = panels.find(panel => !panel.hidden);
+      if (changed && !motionPreference.matches) {
+        active.getAnimations().forEach(animation => animation.cancel());
+        active.animate([{opacity:.4,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}], {duration:320,easing:'cubic-bezier(.22,1,.36,1)'});
+      }
+    }));
     select(tabs[0]);
     tablist.hidden = false;
     const compact = matchMedia('(max-width: 650px)');
-    const setOrientation = () => tablist.setAttribute('aria-orientation', compact.matches ? 'horizontal' : 'vertical');
+    const setOrientation = () => {
+      const vertical = !compact.matches;
+      tablist.setAttribute('aria-orientation', vertical ? 'vertical' : 'horizontal');
+      return vertical;
+    };
     setOrientation();
     compact.addEventListener('change', setOrientation);
-    tabKeyboard(tabs);
+    // Media-query change delivery can follow a key immediately after resize.
+    tabKeyboard(tabs, setOrientation);
   });
 
   const dialog = document.querySelector('#photo-dialog');
@@ -212,9 +253,12 @@
       play.setAttribute('aria-label', action);
       if (motion) {
         motion.hidden = mode !== 'background';
-        motion.textContent = video.paused ? t('Resume background', '배경 영상 재생') : t('Pause background', '배경 영상 정지');
+        motion.dataset.paused = String(video.paused);
+        motion.querySelector('[data-motion-label]').textContent = video.paused ? t('Resume background', '배경 영상 재생') : t('Pause background', '배경 영상 정지');
         motion.setAttribute('aria-label', video.paused ? t('Play muted background film', '무음 배경 영상 재생') : t('Pause background film', '배경 영상 멈춤'));
+        motion.title = motion.getAttribute('aria-label');
       }
+      play.title = action;
       description.textContent = mode === 'background'
         ? t('The rocket lifts off from the stand. Background film is muted; choose “Watch with sound” for the full film and original field sound.', '발사대에서 로켓이 이륙합니다. 배경 영상은 무음입니다. 현장 소리와 전체 영상은 “소리와 함께 보기”로 재생하세요.')
         : views[current].description;

@@ -1,6 +1,7 @@
+const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
 const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
+const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 
 async function checkHomepage(browser) {
   const failures = [];
@@ -51,6 +52,7 @@ async function checkHomepage(browser) {
       assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'research');
       await page.setViewportSize({width:1440,height:1000});
       await page.keyboard.press('ArrowDown');
+      assert.equal(await page.locator('[data-activity-tabs]').getAttribute('aria-orientation'),'vertical','Keyboard uses current layout even before a delayed media-query event');
       assert.equal(await page.locator('[data-activity]:focus').getAttribute('data-activity'),'learning','Vertical arrow handling returns after widening');
     });
     await check(`${locale || 'en/'} hero exposes one playback interface and preserves keyboard focus`, async () => {
@@ -90,7 +92,7 @@ async function checkHomepage(browser) {
       const failure = page.locator('[data-media-failure]');
       await failure.waitFor({state:'visible'});
       for (const theme of ['light','dark']) {
-        await page.locator('[data-theme-select]').selectOption(theme);
+        await setTheme(page,theme);
         await page.keyboard.press('Tab');
         const link = failure.locator('a');
         await link.focus();

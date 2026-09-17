@@ -1,8 +1,9 @@
+const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
 const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base = process.env.PSI_URL || 'http://127.0.0.1:8766';
+const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 
 // These independent source fixtures catch missing teams, stale April topics and
 // current/history mixing in the generated reader-facing research index.
@@ -75,7 +76,7 @@ async function checkCurrentContent(browser) {
       for (const width of [320,390,768,1440]) {
         await page.setViewportSize({width,height:1000});
         for (const theme of ['light','dark']) {
-          await page.locator('[data-theme-select]').selectOption(theme);
+          await setTheme(page,theme);
           await check(`${locale || 'en/'} ${theme} research fits ${width}px`, async () => {
             assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
           });

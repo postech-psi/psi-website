@@ -1,6 +1,7 @@
+const {setTheme} = require('./test-helpers.cjs');
 const assert=require('node:assert/strict');
 const {chromium}=require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const base=process.env.PSI_URL||'http://127.0.0.1:8766';
+const base=process.env.PSI_URL||'http://127.0.0.1:8767';
 const portal='https://postech-psi.github.io/test-results/';
 async function checkEngineering(browser){
  const errors=[];
@@ -83,7 +84,7 @@ async function checkEngineering(browser){
    ['new chapters fit both themes at four widths',async()=>{
     for(const route of ['avionics','tms'])for(const width of [320,390,901,1440])for(const theme of ['light','dark']){
       await page.setViewportSize({width,height:1000});const response=await page.goto(`${base}/${locale}${route}.html`);assert.equal(response.status(),200);
-      await page.locator('[data-theme-select]').selectOption(theme);await page.evaluate(()=>document.fonts.ready);
+      await setTheme(page,theme);await page.evaluate(()=>document.fonts.ready);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${route}/${theme} fits ${width}px`);
     }
     await page.setViewportSize({width:320,height:1000});
