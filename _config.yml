@@ -26,6 +26,14 @@ exclude:
   - README.md
   - tools/
   - docs/
+  # The redesigned static routes are exported from docs/launch-site.
+  # Preserve the former source pages without generating conflicting URLs.
+  - index.md
+  - about.md
+  - projects.md
+  - team.md
+  - events.md
+  - contact.md
 
 collections:
   projects:

@@ -1,3 +1,5 @@
 qa-*.png
 review/*.png
 review/audit-report.json
+# Exported prefix-path test fixture, never a second source tree.
+/psi-website/

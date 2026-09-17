@@ -49,4 +49,10 @@ The supplied manuscript and ground-station recording inform the account without 
 - One optional ±42px desktop photo movement and a320ms activity-panel transition supplement the real launch film. Content is always visible; reduced-motion and mobile photo layouts remain static.
 - Updated current leadership from the user's corrections, in English, and named Jaeyoung Park in both engineering case studies. Removed the spring MT gallery event without deleting archive originals. Removed terminal Korean heading periods only.
 - Returning-browser QA exposed stale unversioned CSS/JS. The renderer now fingerprints each runtime asset. Keyboard-resize QA exposed delayed media-query delivery; activity keys now query current layout synchronously.
-- No live site, repository remote or cloud source was changed. The local preview is port8767; browser tests and review tools use the same default.
+- This design checkpoint was initially local-only. The subsequent explicit push/deploy request is handled by the Pages release plan below. The local preview is port8767; browser tests and review tools use the same default.
+
+## Authorized Pages release — 17 September 2026
+
+- Preserve the existing main/root Jekyll Pages workflow and legacy Shop, while exporting the approved bilingual site from docs/launch-site. Retain old source documents and add Team/Events/Contact redirects.
+- Export only69 intended public files, with a deterministic release manifest. Exclude private/review materials, unused fonts and removed spring-event imagery from the website artifact. Do not delete original archives.
+- Verify the exported artifact at the real `/psi-website/` prefix, then confirm the Pages workflow and production artifact hashes after a normal fast-forward push. No credential extraction, forced history changes or hosting-policy changes.

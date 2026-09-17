@@ -1,6 +1,6 @@
-# PSI local launch-site review
+# PSI launch-site source and local review
 
-This is a standalone bilingual static review site. It lives under the Jekyll-excluded `docs` directory; no production route, deployment or external publication is changed.
+This is the source and standalone review build for the bilingual PSI website. It lives under the Jekyll-excluded `docs` directory. The root export, not this directory, is published by the existing main-branch GitHub Pages deployment. Build and verify here before running `node tools/export-launch-site.mjs` from the repository root; see the root README for the release process.
 
 ## Build and preview
 
