@@ -46,27 +46,66 @@
   }
   systemTheme.addEventListener('change', applyTheme);
 
-  // One photographic scene follows the reader. It never hides or gates content.
-  const scene = document.querySelector('[data-rocket-scene]');
   const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-  if (scene) {
-    const portrait = scene.querySelector('[data-rocket-motion]');
-    const wide = matchMedia('(min-width: 901px)');
-    let inView = false, frame = 0;
-    const update = () => {
-      frame = 0;
-      if (motionPreference.matches || !wide.matches) { portrait.style.removeProperty('--scene-shift'); return; }
-      const box = scene.getBoundingClientRect();
-      const progress = Math.max(0, Math.min(1, (innerHeight - box.top) / (innerHeight + box.height)));
-      portrait.style.setProperty('--scene-shift', `${(1 - progress * 2) * 42}px`);
+  const reel = document.querySelector('[data-photo-reel]');
+  let reelVisible = false;
+  if (reel) {
+    const slides = [...reel.querySelectorAll('[data-reel-slide]')];
+    const dots = [...reel.querySelectorAll('[data-reel-dot]')];
+    const toggle = reel.querySelector('[data-reel-toggle]');
+    const status = reel.querySelector('[data-reel-status]');
+    let index = 0, timer, paused = motionPreference.matches, hovered = false, focused = false, touch, swiped = false;
+    const manualFilmPlaying = () => [...document.querySelectorAll('[data-media-stage]')].some(stage => stage.dataset.mediaMode === 'manual' && !stage.querySelector('video').paused);
+    const schedule = () => {
+      clearTimeout(timer);
+      const playing = !paused && reelVisible && !hovered && !focused && !document.hidden && !document.body.classList.contains('menu-open') && !manualFilmPlaying();
+      status.setAttribute('aria-live', playing ? 'off' : 'polite');
+      toggle.setAttribute('aria-label', paused ? t('Play photo reel', '사진 자동 전환 재생') : t('Pause photo reel', '사진 자동 전환 정지'));
+      toggle.querySelector('[data-reel-play]').hidden = !(paused);
+      toggle.querySelector('[data-reel-pause]').hidden = paused;
+      if (playing) timer = setTimeout(() => show(index + 1), 7000);
     };
-    const schedule = () => { if (inView && !frame) frame = requestAnimationFrame(update); };
-    const observer = new IntersectionObserver(entries => { inView = entries[0].isIntersecting; if (inView) schedule(); }, {rootMargin:'120px'});
-    observer.observe(scene);
-    addEventListener('scroll', schedule, {passive:true});
-    addEventListener('resize', schedule, {passive:true});
-    motionPreference.addEventListener('change', update);
-    wide.addEventListener('change', update);
+    const show = next => {
+      index = (next + slides.length) % slides.length;
+      slides.forEach((slide,i) => { slide.hidden = i !== index; });
+      dots.forEach((dot,i) => dot.setAttribute('aria-current', String(i === index)));
+      status.textContent = (index + 1) + ' / ' + slides.length + ': ' + slides[index].querySelector('figcaption').textContent;
+      schedule();
+    };
+    reel.querySelector('[data-reel-prev]').addEventListener('click', () => show(index - 1));
+    reel.querySelector('[data-reel-next]').addEventListener('click', () => show(index + 1));
+    dots.forEach((dot,i) => dot.addEventListener('click', () => show(i)));
+    toggle.addEventListener('click', () => { paused = !paused; schedule(); });
+    reel.addEventListener('keydown', event => {
+      if (['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) {
+        event.preventDefault();
+        show(event.key === 'Home' ? 0 : event.key === 'End' ? slides.length - 1 : index + (event.key === 'ArrowRight' ? 1 : -1));
+      }
+    });
+    reel.addEventListener('mouseenter', () => { hovered = true; schedule(); });
+    reel.addEventListener('mouseleave', () => { hovered = false; schedule(); });
+    reel.addEventListener('focusin', () => { focused = true; schedule(); });
+    reel.addEventListener('focusout', event => { focused = reel.contains(event.relatedTarget); schedule(); });
+    reel.addEventListener('pointerdown', event => { swiped = false; if (event.pointerType === 'touch') touch = [event.clientX,event.clientY]; });
+    reel.addEventListener('pointerup', event => {
+      if (!touch) return;
+      const dx = event.clientX - touch[0], dy = event.clientY - touch[1];
+      touch = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) { swiped = true; show(index + (dx < 0 ? 1 : -1)); }
+    });
+    reel.addEventListener('click', event => { if (swiped) { event.preventDefault(); event.stopPropagation(); swiped = false; } }, true);
+    reel.addEventListener('pointercancel', () => { touch = null; });
+    new IntersectionObserver(entries => {
+      reelVisible = entries[0].intersectionRatio >= .25;
+      schedule();
+      document.dispatchEvent(new Event('psi-reel-visibility'));
+    }, {threshold:.25}).observe(reel);
+    document.addEventListener('visibilitychange', schedule);
+    motionPreference.addEventListener('change', () => { if (motionPreference.matches) paused = true; schedule(); });
+    document.querySelectorAll('video').forEach(video => ['play','pause','ended'].forEach(event => video.addEventListener(event,schedule)));
+    new MutationObserver(schedule).observe(document.body,{attributes:true,attributeFilter:['class']});
+    reel.querySelector('[data-reel-controls]').hidden = false;
+    show(0);
   }
 
   const menu = document.querySelector('[data-menu-toggle]');
@@ -279,7 +318,7 @@
         ? t('The rocket lifts off from the stand. Background film is muted; choose “Watch with sound” for the full film and original field sound.', '발사대에서 로켓이 이륙합니다. 배경 영상은 무음입니다. 현장 소리와 전체 영상은 “소리와 함께 보기”로 재생하세요.')
         : views[current].description;
     };
-    const eligible = () => mode === 'background' && current === 'pad' && visible && !document.hidden
+    const eligible = () => mode === 'background' && current === 'pad' && visible && !document.hidden && !reelVisible
       && !document.body.classList.contains('menu-open') && !document.body.classList.contains('dialog-open')
       && !userPaused && !autoplayBlocked && (explicitlyResumed || (!reduced.matches && !connection?.saveData));
     const reconcile = async () => {
@@ -368,6 +407,7 @@
       const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; reconcile(); }, {threshold:.15});
       observer.observe(video);
       document.addEventListener('visibilitychange', reconcile);
+      document.addEventListener('psi-reel-visibility', reconcile);
       const preferenceChanged = () => { explicitlyResumed = false; reconcile(); };
       reduced.addEventListener('change', preferenceChanged);
       connection?.addEventListener?.('change', preferenceChanged);

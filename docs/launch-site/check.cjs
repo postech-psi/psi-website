@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('playwright');
 const { checkAccessibility } = require('./check-accessibility.cjs');
+const { checkReel } = require('./check-reel.cjs');
 const { checkHomepage } = require('./check-homepage.cjs');
 const { checkCurrentContent } = require('./check-current-content.cjs');
 const { checkMotionGallery } = require('./check-motion-gallery.cjs');
@@ -17,6 +18,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   const errors = [];
   try {
+    await checkReel(browser);
     await checkHomepage(browser);
     await checkCurrentContent(browser);
     await checkMotionGallery(browser);

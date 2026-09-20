@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
 (async()=>{
  const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined});
  const page=await browser.newPage();
- const base=process.env.PSI_BASE_URL||'http://localhost:8870/';
+ const base=process.env.PSI_BASE_URL||(process.env.PSI_URL||'http://127.0.0.1:8767').replace(/\/$/,'')+'/';
  const {research,routes}=await import('./content.mjs');
  const {resultCatalog}=await import('./test-results-view.mjs');
  try {

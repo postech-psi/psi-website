@@ -56,22 +56,17 @@ async function checkPolish(browser) {
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Header fits ${width}px`);
       }
     });
-    await check(`${locale || 'en/'} rocket photo responds to scroll and respects reduced motion`, async () => {
+    await check(`${locale || 'en/'} rocket detail remains a useful static first photo under reduced motion`, async () => {
       await page.setViewportSize({width:1440,height:1000}); await page.emulateMedia({reducedMotion:'no-preference'});
       await page.goto(`${base}/${locale}index.html`);
       const scene = page.locator('[data-rocket-scene]');
       assert.equal(await scene.count(),1,'One intentional photo-led scroll scene');
-      const image = scene.locator('img');
+      const image = scene.locator('[data-reel-slide="0"] img');
       assert.ok((await image.getAttribute('src')).endsWith('rocket-detail.webp'));
       await image.scrollIntoViewIfNeeded(); await image.evaluate(el=>el.decode());
-      const top = await scene.evaluate(el=>el.getBoundingClientRect().top+scrollY);
-      await page.evaluate(y=>scrollTo({top:y,behavior:'instant'}),top-400);
-      await page.waitForTimeout(100);
-      const before = await page.locator('[data-rocket-motion]').evaluate(el=>getComputedStyle(el).transform);
-      await page.evaluate(y=>scrollTo({top:y,behavior:'instant'}),top+200);
-      await page.waitForFunction(prior=>getComputedStyle(document.querySelector('[data-rocket-motion]')).transform!==prior,before);
       await page.emulateMedia({reducedMotion:'reduce'});
-      assert.equal(await page.locator('[data-rocket-motion]').evaluate(el=>getComputedStyle(el).transform),'none');
+      assert.ok(await image.isVisible());
+      assert.equal(await scene.locator('[data-reel-slide]:visible').count(),1);
       assert.ok(await scene.locator('h2').isVisible(),'Motion never gates the story content');
     });
     await context.close();
