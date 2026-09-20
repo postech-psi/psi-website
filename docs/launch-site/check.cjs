@@ -11,6 +11,7 @@ const { checkMotionGallery } = require('./check-motion-gallery.cjs');
 const { checkBrand } = require('./check-brand.cjs');
 const { checkPolish } = require('./check-polish.cjs');
 const { checkEngineering } = require('./check-engineering.cjs');
+const { checkSupporters } = require('./check-supporters.cjs');
 const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
@@ -25,6 +26,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await checkBrand(browser);
     await checkPolish(browser);
     await checkEngineering(browser);
+    await checkSupporters(browser);
     const context = await browser.newContext({viewport:{width:1440,height:1000}, colorScheme:'dark'});
     const page = await context.newPage();
     page.on('pageerror', e => errors.push(e.message));

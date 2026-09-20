@@ -44,10 +44,10 @@ export async function exportSite(output = repository) {
   for (const name of ['site.css', 'program-pages.css', 'site.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
 
   // The onboard source is selected at runtime, rather than preloaded in HTML.
-  const assets = new Set(['onboard.mp4', 'onboard-poster.webp', 'Pretendard-LICENSE.txt']);
+  const assets = new Set(['onboard.mp4', 'onboard-poster.webp', 'Pretendard-LICENSE.txt', 'supporter-sources.md']);
   for (const content of outputFiles.values()) for (const match of content.toString().matchAll(/assets\/([A-Za-z0-9][A-Za-z0-9._-]*\.[A-Za-z0-9]+)/g)) assets.add(match[1]);
   for (const name of assets) {
-    if (!/\.(?:webp|png|mp4|woff2)$/.test(name) && !['archive-telemetry.json', 'Pretendard-LICENSE.txt'].includes(name)) throw new Error(`Unexpected public asset: ${name}`);
+    if (!/\.(?:webp|png|mp4|woff2)$/.test(name) && !['archive-telemetry.json', 'Pretendard-LICENSE.txt', 'supporter-sources.md'].includes(name)) throw new Error(`Unexpected public asset: ${name}`);
     outputFiles.set(`assets/${name}`, await readFile(join(source, 'assets', name)));
   }
   for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records'], ['contact.html', 'join.html', 'Join PSI']]) outputFiles.set(name, Buffer.from(redirect(target, label)));

@@ -16,8 +16,8 @@ export const events=[
     photo('launch-rail.webp','The rocket mounted on its launch rail.','발사 레일에 설치한 로켓.'),
     photo('launch-day-team.webp','The team together by the sea on launch day.','발사 당일 바닷가에서 함께한 팀.')
   ]},
-  {id:'rocket-dec-2025',date:'2025-12-06',dateLabel:text('6 December 2025','2025년 12월 6일'),label:text('Together with the rocket','로켓과 함께'),description:text('One moment with the vehicle and its parachute.','로켓과 낙하산을 함께 든 순간.'),photos:[photo('rocket-team-indoor.webp','Members with the rocket and its parachute.','로켓과 낙하산을 함께 든 부원들.')]},
-  {id:'nura-aug-2025',date:'2025-08',dateLabel:text('August 2025','2025년 8월'),label:text('NURA: building and field preparation','NURA 제작과 현장 준비'),description:text('Hardware checks and preparation at the field. Month attributed from the activity archive; exact capture dates are unverified.','기체 점검과 현장 준비의 기록입니다. 활동 아카이브의 월별 분류를 따르며 정확한 촬영일은 확인되지 않았습니다.'),photos:[
+  {id:'rocket-dec-2025',date:'2025-12-06',dateLabel:text('6 December 2025','2025년 12월 6일'),label:text('Together with the rocket','로켓과 함께'),description:text('Members holding the rocket and its parachute.','로켓과 낙하산을 함께 든 부원들.'),photos:[photo('rocket-team-indoor.webp','Members with the rocket and its parachute.','로켓과 낙하산을 함께 든 부원들.')]},
+  {id:'nura-aug-2025',date:'2025-08',dateLabel:text('August 2025','2025년 8월'),label:text('NURA: building and field preparation','NURA 제작과 현장 준비'),description:text('Hardware checks and field preparation. The activity archive dates these photographs to August 2025; exact capture dates are unverified.','기체 점검과 현장 준비의 기록입니다. 활동 아카이브에서 2025년 8월로 분류한 사진이며, 정확한 촬영일은 확인되지 않았습니다.'),photos:[
     photo('nura-field-2025.webp','The PSI team placing the vehicle on the launch rail and preparing at the field.','발사 레일에 기체를 세우고 현장에서 준비하는 PSI 팀.'),
     photo('nura-fins-2025.webp','Checking the assembled rear fins of the vehicle.','기체 후방 핀 조립부의 제작 상태를 확인하는 모습.'),
     photo('nura-airframe-2025.webp','An airframe section checked during NURA competition preparation.','NURA 발사대회를 준비하며 점검한 기체 구획.'),
