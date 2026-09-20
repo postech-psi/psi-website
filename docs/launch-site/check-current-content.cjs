@@ -68,7 +68,8 @@ async function checkCurrentContent(browser) {
         assert.doesNotMatch(text,/three.axis acceleration plots|three separate windows|three.window|3D 자세 모델과 비행 상태, GNSS 기반 경로, 3축 가속도 그래프/);
         assert.ok(await avionics.locator('a[href*="7cfb5be044e539c2e3c6d79a6538416a2741cd67"]').count()>0,'Current source is pinned');
         await page.goto(`${base}/${locale}pslv.html#tms`);
-        assert.ok(await page.locator('a[href*="abb02a09bca4e7835425dc67b2c28234ef887992"]').count()>0,'TMS retains its verified version');
+        const resultsLock=await page.request.get(`${base}/assets/results/source-lock.json`).then(response=>response.json());
+        assert.equal(resultsLock.revision,'11df0dc525da7113dd504e363662f59498e2a587','Original results implementation and datasets remain pinned');
         assert.equal(await page.locator('.selection-list').count(),0,'Stale April team-selection section is replaced');
       });
       await page.goto(`${base}/${locale}research.html`);

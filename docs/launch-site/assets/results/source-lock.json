@@ -85,11 +85,11 @@
   "generated": [
     {
       "path": "controller.mjs",
-      "sha256": "bb42266793cf559aa88391daa28a79558bd67c9091e13eb30689f5605e7f26c6"
+      "sha256": "780d02ef84c0b6cc64142cfcde723ce35de09f963c5dd0dc7b58d5982f2d390e"
     },
     {
       "path": "results.css",
-      "sha256": "25f4e7289eb201c9ea54fc2d301b6c343f198ce34d09dc991aa358f21ccb6342"
+      "sha256": "d2527fa06814080d3438fef5a87152ea8226ecd85aa9faf56d476a47d380e186"
     },
     {
       "path": "charts.js",

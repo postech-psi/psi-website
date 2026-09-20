@@ -136,9 +136,10 @@ async function checkMotionGallery(browser, only = 'all') {
           });
           const p=await guarded.newPage();await p.goto(`${base}/${locale}index.html`);
           await p.waitForFunction(()=>typeof window.releaseBackground==='function');
-          await p.locator('[data-media="onboard"]').click();await p.evaluate(()=>window.releaseBackground());await still(p);
+          await p.locator('[data-media="onboard"]').click();await p.evaluate(()=>window.releaseBackground());
+          await p.waitForFunction(()=>document.querySelector('[data-flight-video]').currentTime>.2);
           assert.ok((await p.locator('[data-flight-video]').getAttribute('src')).endsWith('onboard.mp4'));
-          assert.ok(await p.locator('[data-flight-video]').evaluate(v=>!v.controls&&!v.loop&&v.paused),'Stale pad promise cannot start the selected onboard clip');
+          assert.ok(await p.locator('[data-flight-video]').evaluate(v=>v.controls&&!v.loop&&v.muted&&!v.paused),'Stale pad promise cannot change selected onboard playback');
           await p.goto(`${base}/${locale}pslv.html#flight-record`);
           await p.locator('[data-replay-toggle]').click();await p.waitForFunction(()=>Number(document.querySelector('[data-replay-seek]').value)>1);
           await p.evaluate(()=>{window.testHidden=true;document.dispatchEvent(new Event('visibilitychange'));});

@@ -266,7 +266,6 @@
     const video = stage.querySelector('[data-flight-video]');
     const play = stage.querySelector('[data-media-play]');
     const playLabel = stage.querySelector('[data-play-label]');
-    const description = stage.querySelector('[data-media-description]');
     const failure = stage.querySelector('[data-media-failure]');
     const tabs = [...stage.querySelectorAll('[data-media]')];
     const panel = stage.querySelector('.media-screen');
@@ -288,14 +287,12 @@
       pad: {
         file: 'launch.mp4', poster: 'launch-poster.webp',
         label: t('PSI launch-pad footage', 'PSI 발사대 영상'),
-        action: t('Watch the launch', '발사 영상 보기'),
-        description: t('The rocket lifts off from the stand, leaving smoke at the pad. Original field sound plays with the video.', '발사대에 서 있던 로켓이 이륙하고 연기가 남습니다. 현장 소리가 영상과 함께 재생됩니다.')
+        action: t('Watch the launch', '발사 영상 보기')
       },
       onboard: {
         file: 'onboard.mp4', poster: 'onboard-poster.webp',
         label: t('PSI onboard footage with rapid camera rotation', '빠른 카메라 회전이 포함된 PSI 탑재 영상'),
-        action: t('Watch onboard footage', '탑재 영상 보기'),
-        description: t('Onboard view of takeoff, a rapidly rotating aerial view, then ground and grass. Contains rapid camera rotation; playback begins only when you choose to play.', '이륙 후 항공 시점이 빠르게 회전하고, 이어 지면과 풀이 보입니다. 빠른 카메라 회전이 포함되어 있으며 재생 버튼을 눌러야 시작합니다.')
+        action: t('Watch onboard footage', '탑재 영상 보기')
       }
     };
     const render = () => {
@@ -319,9 +316,6 @@
         motion.title = motion.getAttribute('aria-label');
       }
       play.title = action;
-      description.textContent = mode === 'background'
-        ? t('The rocket lifts off from the stand. Background film is muted; choose “Watch with sound” for the full film and original field sound.', '발사대에서 로켓이 이륙합니다. 배경 영상은 무음입니다. 현장 소리와 전체 영상은 “소리와 함께 보기”로 재생하세요.')
-        : views[current].description;
     };
     const eligible = () => mode === 'background' && current === 'pad' && visible && !document.hidden && !reelVisible
       && !document.body.classList.contains('menu-open') && !document.body.classList.contains('dialog-open')
@@ -351,10 +345,10 @@
       pending = false;
       video.pause();
       current = tab.dataset.media;
-      // A viewpoint change is intentional navigation, never a request to start a clip.
+      // The selected viewpoint starts muted unless motion/data preferences opt out.
       mode = 'manual';
       video.loop = false;
-      video.muted = false;
+      video.muted = true;
       const view = views[current];
       tabs.forEach(other => {
         const selected = other === tab;
@@ -367,7 +361,6 @@
       video.src = `${asset}${view.file}`;
       video.poster = `${asset}${view.poster}`;
       video.setAttribute('aria-label', view.label);
-      description.textContent = view.description;
       failure.hidden = true;
       failure.querySelector('a').href = `${asset}${view.file}`;
       failure.querySelector('a').textContent = t('Open this video file', '이 영상 파일 열기');
@@ -376,6 +369,12 @@
       playLabel.textContent = view.action;
       play.setAttribute('aria-label', view.action);
       render();
+      if (!reduced.matches && !connection?.saveData) {
+        const attempt = selectionVersion;
+        video.play().catch(error => {
+          if (attempt === selectionVersion && error.name !== 'AbortError') render();
+        });
+      }
     }));
     tabKeyboard(tabs);
     play.addEventListener('click', async () => {

@@ -1506,9 +1506,6 @@ tbody tr:last-child th {
 .results-body { min-height:0; }
 .site-shell { width:100%; margin:0; }
 .section { margin:0; padding:24px 0; }
-.detail-hero { padding:32px 0 0; }
-.detail-hero__title { font-size:clamp(24px,4vw,42px); }
-.footer { display:none; }
 [hidden] { display:none !important; }
 .sr-table { table-layout:fixed; }
 @media(max-width:600px) { .panel {padding:12px;} .toolbar__group {flex-wrap:wrap;} .detail-table th,.detail-table td {overflow-wrap:anywhere;} .detail-grid {min-width:0;} }

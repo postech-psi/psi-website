@@ -19,11 +19,12 @@ export async function mountResults(root){
  const catalog=await response.json();
  const controllers=[];
  try {
-  controllers.push(await createController(root.querySelector('[data-results-comparison]'),{page:'home',rootPath:base},catalog));
   controllers.push(await createController(root.querySelector('[data-results-detail]'),{page:'detail',testId:root.querySelector('[data-results-select]').value,rootPath:base},catalog));
  }catch(error){controllers.forEach(controller=>controller.dispose());throw error;}
  const select=root.querySelector('[data-results-select]');
- const change=()=>controllers[1].select(select.value);
+ const fallback=root.querySelector('[data-results-fallback]');
+ fallback.hidden=true;
+ const change=()=>controllers[0].select(select.value);
  select.addEventListener('change',change);
- return ()=>{select.removeEventListener('change',change);controllers.forEach(controller=>controller.dispose());};
+ return ()=>{fallback.hidden=false;select.removeEventListener('change',change);controllers.forEach(controller=>controller.dispose());};
 }

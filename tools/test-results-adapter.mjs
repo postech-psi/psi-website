@@ -42,17 +42,22 @@ export function adaptController(source){
     bindCommonControls(); bindHomeControls(); updateComparison();
   }`);
  source=replaceFunction(source,'bindCommonControls','  function bindCommonControls() { bindTablistKeyboard(); }');
- source=once(source,'      ${renderHeader()}',''); // only remaining renderDetail header
- source=once(source,'<h1 class="detail-hero__title">','<h3 class="detail-hero__title">');
- source=once(source,'${localize(test.title)}</h1>','${localize(test.title)}</h3>');
- source=once(source,'<p class="detail-hero__lead">${localize(test.summary)}</p>',`<p class="detail-hero__lead">\${localize(test.summary)}</p>
-          <div class="results-observations">\${test.date === '2026-04-03' ? '<ul>' + localize(test.highlights).slice(1).map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>' : (!test.issues ? '<p>' + (state.lang === 'ko' ? '공개 기록에 별도 문제가 기재되어 있지 않지만 결함 없는 실험이라는 뜻은 아닙니다.' : 'No issues are listed in the published record; this does not establish a fault-free experiment.') + '</p>' : '')}</div>`);
- source=once(source,'<a class="detail-hero__back" href="${resolvePath("index.html")}">← ${copy("common.backToSite")}</a>','');
- // Figures remain source links: avoid loading a duplicate gallery below charts.
- const figureStart=source.indexOf('        <section class="section">\n          <div class="section-heading"><h2>${copy("common.exportedFigures")}');
- const figureEnd=source.indexOf('      </main>',figureStart);
- if(figureStart<0||figureEnd<0)throw Error('Missing figure boundary');
- source=source.slice(0,figureStart)+source.slice(figureEnd);
+ // Retain original detail chart markup and builders; omit portal-only sections.
+ const detailStart=source.indexOf('  function renderDetail(test)');
+ const chartStart=source.indexOf('          <div class="panel comparison-layout">',detailStart);
+ const chartEnd=source.indexOf('\n        </section>',chartStart);
+ if(chartStart<0||chartEnd<0)throw Error('Missing upstream detail chart boundaries');
+ const chartMarkup=source.slice(chartStart,chartEnd).split('\n').filter(line=>!line.includes('class="chart-source"')&&!line.includes('common.metricsRealNote')).join('\n');
+ source=replaceFunction(source,'renderDetail',[
+   '  function renderDetail(test) {',
+   '    if (!test) { renderError(); return; }',
+   '    const tabs = ["thrust", "pressure", "metrics"];',
+   '    document.body.innerHTML = `<div class="site-shell">',
+   chartMarkup,
+   '    </div>`;',
+   '    bindCommonControls(); bindDetailControls(test); updateDetailChart(test);',
+   '  }'
+ ].join('\n'));
  source=replaceFunction(source,'renderError',`  function renderError() { throw new Error(copy('common.loadError')); }`);
  const start=source.indexOf('  async function init()');
  source=source.slice(0,start)+`  state.lang = realDocument.documentElement.lang === 'ko' ? 'ko' : 'en';
@@ -87,9 +92,6 @@ export function adaptStyles(source){
 .results-body { min-height:0; }
 .site-shell { width:100%; margin:0; }
 .section { margin:0; padding:24px 0; }
-.detail-hero { padding:32px 0 0; }
-.detail-hero__title { font-size:clamp(24px,4vw,42px); }
-.footer { display:none; }
 [hidden] { display:none !important; }
 .sr-table { table-layout:fixed; }
 @media(max-width:600px) { .panel {padding:12px;} .toolbar__group {flex-wrap:wrap;} .detail-table th,.detail-table td {overflow-wrap:anywhere;} .detail-grid {min-width:0;} }

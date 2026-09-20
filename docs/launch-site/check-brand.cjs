@@ -43,7 +43,7 @@ async function checkBrand(browser){
             assert.equal(await page.locator('[data-theme-toggle]').getAttribute('aria-pressed'),String(choice==='dark'));
             assert.equal(await page.locator('[data-theme-control]').evaluate(el=>el.tagName),'BUTTON','Icon is a directly operable button');
             const logo=await page.locator('.brand img').boundingBox();
-            assert.ok(logo.width>=(width===1440?190:120),`Logo is readable at ${width}px`);
+            assert.ok(logo.width>=(width===1440?240:120),`Logo is readable at ${width}px`);
             assert.ok((await page.locator('.brand img').getAttribute('src')).endsWith('assets/psi-logo.png'));
             assert.equal(await page.locator('.brand img').getAttribute('width'),'1280');
             assert.equal(await page.locator('.brand img').getAttribute('height'),'317');

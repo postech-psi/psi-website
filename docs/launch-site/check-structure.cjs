@@ -19,9 +19,9 @@ const {chromium}=require('playwright');
   await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
   assert.equal(await page.locator('#ksas-2025-fusion').count(),1);
   await page.goto(base+prefix+'index.html');
-  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'진행 중인 다섯 연구':'Five current studies','Research invitation identifies the studies directly');
+  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'연구':'Research','Research invitation uses the concise section title');
   assert.equal(await page.locator('[data-program]').count(),2);
-  assert.equal(await page.locator('.testing-feature a.button').getAttribute('href'),'pslv.html#test-results');
+  assert.equal(await page.locator('.testing-feature a.test-action').first().getAttribute('href'),'pslv.html#test-results');
   await page.goto(base+prefix+'projects.html');
   assert.deepEqual(await page.locator('.site-nav a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html']);
   assert.equal(await page.locator('[data-program]').count(),2);
@@ -48,7 +48,8 @@ const {chromium}=require('playwright');
    const selected=resultCatalog.tests.find(t=>t.id===id)||resultCatalog.tests[0];
    assert.equal(await page.locator('[data-results-select]').inputValue(),selected.id);
    await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
-   assert.ok((await page.locator('[data-results-detail] .results-body').innerText()).includes(selected.date),'Requested trial is mounted in the live detail panel');
+   assert.ok((await page.locator('[data-results-select] option:checked').innerText()).includes(selected.date),'Requested trial is identified by the compact selector');
+   assert.equal(await page.locator('[data-results-detail] #dt-canvas-thrust canvas').count(),1,'Selected trial chart is mounted');
    assert.ok(await page.locator('[data-system="tms"]').evaluate(el=>el.open));
   }
   for(const route of ['projects','aircraft','research','records','news'])for(const width of [390,1440]){

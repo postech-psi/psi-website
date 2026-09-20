@@ -38,8 +38,13 @@ async function checkAccessibility(page) {
     await page.goto(`${base}/${locale}pslv.html`);
     for (const view of ['pad', 'onboard']) {
       if (view === 'onboard') await page.locator('[data-media="onboard"]').click();
-      await page.locator('[data-media-play]').focus();
-      await page.keyboard.press('Enter');
+      if (view === 'pad') {
+        await page.locator('[data-media-play]').focus();
+        await page.keyboard.press('Enter');
+      } else {
+        await page.waitForFunction(() => document.querySelector('[data-flight-video]').controls);
+        await page.locator('[data-flight-video]').focus();
+      }
       await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > 0.2);
       const active = await page.evaluate(() => document.activeElement.tagName);
       if (active !== 'VIDEO') failures.push(`${locale || 'en/'} ${view}: keyboard play lost focus to ${active}`);

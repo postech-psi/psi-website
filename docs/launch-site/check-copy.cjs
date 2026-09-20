@@ -16,19 +16,18 @@ function checkCopy() {
     assert.ok(news.includes(lang ? 'PSI 아카이브의 사진입니다.' : 'Photographs from the PSI archive.'));
     assert.ok(!news.includes('archive previews') && !news.includes('미리보기 이미지로 확보'), 'Archive credit excludes acquisition narration');
     assert.ok(pslv.includes(lang ? '지상국 표시와 <br>로그 재생' : 'Ground-station displays <br>and playback'), 'Heading covers live displays and recorded playback');
-    for (const fact of ['343', '29.38', '186.632', '45.841', 'PRELAUNCH', 'DEPLOY', '100 Hz', '25 Hz', '50 Hz', '320', '860', 'raw_force_N', '323.79 N', '484.66 N s', '2331.2 ms', '38.018 bar']) assert.ok(pslv.includes(fact), `Retain ${fact}`);
+    for (const fact of ['343', '29.38', '186.632', '45.841', 'PRELAUNCH', 'DEPLOY', '100 Hz', '25 Hz', '50 Hz', '323.79 N', '484.66 N s', '2331.2 ms', '38.018 bar']) assert.ok(pslv.includes(fact), `Retain ${fact}`);
     assert.match(pslv, lang ? /비행 날짜와 기체는 확인되지/ : /flight date and vehicle are unconfirmed/);
     assert.match(pslv, lang ? /착륙이나 회수 완료를 확인할 수 없습니다/ : /landing and completed recovery are not established/);
-    assert.match(pslv, lang ? /움직임과 이후 화재/ : /movement and a later fire/);
     const about = read(lang, 'about');
     for (const name of ['Uikang Joo', 'Yeonho Kim', 'Taeho Lee', 'Jaeyoung Park', 'Jin-Tae Kim', 'Un-Seong Baik', 'Minsoo Kim', 'President', 'Vice President', 'Secretary', 'Avionics & TMS Lead', 'Faculty advisor', 'Former presidents']) assert.ok(about.includes(name), `Retain ${name}`);
     assert.ok(about.includes(lang ? '재정' : 'Finance'));
-    assert.ok(about.includes('APEC–APRU') && about.includes('LINC 2.0'));
+    for(const file of ['supporter-postech.png','supporter-postech-me.png','supporter-matlab.png','supporter-ansys.png'])assert.ok(about.includes(file),'Retain official supporter logos');
     const research = read(lang, 'research');
     assert.match(research, lang ? /통계적 유의성은 확인되지/ : /statistical significance is not established/);
     assert.match(research, lang ? /게재 확정·출판 여부는 확인되지/ : /Acceptance and publication status have not been verified/);
     const records = read(lang, 'records');
-    assert.match(records, lang ? /회수가 성공하지 못한/ : /unsuccessful recovery/);
+    assert.ok(records.includes(lang ? '발사 성공, 회수 실패.' : 'Launch successful, recovery failed.'));
     for (const date of ['2025-08-09', '2025-12-05', '2026-02-06']) assert.ok(records.includes(date));
   }
   console.log('PASS: bilingual copy cleanup and protected science, people, Finance, dates and uncertainty');

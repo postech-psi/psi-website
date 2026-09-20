@@ -46,7 +46,7 @@ async function checkHomepage(browser) {
       assert.ok((await video.getAttribute('poster')).endsWith('onboard-poster.webp'));
       assert.equal(await video.evaluate(v => getComputedStyle(v).objectFit),'contain','Onboard video retains its complete frame');
       assert.ok(await play.isVisible());
-      assert.match(await page.locator('[data-media-description]').textContent(),/rapid|빠른/);
+      assert.equal(await page.locator('[data-media-description]').count(),0,'Film tabs have no scene-description prose');
       await play.click();
       await page.waitForFunction(() => document.querySelector('[data-flight-video]').currentTime > .2);
       await video.evaluate(v => v.pause());

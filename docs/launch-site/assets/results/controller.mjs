@@ -937,29 +937,8 @@ export async function createController(host, PAGE, catalogInput) {
 
   function renderDetail(test) {
     if (!test) { renderError(); return; }
-    setDocumentMeta(test.meta);
     const tabs = ["thrust", "pressure", "metrics"];
-    document.body.innerHTML = `
-
-      <main class="site-shell">
-        <section class="detail-hero">
-
-          <div class="verdict">${copy("common.verdict")}</div>
-          <h3 class="detail-hero__title">${localize(test.title)}</h3>
-          <p class="detail-hero__lead">${localize(test.summary)}</p>
-          <div class="results-observations">${test.date === '2026-04-03' ? '<ul>' + localize(test.highlights).slice(1).map(item => '<li>' + escapeHtml(item) + '</li>').join('') + '</ul>' : (!test.issues ? '<p>' + (state.lang === 'ko' ? '공개 기록에 별도 문제가 기재되어 있지 않지만 결함 없는 실험이라는 뜻은 아닙니다.' : 'No issues are listed in the published record; this does not establish a fault-free experiment.') + '</p>' : '')}</div>
-          <div class="detail-summary">
-            <article class="metric-card"><div class="metric-card__label">${copy("common.date")}</div><div class="metric-card__value">${test.date}</div></article>
-            <article class="metric-card"><div class="metric-card__label">${copy("common.peakThrust")}</div><div class="metric-card__value">${test.metrics.maxThrustN.display}</div><div class="metric-card__delta">${copy("common.averageThrust")}: ${test.metrics.averageThrustN.display}</div></article>
-            <article class="metric-card"><div class="metric-card__label">${copy("common.totalImpulse")}</div><div class="metric-card__value">${test.metrics.totalImpulseNs.display}</div><div class="metric-card__delta">${copy("common.burnDuration")}: ${test.metrics.burnTimeMs.display}</div></article>
-            <article class="metric-card"><div class="metric-card__label">${copy("common.peakPressure")}</div><div class="metric-card__value">${test.metrics.maxPressureBar.display}</div><div class="metric-card__delta">${copy("common.peakTime")}: ${test.metrics.maxPressureTimeS.display}</div></article>
-          </div>
-        </section>
-        <section class="section">
-          <div class="section-heading">
-            <h2>${copy("detail.chartsTitle")}</h2>
-            ${optionalParagraph(copy("detail.chartsLead"))}
-          </div>
+    document.body.innerHTML = `<div class="site-shell">
           <div class="panel comparison-layout">
             <div class="toolbar">${chartPanelTabs("dt", tabs)}</div>
             ${tabs.map((tab) => {
@@ -968,10 +947,8 @@ export async function createController(host, PAGE, catalogInput) {
               <div class="tabpanel" id="dt-panel-metrics" role="tabpanel" aria-labelledby="dt-tab-metrics" ${state.comparisonTab === "metrics" ? "" : "hidden"}>
                 <div class="chart-header">
                   <div class="chart-header__title">${copy("common.metrics")}</div>
-                  <div class="chart-header__note">${copy("common.metricsRealNote")}</div>
                 </div>
                 ${metricsGridHTML("dt")}
-                <div class="chart-source">${copy("common.chartMethodNote")}</div>
               </div>`;
               }
               return `
@@ -984,47 +961,13 @@ export async function createController(host, PAGE, catalogInput) {
                   <div class="hint-chip">${copy("common.chartHint")}</div>
                   <div class="chart-canvas" id="dt-canvas-${tab}"></div>
                 </div>
-                <div class="chart-source">${copy("common.chartMethodNote")}</div>
               </div>`;
             }).join("")}
           </div>
-        </section>
-        <section class="section">
-          <div class="section-heading">
-            <h2>${copy("detail.methodsTitle")}</h2>
-            ${optionalParagraph(copy("detail.methodsLead"))}
-          </div>
-          <div class="detail-grid">
-            <div class="detail-stack">
-              <article class="panel"><div class="subsection-title">${copy("common.methodology")}</div>${renderDetailTables(test.processing)}</article>
-              <article class="panel"><div class="subsection-title">${copy("common.calibration")}</div>${renderDetailTables(test.calibration)}</article>
-              ${test.issues && localize(test.issues).length ? `<article class="panel"><div class="subsection-title">${copy("detail.issuesTitle")}</div><ul>${localize(test.issues).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></article>` : ""}
-            </div>
-            <div class="detail-stack">
-              <article class="panel">
-                <div class="subsection-title">${copy("detail.filesTitle")}</div>
-                ${optionalParagraph(copy("detail.filesLead"), "detail-meta-note")}
-                <div class="data-links" style="grid-template-columns:1fr;margin-top:12px;">
-                  <a class="data-link" href="${resolvePath(test.links.executiveReport)}"><div class="data-link__title">${copy("common.executiveReport")}</div><div class="data-link__meta">${test.date}</div></a>
-                  <a class="data-link" href="${resolvePath(test.links.pipelineData)}"><div class="data-link__title">${copy("common.pipelineData")}</div><div class="data-link__meta">${copy("common.filteredSource")}</div></a>
-                  <a class="data-link" href="${resolvePath(test.links.markdown)}"><div class="data-link__title">${copy("common.markdownRecord")}</div><div class="data-link__meta">${copy("common.detailPage")}</div></a>
-                </div>
-              </article>
-              <article class="panel"><div class="subsection-title">${copy("common.media")}</div><p class="detail-meta-note">${test.media.videoUrl ? `<a href="${test.media.videoUrl}">${localize(test.media.videoLabel)}</a>` : localize(test.media.videoLabel)}</p></article>
-              <article class="panel"><div class="subsection-title">${copy("common.sourceInput")}</div><p class="detail-meta-note">${escapeHtml(test.source.inputFile)}</p></article>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer class="footer"></footer>`;
-    bindCommonControls();
-    bindDetailControls(test);
-    updateDetailChart(test);
+    </div>`;
+    bindCommonControls(); bindDetailControls(test); updateDetailChart(test);
   }
 
-  /* ======================================================================
-     Controls
-     ====================================================================== */
   function bindTablistKeyboard() {
     document.querySelectorAll('[role="tablist"]').forEach((tablist) => {
       const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));

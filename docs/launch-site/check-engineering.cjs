@@ -28,34 +28,22 @@ async function checkEngineering(browser){
     assert.equal(await page.locator('[data-trace-segment]').count(),8);
     assert.match(text,locale?/이륙 시점.*뜻하지/:/not liftoff/);
    }],
-   ['TMS processing, real figures and dated results',async()=>{
-    await page.goto(`${base}/${locale}pslv.html#tms`);assert.ok(await page.locator('[data-system]').count());
+   ['Compact combustion tests and original key results',async()=>{
+    await page.goto(`${base}/${locale}pslv.html#tms`);
     assert.equal(await page.locator('.site-nav [aria-current=page]').getAttribute('href'),'projects.html');
     assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../pslv.html#tms':'ko/pslv.html#tms');
-    for(const id of ['instrument','processing','test-results'])assert.equal(await page.locator(`#${id}`).count(),1);
-    const text=await page.locator('#main').innerText();
-    for(const term of ['320','860','ADS1115','kg'])assert.ok(text.includes(term),term);
-    assert.match(text,locale?/오프라인/:/offline/);assert.match(text,locale?/일정한 오프셋/:/constant offset/);
-    assert.match(text,locale?/타임스탬프.*아니라/:/rather than individual sample timestamps/);
-    assert.ok(await page.locator(`a[href="${portal}"]`).count()>0);
-    assert.ok(await page.locator(`a[href="${portal}#comparison"]`).count()>0);
-    assert.equal(await page.locator('[data-test-result]').count(),4);
+    for(const id of ['instrument','processing','analysis','test-results'])assert.equal(await page.locator(`#${id}`).count(),1);
+    await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
+    const tms=page.locator('[data-system="tms"]');
+    assert.equal(await tms.locator('.case-chapter,.case-head,.case-results,.processing-steps,img,[data-results-comparison]').count(),0);
+    assert.equal(await tms.locator('[data-results-select] option').count(),4);
+    assert.equal(await tms.locator('[role="tab"]').count(),3);
+    assert.equal(await tms.locator(`a[href="${portal}"]`).count(),1);
+    assert.equal(await tms.locator('a').count(),1,'Portal is the only extra link in the compact component');
     const {resultCatalog}=await import('./test-results-view.mjs');
     for(const test of resultCatalog.tests){
-      const record=page.locator(`[data-test-result="${test.id}"]`);
-      assert.ok((await record.innerText()).includes(test.date));
-      assert.ok(await record.locator('a[href$="index.md"]').count());
       const row=page.locator('[data-results-fallback] tbody tr').filter({hasText:test.date});
-      for(const metric of ['maxThrustN','totalImpulseNs'])assert.ok((await row.innerText()).includes(test.metrics[metric].display));
-    }
-    assert.match(await page.locator('[data-test-result="2026-07-16-combustion"]').innerText(),locale?/압력.*이상/:/pressure.*anomal/i);
-    assert.match(await page.locator('[data-test-result="2026-04-03-combustion"]').innerText(),locale?/움직임.*화재/:/movement.*fire/);
-    for(const file of ['tms-loadcell-calibration.webp']){
-      const img=page.locator(`img[src$="${file}"]`);assert.equal(await img.count(),1);await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());
-      assert.notEqual(await img.evaluate(el=>getComputedStyle(el).objectFit),'cover');
-      assert.equal(await img.evaluate(el=>getComputedStyle(el).filter),'none');
-      assert.ok(await img.evaluate(el=>el.getBoundingClientRect().width<=el.naturalWidth+1),'Source figure is not upscaled');
-      assert.ok(await img.locator('xpath=ancestor::figure').locator('a[href$=".png"]').count());
+      for(const metric of ['maxThrustN','totalImpulseNs','burnTimeMs','maxPressureBar'])assert.ok((await row.textContent()).includes(test.metrics[metric].display));
     }
    }],
    ['overview links, canonical player and selected display weight',async()=>{
@@ -64,7 +52,7 @@ async function checkEngineering(browser){
     assert.equal(await page.locator('[data-telemetry]').count(),1,'PSLV owns the sole replay');
     assert.equal(await page.locator('a[href="avionics.html"]').count(),0);
     await page.goto(`${base}/${locale}index.html`);
-    assert.ok(await page.locator(`a.button[href="pslv.html#test-results"]`).count(),'Home leads to integrated results');
+    assert.ok(await page.locator('a[href="pslv.html"]').count(),'Home leads to the PSLV project');
     assert.equal(await page.locator('[data-program]').count(),2);
     await page.goto(`${base}/${locale}records.html`);
     const {resultCatalog}=await import('./test-results-view.mjs');
@@ -104,7 +92,7 @@ async function checkEngineering(browser){
   ])try{await run();console.log(`PASS: ${locale||'en/'} ${name}`);}catch(e){errors.push(`${locale||'en/'} ${name}: ${e.message}`);}
   await context.close();
   const plain=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
-  try{const p=await plain.newPage();for(const route of ['avionics','tms']){assert.equal((await p.goto(`${base}/${locale}pslv.html`)).status(),200);await p.locator(`[data-system="${route}"] > summary`).click();assert.deepEqual(await p.locator(`[data-system="${route}"] .case-chapter`).evaluateAll(nodes=>nodes.map(node=>node.id)),route==='avionics'?['architecture','estimation','recording','ground-station']:['instrument','processing','analysis','test-results'],'Every expected static chapter is present in order');assert.ok((await p.locator('#main').innerText()).length>2000,'Substantive static chapters remain without JavaScript');}console.log(`PASS: ${locale||'en/'} static engineering content`);}catch(e){errors.push(`${locale||'en/'} no-JavaScript: ${e.message}`);}finally{await plain.close();}
+  try{const p=await plain.newPage();for(const route of ['avionics','tms']){assert.equal((await p.goto(`${base}/${locale}pslv.html`)).status(),200);await p.locator(`[data-system="${route}"] > summary`).click();assert.deepEqual(await p.locator(`[data-system="${route}"] .case-chapter`).evaluateAll(nodes=>nodes.map(node=>node.id)),route==='avionics'?['architecture','estimation','recording','ground-station']:[],'Every expected static chapter is present in order');if(route==='avionics')assert.ok((await p.locator('#main').innerText()).length>2000,'Substantive avionics chapters remain without JavaScript');else {assert.equal(await p.locator('[data-results-fallback] tbody tr').count(),4);assert.ok(await p.locator('[data-results-fallback]').isVisible(),'Key results remain readable without JavaScript');}}console.log(`PASS: ${locale||'en/'} static engineering content`);}catch(e){errors.push(`${locale||'en/'} no-JavaScript: ${e.message}`);}finally{await plain.close();}
  }
  assert.deepEqual(errors,[],'Engineering case-study checks');
 }
