@@ -1,16 +1,16 @@
 {
   "generator": "psi-launch-site",
-  "revision": "09d1bd3faa3e9c3f8594faaa901805cd9ddd77ce85700bf8aec0b172772e5937",
+  "revision": "df063471078287b95d2d6c6ef37386050810dfcc6bc069f554fc92386f8b10eb",
   "files": [
     {
       "path": "about.html",
-      "sha256": "9da4c7b90292a6345f293e4b5c68fbb6a019fee9f8ad892a8bc58d18139df05c",
-      "bytes": 12838
+      "sha256": "8bf9f0860e4eeb44cfab34c02856f27011f17d5bbc42c5b8b8234b4c6e13e705",
+      "bytes": 12901
     },
     {
       "path": "aircraft.html",
-      "sha256": "320148c7beddbf4efb0d2075bf4541a19ed443dc7d993bf4ed1b269bbc7a8df8",
-      "bytes": 5126
+      "sha256": "333325d48cc9e82c2dc6abdf01f5d0194f864b236796b4c82be354be1587e7db",
+      "bytes": 5189
     },
     {
       "path": "assets/Pretendard-LICENSE.txt",
@@ -141,6 +141,11 @@
       "path": "assets/onboard.mp4",
       "sha256": "db8b8d653c7c36a25fd7afe931beecf047f11367c6e0b3f121822cce41211494",
       "bytes": 19930638
+    },
+    {
+      "path": "assets/psi-emblem.png",
+      "sha256": "29e31917dfa7d73e2b27eb0ccf3070e2a2064bd906157343ea917c95f1f8f77e",
+      "bytes": 102301
     },
     {
       "path": "assets/psi-logo.png",
@@ -364,113 +369,113 @@
     },
     {
       "path": "avionics.html",
-      "sha256": "9ba4dd2645ccd5c95c1c160745438d2b91e6bf54448c061f8b86ded81a7b266d",
-      "bytes": 527
+      "sha256": "5c9694438f9ace9674fcbf2840af08c246d014fe1766181ee8d743e31e5b473b",
+      "bytes": 590
     },
     {
       "path": "contact.html",
-      "sha256": "25798fc2d88533ddc3c1453738eb462b4390d90dddc114f25cc423d732ee5a20",
-      "bytes": 388
+      "sha256": "1c7dff96228e9c00ec1a5c91846c0e03296cf8cb8f7133808f62f877628c6de2",
+      "bytes": 451
     },
     {
       "path": "events.html",
-      "sha256": "c13c2366ee59db95e91936933884187aed6c2d1f343b6c310b6ce5cf4e1a0b2d",
-      "bytes": 359
+      "sha256": "8c3abb0517d1676281a9257b00f10b39dde6a34a2671fc3ae49a9d7bc6bcda25",
+      "bytes": 422
     },
     {
       "path": "gallery.html",
-      "sha256": "e9fc73eca2c1ddc4ff4bc939810d39d4650c07816df3a886bfbe5d067802f757",
-      "bytes": 519
+      "sha256": "d0db8a48282a25a76658351cacdb8e02f07070a20c8db58cb350abb7d65167c8",
+      "bytes": 582
     },
     {
       "path": "index.html",
-      "sha256": "11baa7f153029df1462aba3da04aa9db11e2bd49a64523a321395a060d101f9f",
-      "bytes": 12930
+      "sha256": "a8fea9c03cee3e2de75ee0780c0637dc30459807e481ab21c2e342f035281dc4",
+      "bytes": 12993
     },
     {
       "path": "join.html",
-      "sha256": "afdaee04785f7e6e8f30c5f4c82ad848c8601e6cb8e959fbede81f138668b42e",
-      "bytes": 551
+      "sha256": "52b1aa0019e79bd9732f77a2d95c3849f5cbdaae88309fbdf304d35e78adbd80",
+      "bytes": 614
     },
     {
       "path": "ko/about.html",
-      "sha256": "f1892b9b97d7b4994d87f362b44a96a39da049ff29ca95c25fa32fd977e79800",
-      "bytes": 13124
+      "sha256": "357120f40f7d46e180635ba86844ca2d3d39be7b05ebe4904db9e114ab65c668",
+      "bytes": 13190
     },
     {
       "path": "ko/aircraft.html",
-      "sha256": "3dca1342e90ce4226a456527016e5c2c087ae611f3d1bdbefd1e543908058d2c",
-      "bytes": 5180
+      "sha256": "73305d892251ff89039806605cfc030930fd6fb75cc9b940cce37e1e8bbc7530",
+      "bytes": 5246
     },
     {
       "path": "ko/avionics.html",
-      "sha256": "12d73a6b3c986b7949bf0958ece874c129c16b658373e51dbcbb5c10f1728ca8",
-      "bytes": 535
+      "sha256": "b29601af1ceb8b347d9c2db7a02995eea45a3a14162262d35f7b5e7909b9bcb2",
+      "bytes": 601
     },
     {
       "path": "ko/gallery.html",
-      "sha256": "e5822321a8c5c7b1c18c524176f99a1854ab2d70e568c4e00eefc4085ce21027",
-      "bytes": 527
+      "sha256": "05ee64cb4e9137e5b7c4c71ffaa9c9f8b2c59059f0dd6b04b88ebdf9c014a1c5",
+      "bytes": 593
     },
     {
       "path": "ko/index.html",
-      "sha256": "cd10af0c4f5182bbb226cf1e6b60b49299db03b89f461c5e82b05fe83d01f378",
-      "bytes": 13241
+      "sha256": "092f1b1cb1b2a3dbae1b53f3e6c397fdae15f20302c102461d3721adf58cbf34",
+      "bytes": 13307
     },
     {
       "path": "ko/join.html",
-      "sha256": "2610c8ce4de8a5c21ea761b3549d02ad3121ba54443c3889589596a00b8970f8",
-      "bytes": 559
+      "sha256": "b9b54c62e20902439b0d49004532fa55307c6aa1e664d33b42e1cfef9fb5b1ab",
+      "bytes": 625
     },
     {
       "path": "ko/learning.html",
-      "sha256": "3555e60629876103b502a371a8b3b0719563c1cdf3e91fa71e9d9c737e43f89f",
-      "bytes": 539
+      "sha256": "c64b321e6e987d3ccb322f8d1f458123abb4163dcfd3dac71a70e5d29da736c6",
+      "bytes": 605
     },
     {
       "path": "ko/news.html",
-      "sha256": "b5dd760d6ad6b0b935e6310228b877e9661dfc805dac240e063a707d951834b8",
-      "bytes": 17926
+      "sha256": "f6549341dbb7dec18520455af7d0ba539cb3dd3590efe2e7f09be67d5b3598ca",
+      "bytes": 17992
     },
     {
       "path": "ko/projects.html",
-      "sha256": "14a80005681be693b9333addcdc664730026da76d34ad18503eb313d98c8a32f",
-      "bytes": 5318
+      "sha256": "d522532bcbe85b02a0212e0c1412332f42fee5289fed150c4e5edb2a047b6c86",
+      "bytes": 5384
     },
     {
       "path": "ko/pslv.html",
-      "sha256": "e3f62093d2f45dc70088203ad0b07c88edaa0c30270593fa1a3b7aeac1ab7549",
-      "bytes": 33596
+      "sha256": "31a278b0c344332c35586f15bf1af6196c38dd0b0ee59f5551df2a01b722e208",
+      "bytes": 33662
     },
     {
       "path": "ko/records.html",
-      "sha256": "be4b3ed987018f98392fa28948ef5e724ef09073c0fbeee43e3cf739f0a4b50a",
-      "bytes": 19527
+      "sha256": "faec3b40f3f270d5963fd6725fbbc1ed274beec60559cd45620c1c1298f9215b",
+      "bytes": 19593
     },
     {
       "path": "ko/research.html",
-      "sha256": "5c546828955f2ea76b9b056427b473dba0978513b4d642e59a7fdb32055ed924",
-      "bytes": 17627
+      "sha256": "7674982c3ff89c0ed26ac21d7692aa9533558671bb3dd2683b2884550e4d9e22",
+      "bytes": 17693
     },
     {
       "path": "ko/tms.html",
-      "sha256": "8f36387655656dba2f52302197753b9c89666da44c9ffbb6f34e14f2b7fbae0b",
-      "bytes": 515
+      "sha256": "7bcbf653460ac3b8c7d2c20033740aff8ab540a15c80112abdc8b4c65fef7064",
+      "bytes": 581
     },
     {
       "path": "learning.html",
-      "sha256": "7a2175d2eb1f42aa263d85e1f43d3e69c701c0ad5f9d0ec2f016188808a9327e",
-      "bytes": 531
+      "sha256": "7e6f83310f746c19c3b7eafb34d61c018876cb4d04b1625ae7a8376e2b90f927",
+      "bytes": 594
     },
     {
       "path": "motion.js",
-      "sha256": "6b8a7c6d4d75c5248094ffa994a4f6b17e8918fc2974af90f0015fe3d5e8ac74",
-      "bytes": 8230
+      "sha256": "373adfde22abf42051b03ae469856a77f9501fef9850d7bcb12a7c23da6cf67d",
+      "bytes": 8332
     },
     {
       "path": "news.html",
-      "sha256": "e5ea962bfaca070c75f304c0435676f82571884cce30109172a7c4a65c011433",
-      "bytes": 17588
+      "sha256": "86fb3e3719caf2c0ec335abf10c20e95a2339fcce97fa583ef946c283b1fb15e",
+      "bytes": 17651
     },
     {
       "path": "program-pages.css",
@@ -479,27 +484,27 @@
     },
     {
       "path": "projects.html",
-      "sha256": "d8bb328bbac825500e883b16cc4419a95ff3d4e3b291c5e53d1bcb1210f9cd9e",
-      "bytes": 5241
+      "sha256": "33035f4aeb662f01b17f415929707fa6655a652ccfaf19ec789061c776b5e601",
+      "bytes": 5304
     },
     {
       "path": "pslv.html",
-      "sha256": "16f6b3654244cca65b2d95a70f3efc8289c0624c5d2672482b009d8055d370ff",
-      "bytes": 32608
+      "sha256": "464f7abaa6d0b8e6167303da2602813ab6b54340a261aaa886275d4cadeb75f6",
+      "bytes": 32671
     },
     {
       "path": "records.html",
-      "sha256": "5c03d86d8de694ccc46a2a0612f791319be231fc60bb128ae2e2a6f38bbb2897",
-      "bytes": 20597
+      "sha256": "c781775192f2f4c224b6600456c34e0ea0926efacf432e588b265720afdfd053",
+      "bytes": 20660
     },
     {
       "path": "research.html",
-      "sha256": "723761a895e41a4d0af5b48f6b0759b2a5f97e8e64a3578e2e36fe6403b54eca",
-      "bytes": 17070
+      "sha256": "4579302eef38a78446bf6ffa224a79ff1e73b7ddfb4b26f79a9e63990562c47a",
+      "bytes": 17133
     },
     {
       "path": "site.css",
-      "sha256": "3a3b58df68f2ad75d4d88a946c688c24c0a71bf2962353580feb72473a277e37",
+      "sha256": "7485e16a4a9edfa084048c1389d0ea90927dfca9d367ab96bfa391d5695cceb2",
       "bytes": 66706
     },
     {
@@ -509,8 +514,8 @@
     },
     {
       "path": "team.html",
-      "sha256": "ac5fa86c1de9d6983030d6519401b6a657cbb1d9c82686ca7561aaba609569d9",
-      "bytes": 348
+      "sha256": "0a964ba3e2a0589e53406db767357aea4fc41e79c9eec8fb0605ba49719bebf2",
+      "bytes": 411
     },
     {
       "path": "telemetry.mjs",
@@ -519,8 +524,8 @@
     },
     {
       "path": "tms.html",
-      "sha256": "dc46be9714d375a22ff33d89390436a775bc2f982729420a7aa4b74a91985e40",
-      "bytes": 507
+      "sha256": "2dc5adf406f4b554b2925aa329a1accb3c1601b8c2a9b358e7db34e3e90c6895",
+      "bytes": 570
     },
     {
       "path": "tvc-viewer.mjs",

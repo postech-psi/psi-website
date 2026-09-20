@@ -60,8 +60,9 @@
     }
   },{threshold:.12});
   pictures.forEach(element=>{if(!element.closest('.living-photo')||element.classList.contains('living-photo'))reveal.observe(element);});
-  const titles=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){titles.unobserve(entry.target);animate(entry.target,[{transform:'translateY(36px)',opacity:.15},{transform:'none',opacity:1}],{duration:900,delay:120});}}},{threshold:.3});
-  document.querySelectorAll('main h2').forEach(title=>titles.observe(title));
+  // Start before the viewport edge, without moving already-readable text.
+  const titles=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){titles.unobserve(entry.target);animate(entry.target,[{opacity:.15},{opacity:1}],{duration:650});}}},{rootMargin:'0px 0px 120px 0px',threshold:0});
+  document.querySelectorAll('main h2').forEach(title=>{if(title.getBoundingClientRect().top>=innerHeight)titles.observe(title);});
   const finePointer=matchMedia('(hover:hover) and (pointer:fine)');
   pictures.forEach(element=>{
     if(element.closest('.living-photo')&&!element.classList.contains('living-photo'))return;

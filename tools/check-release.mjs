@@ -10,6 +10,7 @@ const scratch=await mkdtemp(join(tmpdir(),'psi-release-check-'));
 const destination=join(scratch,'psi-website');
 const release=await exportSite(destination);
 const names=release.files.map(file=>file.path);
+assert.ok(names.includes('assets/psi-emblem.png'),'The browser icon ships with the website');
 for(const prefix of ['', 'ko/'])for(const route of routes)assert.ok(names.includes(`${prefix}${route}.html`));
 assert.equal(routes.length,13);
 for(const name of ['site.css','site.js','motion.js','program-pages.css','telemetry.mjs','assets/onboard.mp4','assets/onboard-poster.webp','assets/archive-telemetry.json','assets/Pretendard.woff2','assets/Pretendard-LICENSE.txt','assets/rocket-detail.webp'])assert.ok(names.includes(name),'Required runtime asset '+name);
@@ -19,6 +20,7 @@ assert.ok(names.includes('assets/supporter-sources.md'),'Public logo provenance 
 assert.ok(!names.some(name=>/ansys\.zip|mathworks-white|matlab-icon|task4|extract-prose/.test(name)),'Unused artwork and editorial scratch stay private');
 for(const [name,target] of [['team.html','about.html'],['events.html','news.html'],['contact.html','about.html#participation']]) {
  const html=await readFile(join(destination,name),'utf8');
+ assert.ok(html.includes('rel="icon" type="image/png" href="assets/psi-emblem.png"'),'Legacy routes carry the browser icon');
  assert.ok(html.includes('url='+target)&&html.includes('href="'+target+'"'),'Legacy address has a no-JS destination');
 }
 for(const file of release.files) {

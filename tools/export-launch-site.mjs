@@ -29,7 +29,7 @@ async function safeTarget(destination, name) {
 }
 
 function redirect(target, label) {
-  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${label} — PSI</title><meta http-equiv="refresh" content="0; url=${target}"><link rel="canonical" href="${target}"></head><body><p>This page has moved to <a href="${target}">${label}</a>.</p></body></html>\n`;
+  return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><link rel="icon" type="image/png" href="assets/psi-emblem.png"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${label} — PSI</title><meta http-equiv="refresh" content="0; url=${target}"><link rel="canonical" href="${target}"></head><body><p>This page has moved to <a href="${target}">${label}</a>.</p></body></html>\n`;
 }
 
 export async function exportSite(output = repository) {
