@@ -23,3 +23,9 @@ Preserve official neutral palette (#000000, #FFFFFF, #E9EDF0, #B8BDC6), original
 - Default PSLV is not all engineering text expanded. Preserve readable width and single content owner.
 - Bilingual/static GitHub Pages, including /psi-website/ and /ko/, no-JS fallbacks, full legacy redirect map, theme and accessible focus.
 - Validate real browser behavior, animation existence and reduced-motion suppression, numerical parity, full responsive regression, static export hashes/privacy, independent review and deployment.
+
+## Added user request: full bilingual copy cleanup
+
+User explicitly invoked avoid-ai-writing and requested a full English/Korean wording check and fixes, including unnecessary sentences and headings. Audit all canonical pages and their expanded content, captions, labels, control/error text and compatibility-page copy. Remove empty rhetorical headings, repetitive setup, unsupported promotional framing and captions that merely narrate the page. Keep PSI's factual substance, proper names, leadership corrections, current/historical research distinction, technical limitations, dates, numerical values, units, source links and scientific titles. No arbitrary word-count reduction target.
+
+Apply the named skill to extracted prose, not source code wholesale. Reinsert reviewed strings through normal safe code edits and rebuild generated pages; do not normalize entire JS/HTML files as prose. Default two-pass editorial ceiling applies to this new request. Use deterministic English signals as prompts for judgment, not authorship proof; Korean requires contextual editorial review, not a claimed Korean detector score. Report protected/intentional residuals, actual checks and pass count. Retain the approved navigation/motion behavior and verify copy edits have not broken selectors, accessible names, links or layout.
