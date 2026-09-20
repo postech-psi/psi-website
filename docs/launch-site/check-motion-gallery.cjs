@@ -64,7 +64,7 @@ async function checkMotionGallery(browser, only = 'all') {
         await page.locator('[data-flight-video]').evaluate(v=>v.pause());
       }],
       ['gallery',async()=>{
-        const response=await page.goto(`${base}/${locale}gallery.html`);
+        const response=await page.goto(`${base}/${locale}news.html`);
         assert.equal(response.status(),200,'Gallery route exists');
         assert.equal(await page.locator('[data-gallery-event]').count(),5);
         assert.equal(await page.locator('[data-gallery-open]').count(),13);
@@ -100,7 +100,7 @@ async function checkMotionGallery(browser, only = 'all') {
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
       }],
       ['loading',async()=>{
-        await page.goto(`${base}/${locale}gallery.html`);
+        await page.goto(`${base}/${locale}news.html`);
         let release;const held=new Promise(resolve=>{release=resolve;});
         await page.route('**/*?loading-test',async route=>{await held;await route.continue().catch(()=>{});});
         const opener=page.locator('#launch-dec-2025 [data-gallery-open]').first();
@@ -139,7 +139,7 @@ async function checkMotionGallery(browser, only = 'all') {
           await p.locator('[data-media="onboard"]').click();await p.evaluate(()=>window.releaseBackground());await still(p);
           assert.ok((await p.locator('[data-flight-video]').getAttribute('src')).endsWith('onboard.mp4'));
           assert.ok(await p.locator('[data-flight-video]').evaluate(v=>!v.controls&&!v.loop&&v.paused),'Stale pad promise cannot start the selected onboard clip');
-          await p.goto(`${base}/${locale}avionics.html#flight-record`);
+          await p.goto(`${base}/${locale}pslv.html#flight-record`);
           await p.locator('[data-replay-toggle]').click();await p.waitForFunction(()=>Number(document.querySelector('[data-replay-seek]').value)>1);
           await p.evaluate(()=>{window.testHidden=true;document.dispatchEvent(new Event('visibilitychange'));});
           const index=await p.locator('[data-replay-seek]').inputValue();await p.waitForTimeout(150);assert.equal(await p.locator('[data-replay-seek]').inputValue(),index);
@@ -158,24 +158,24 @@ async function checkMotionGallery(browser, only = 'all') {
       ['fallbacks',async()=>{
         const plain=await browser.newContext({javaScriptEnabled:false,reducedMotion:'reduce'});
         try {
-          const p=await plain.newPage();await p.goto(`${base}/${locale}gallery.html`);
+          const p=await plain.newPage();await p.goto(`${base}/${locale}news.html`);
           assert.equal(await p.locator('[data-gallery-open]').count(),13);
           assert.ok((await p.locator('[data-gallery-open]').first().getAttribute('href')).endsWith('.webp'));
-          await p.goto(`${base}/${locale}avionics.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
+          await p.goto(`${base}/${locale}pslv.html#flight-record`);assert.equal(await p.locator('[data-trace-segment]').count(),8);
           await p.evaluate(()=>document.fonts.ready);
-          await p.locator('.replay-summary summary').click();assert.equal(await p.locator('.replay-summary tbody tr:visible').count(),3);
+          if(!await p.locator('[data-system="avionics"]').evaluate(el=>el.open))await p.locator('[data-system="avionics"] > summary').click();await p.locator('.replay-summary summary').click();assert.equal(await p.locator('.replay-summary tbody tr:visible').count(),3);
         } finally {await plain.close();}
         const failed=await browser.newContext();
         try {
           const p=await failed.newPage();await p.route('**/archive-telemetry.json',route=>route.abort());
-          await p.goto(`${base}/${locale}avionics.html#flight-record`);
+          await p.goto(`${base}/${locale}pslv.html#flight-record`);
           await p.waitForFunction(()=>/unavailable|불러올 수 없습니다/.test(document.querySelector('[data-replay-status]').textContent));
           assert.equal(await p.locator('[data-replay-controls]').isVisible(),false);
           assert.ok(await p.locator('[data-telemetry] svg').isVisible());
         } finally {await failed.close();}
       }],
       ['replay',async()=>{
-        await page.goto(`${base}/${locale}avionics.html#flight-record`);
+        await page.goto(`${base}/${locale}pslv.html#flight-record`);
         assert.equal(await page.locator('[data-telemetry]').count(),1,'Recorded telemetry tool exists');
         const data=await (await context.request.get(`${base}/assets/archive-telemetry.json`)).json();
         assert.equal(data.samples.length,343);assert.equal(data.gaps.length,7);

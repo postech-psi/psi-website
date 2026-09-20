@@ -9,7 +9,7 @@ const base=process.env.PSI_URL||'http://127.0.0.1:8767';
   for(const locale of ['', 'ko/'])for(const theme of ['light','dark'])for(const width of [320,390,768,1440]){
    const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
    const page=await context.newPage();
-   for(const route of ['index','research','gallery']){
+   for(const route of ['index','research','news']){
     await page.goto(`${base}/${locale}${route}.html`);await setTheme(page,theme);await page.evaluate(()=>document.fonts.ready);
     for(const image of await page.locator('main img:visible').all()){
      await image.scrollIntoViewIfNeeded();await image.evaluate(img=>img.decode());

@@ -3,19 +3,21 @@ import {mkdtemp,readFile,writeFile,mkdir,access} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
+import {routes} from '../docs/launch-site/content.mjs';
 import {exportSite} from './export-launch-site.mjs';
 
 const scratch=await mkdtemp(join(tmpdir(),'psi-release-check-'));
 const destination=join(scratch,'psi-website');
 const release=await exportSite(destination);
 const names=release.files.map(file=>file.path);
-assert.equal(names.filter(name=>/^(ko\/)?(?:index|projects|pslv|research|learning|about|news|join|gallery|avionics|tms)\.html$/.test(name)).length,22);
-for(const name of ['site.css','site.js','telemetry.mjs','assets/onboard.mp4','assets/onboard-poster.webp','assets/archive-telemetry.json','assets/Pretendard.woff2','assets/Pretendard-LICENSE.txt','assets/rocket-detail.webp'])assert.ok(names.includes(name),'Required runtime asset '+name);
+for(const prefix of ['', 'ko/'])for(const route of routes)assert.ok(names.includes(`${prefix}${route}.html`));
+assert.equal(routes.length,13);
+for(const name of ['site.css','site.js','motion.js','program-pages.css','telemetry.mjs','assets/onboard.mp4','assets/onboard-poster.webp','assets/archive-telemetry.json','assets/Pretendard.woff2','assets/Pretendard-LICENSE.txt','assets/rocket-detail.webp'])assert.ok(names.includes(name),'Required runtime asset '+name);
 assert.ok(!names.some(name=>/docs\/|review\/|manifest|spring-community|Barlow|\.(pdf|pptx|cjs)$/i.test(name)),'Only the intended public subset is exported');
 for(const name of ['postech','postech-me','matlab','ansys'])assert.ok(names.includes(`assets/supporter-${name}.png`),'Supporter logo exports: '+name);
 assert.ok(names.includes('assets/supporter-sources.md'),'Public logo provenance exports');
 assert.ok(!names.some(name=>/ansys\.zip|mathworks-white|matlab-icon|task4|extract-prose/.test(name)),'Unused artwork and editorial scratch stay private');
-for(const [name,target] of [['team.html','about.html'],['events.html','news.html'],['contact.html','join.html']]) {
+for(const [name,target] of [['team.html','about.html'],['events.html','news.html'],['contact.html','about.html#participation']]) {
  const html=await readFile(join(destination,name),'utf8');
  assert.ok(html.includes('url='+target)&&html.includes('href="'+target+'"'),'Legacy address has a no-JS destination');
 }

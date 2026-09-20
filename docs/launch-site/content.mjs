@@ -14,7 +14,7 @@ export const sources = {
 };
 export const nav = [
   ['projects','Projects','프로젝트'],['research','Research','연구'],['records','Records','기록'],
-  ['news','News','소식'],['about','About','소개'],['join','Join','함께하기']
+  ['news','News','소식'],['about','About','소개']
 ];
 export const pageTitles = {
   aircraft:text('Aircraft','항공기'),records:text('Records','기록'),

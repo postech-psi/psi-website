@@ -13,7 +13,7 @@ const {chromium}=require('playwright');
   assert.equal(await recordsLink.getAttribute('href'),'records.html','About uses the canonical Records destination');
   await recordsLink.click();await page.waitForURL(base+prefix+'records.html');
   assert.equal(await page.locator('#research-archive').count(),1);
-  await page.goto(base+prefix+'avionics.html');
+  await page.goto(base+prefix+'pslv.html#avionics');
   const relatedLink=page.getByRole('link',{name:prefix?'관련 센서 퓨전 연구':'Related sensor-fusion research',exact:true});
   assert.equal(await relatedLink.getAttribute('href'),'records.html#ksas-2025-fusion','Related historical work uses its canonical Records anchor');
   await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
@@ -21,11 +21,11 @@ const {chromium}=require('playwright');
   await page.goto(base+prefix+'index.html');
   assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'지금, 어떤 질문을 탐구할까요?':'What are we investigating now?','Semantic question punctuation remains intact');
   assert.equal(await page.locator('[data-program]').count(),2);
-  assert.equal(await page.locator('.testing-feature a.button').getAttribute('href'),'tms.html#test-results');
+  assert.equal(await page.locator('.testing-feature a.button').getAttribute('href'),'pslv.html#test-results');
   await page.goto(base+prefix+'projects.html');
-  assert.deepEqual(await page.locator('.site-nav a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html','join.html']);
+  assert.deepEqual(await page.locator('.site-nav a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href'))),['projects.html','research.html','records.html','news.html','about.html']);
   assert.equal(await page.locator('[data-program]').count(),2);
-  await page.locator('[data-program="aircraft"] a').first().click();
+  await page.locator('[data-program-choice="aircraft"]').click();await page.locator('[data-program="aircraft"] a').first().click();
   assert.match(page.url(),/aircraft.html$/);
   assert.equal(await page.locator('a[href="projects.html"]').count()>0,true);
   await page.goto(base+prefix+'research.html');
@@ -40,8 +40,8 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('[data-research-record]:visible').count(),6);
   await page.locator('[data-filter-reset]').click();
   for(const r of research){await page.goto(base+prefix+'research.html#'+r.id);await page.waitForURL(base+prefix+'records.html#'+r.id);}
-  for(const [from,to] of [['learning.html','join.html'],['projects.html#avionics','avionics.html'],['projects.html#tms','tms.html'],['news.html#tests','records.html#tests'],['research.html#research-archive','records.html#research-archive'],['research.html#ksas-2025-fusion','records.html#ksas-2025-fusion']]){
-   await page.goto(base+prefix+from); await page.waitForURL(base+prefix+(from==='learning.html'?'join.html#learning':to));
+  for(const [from,to] of [['learning.html','about.html#learning'],['projects.html#avionics','pslv.html#avionics'],['projects.html#tms','pslv.html#tms'],['news.html#tests','records.html#tests'],['research.html#research-archive','records.html#research-archive'],['research.html#ksas-2025-fusion','records.html#ksas-2025-fusion']]){
+   await page.goto(base+prefix+from); await page.waitForURL(base+prefix+(from==='learning.html'?'about.html#learning':to));
   }
   for(const id of [resultCatalog.tests.at(-1).id,'unknown-test']){
    await page.goto(base+prefix+'tms.html?test='+id+'#test-results');
@@ -49,7 +49,7 @@ const {chromium}=require('playwright');
    assert.equal(await page.locator('[data-results-select]').inputValue(),selected.id);
    await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
    assert.ok((await page.locator('[data-results-detail] .results-body').innerText()).includes(selected.date),'Requested trial is mounted in the live detail panel');
-   assert.equal(await page.locator('.case-back').getAttribute('href'),'pslv.html#systems');
+   assert.ok(await page.locator('[data-system="tms"]').evaluate(el=>el.open));
   }
   for(const route of ['projects','aircraft','research','records','news'])for(const width of [390,1440]){
    await page.setViewportSize({width,height:1000});await page.goto(base+prefix+route+'.html');

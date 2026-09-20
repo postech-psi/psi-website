@@ -16,7 +16,7 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   page.on('request',request=>{if(request.url().includes('.woff2'))fontRequests.push(new URL(request.url()).pathname);});
   page.on('pageerror',error=>console.error('Browser:',error.message));
   page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
-  await page.goto(base+'tms.html');
+  await page.goto(base+'pslv.html#tms');
   assert.equal(await page.locator('[data-test-results]').count(),1,'TMS exposes the original interactive results alongside its static fallback');
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   assert.deepEqual(fontRequests,['/psi-website/assets/Pretendard.woff2'],'charts reuse the already-loaded document Pretendard font without a duplicate font download');
@@ -67,7 +67,7 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   assert.equal(await page.evaluate(()=>document.fonts.check('14px Pretendard')),true);
   await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-desktop.png'),fullPage:true});
   await page.locator('#cmp-tab-thrust').click();await page.locator('[data-results-comparison]').screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-comparison-desktop.png')});
-  await page.goto(base+'ko/tms.html');await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});assert.equal(await page.locator('#cmp-tab-thrust').textContent(),'추력');
+  await page.goto(base+'ko/pslv.html#tms');await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});assert.equal(await page.locator('#cmp-tab-thrust').textContent(),'추력');
   await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-mobile-ko.png'),fullPage:true});
   await page.locator('[data-results-comparison]').screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-comparison-mobile-ko.png')});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no mobile overflow');
@@ -81,9 +81,9 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   assert.ok(tooltip.includes('&lt;img'));assert.ok(!tooltip.includes('<img'));
   await page.unroute('**/tms_5_pipeline_data.txt');
   await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));assert.equal(await page.locator('#dt-canvas-thrust').count(),0,'page teardown disposes charts');
-  const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'tms.html');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
-  const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'tms.html');assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
-  const requests=[];page.on('request',r=>requests.push(r.url()));await page.goto(base+'avionics.html');assert.equal(requests.some(u=>u.includes('/results/')),false);
+  const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'pslv.html#tms');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
+  const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'pslv.html');await nojs.locator('[data-system="tms"] > summary').click();assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
+  const requests=[];page.on('request',r=>requests.push(r.url()));await page.goto(base+'aircraft.html');assert.equal(requests.some(u=>u.includes('/results/')),false);
   console.log('PASS original results integration, controls, all trials, theme, KO/subpath, motion, failure/retry and no-JS');
  } finally {await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

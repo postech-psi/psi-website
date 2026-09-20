@@ -11,6 +11,7 @@ const { checkMotionGallery } = require('./check-motion-gallery.cjs');
 const { checkBrand } = require('./check-brand.cjs');
 const { checkPolish } = require('./check-polish.cjs');
 const { checkEngineering } = require('./check-engineering.cjs');
+const { checkSimpleNavigation } = require('./check-simple-navigation.cjs');
 const { checkSupporters } = require('./check-supporters.cjs');
 const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
@@ -19,6 +20,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   const errors = [];
   try {
+    await checkSimpleNavigation(browser);
     await checkReel(browser);
     await checkHomepage(browser);
     await checkCurrentContent(browser);

@@ -4,9 +4,9 @@ import {readFileSync} from 'node:fs';
 import {render} from './templates.mjs';
 
 // A returning visitor must request the version matching the generated document.
-for (const language of ['en','ko']) for (const page of ['index','avionics']) {
+for (const language of ['en','ko']) for (const page of ['index','pslv']) {
   const html=render(page,language);
-  for (const asset of ['site.css','program-pages.css','site.js',...(page==='avionics'?['telemetry.mjs']:[])]) {
+  for (const asset of ['site.css','program-pages.css','site.js','motion.js',...(page==='pslv'?['telemetry.mjs']:[])]) {
     const digest=createHash('sha256').update(readFileSync(new URL(asset,import.meta.url))).digest('hex').slice(0,12);
     assert.ok(html.includes(asset+'?v='+digest),asset+' must use its current content fingerprint');
   }

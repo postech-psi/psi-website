@@ -3,3 +3,32 @@
 .photo-reel{width:100%;min-width:0;align-self:center}.reel-slides{position:relative}.reel-slides figure{margin:0}.reel-image{display:flex;align-items:center;justify-content:center;aspect-ratio:3/4;background:var(--surface);overflow:hidden}.reel-image img{width:100%;height:100%;object-fit:contain}.reel-slides figcaption{height:112px;padding-top:18px;font-size:14px;line-height:1.6}.reel-slides time{display:block;color:var(--secondary);margin-bottom:4px}.reel-slides figcaption a{display:block;max-width:48ch}.reel-controls{display:flex;align-items:center;justify-content:center;gap:4px;border-top:1px solid var(--border);padding-top:8px}.reel-controls button{display:grid;place-items:center;width:44px;height:44px;min-width:44px;padding:0;border:0;background:transparent;color:var(--text);font:inherit;font-size:28px;cursor:pointer}.reel-controls button:hover{background:var(--surface)}.reel-dots{display:flex}.reel-dots button span{width:7px;height:7px;border:1px solid currentColor;border-radius:50%}.reel-dots [aria-current=true] span{background:currentColor}.reel-controls [data-reel-toggle]{font-size:20px;margin-left:8px}.cad-board{position:relative;display:block;overflow:hidden;aspect-ratio:1/1.15;background:#e9edf0}.cad-figure .cad-board img{position:absolute;width:270.9167%;max-width:none;height:auto;left:-79.8333%;top:-18.2609%}.cad-figure figcaption a{display:inline-block;margin-top:8px}@media(max-width:650px){.photo-reel{max-width:540px;justify-self:center}.reel-slides figcaption{height:128px}.reel-controls{gap:0}.reel-controls [data-reel-toggle]{margin-left:0}}
 @media(max-width:400px){.reel-dots button{width:36px;min-width:36px}}
 .reel-image{touch-action:pan-y pinch-zoom}
+/* Native system chapters keep the vehicle and its evidence in one place. */
+.system-index{display:block}
+.system-index>details{border-top:1px solid var(--border);padding:0}
+.system-index>details:last-child{border-bottom:1px solid var(--border)}
+.system-index>details>summary{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:1.8rem 0;cursor:pointer;list-style:none}
+.system-index>details>summary::-webkit-details-marker{display:none}
+.system-index summary strong{display:block;font-size:clamp(1.4rem,3vw,2.3rem);font-weight:600}
+.system-index summary span span{display:block;max-width:65ch;margin-top:.6rem;color:var(--secondary)}
+.disclosure-icon{font-size:2rem;transition:transform .3s}
+details[open]>summary .disclosure-icon{transform:rotate(45deg)}
+.system-content{padding-bottom:2rem;min-width:0}
+.system-content>.wrap{width:100%;max-width:none;margin-inline:0}
+.system-content .case-head{padding-top:2rem}
+.system-content .case-chapter{padding-block:3rem}
+.system-content .case-heading h3,.system-content .case-chapter>h3{font-size:clamp(1.7rem,3.2vw,3rem);line-height:1.15;letter-spacing:-.035em}
+.system-content .case-sources{display:block;margin-top:1.5rem}
+.system-content .case-sources a{display:inline-block;margin:1rem 1rem 0 0}
+.system-short{max-width:75ch;padding:1rem 0 3rem}
+.system-short img{max-height:440px;width:auto;max-width:100%;object-fit:contain}
+.program-choices{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.program-choices[hidden]{display:none}
+.program-choices button{padding:.7rem 1.5rem;border:1px solid var(--border);border-radius:99px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.program-choices button[aria-pressed=true]{background:var(--text);color:var(--canvas)}
+.program-switch .program-pair{padding-block:0}
+.program-switch[data-enhanced] .program-pair{display:block}
+.program-switch[data-enhanced] [data-program]{display:grid;grid-template-columns:1.35fr 1fr;gap:clamp(2rem,5vw,5rem);align-items:center}
+.program-switch [data-program][hidden]{display:none}
+@media(max-width:700px){.program-switch[data-enhanced] [data-program]{grid-template-columns:1fr}.system-index>details>summary{padding:1.3rem 0}.system-content .case-heading{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.disclosure-icon{transition:none}}

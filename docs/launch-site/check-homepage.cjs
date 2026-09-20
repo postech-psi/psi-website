@@ -16,6 +16,7 @@ async function checkHomepage(browser) {
     await check(`${locale || 'en/'} two program previews link to distinct real program pages`,async()=>{
       assert.equal(await page.locator('[data-program]').count(),2);
       for(const id of ['pslv','aircraft']){
+        await page.locator(`[data-program-choice="${id}"]`).click();
         const preview=page.locator(`[data-program="${id}"]`);
         assert.ok(await preview.locator('h2').isVisible());
         await preview.locator('a').first().click();

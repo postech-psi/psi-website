@@ -41,7 +41,7 @@ export async function exportSite(output = repository) {
     if (content.toString() !== render(page, lang)) throw new Error(`Stale page: ${name}; run node docs/launch-site/build.mjs first`);
     outputFiles.set(name, content);
   }
-  for (const name of ['site.css', 'program-pages.css', 'site.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
+  for (const name of ['site.css', 'program-pages.css', 'site.js', 'motion.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
 
   // The onboard source is selected at runtime, rather than preloaded in HTML.
   const assets = new Set(['onboard.mp4', 'onboard-poster.webp', 'Pretendard-LICENSE.txt', 'supporter-sources.md']);
@@ -50,7 +50,7 @@ export async function exportSite(output = repository) {
     if (!/\.(?:webp|png|mp4|woff2)$/.test(name) && !['archive-telemetry.json', 'Pretendard-LICENSE.txt', 'supporter-sources.md'].includes(name)) throw new Error(`Unexpected public asset: ${name}`);
     outputFiles.set(`assets/${name}`, await readFile(join(source, 'assets', name)));
   }
-  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records'], ['contact.html', 'join.html', 'Join PSI']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
+  for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records'], ['contact.html', 'about.html#participation', 'Join PSI']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
   // Nested results data is exported only through the reviewed immutable lock.
   const resultLock = JSON.parse(await readFile(join(source, 'assets/results/source-lock.json'), 'utf8'));
   for (const name of resultLock.publicFiles) {
