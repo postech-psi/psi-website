@@ -40,7 +40,7 @@ const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
     await page.evaluate(() => document.fonts.ready);
     assert.ok(await page.evaluate(() => [...document.fonts].some(font => font.family.includes('Pretendard') && font.status === 'loaded')),'Korean body font should load');
     assert.equal(await page.locator('h1').evaluate(el => getComputedStyle(el).fontFamily.split(',')[0].replaceAll('"','').trim()),'Pretendard','Headings share the portal font');
-    assert.equal(await page.locator('html').getAttribute('data-theme'),'dark','Initial theme should follow system');
+    assert.equal(await page.locator('html').getAttribute('data-theme'),'light','Initial theme is light even on a dark OS');
     await setTheme(page,'light');
     await page.reload();
     assert.equal(await page.locator('html').getAttribute('data-theme'),'light','Explicit theme should persist');

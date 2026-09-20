@@ -1,4 +1,5 @@
 (() => {
+  if(document.querySelector('#electric-tvc .cad-figure'))import(new URL('tvc-viewer.mjs',document.currentScript.src)).catch(()=>{});
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const running = new Map();
   function animate(element, frames, options = {}) {
@@ -16,16 +17,64 @@
   addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;updateHeader();});},{passive:true});
   addEventListener('pageshow',updateHeader);
   updateHeader();
-  // Images settle into place once; text and keyboard targets are never hidden.
-  const pictures=document.querySelectorAll('.reel-image img,.program-picture img,.story-list img,[data-gallery-open] img,.study-visual,.award-feature>figure');
+  // Real photographs only: no synthesized faces or expressions.
+  const peopleFiles=new Set(['team.webp','founder.webp','award.webp','field-team.webp','launch-day-team.webp','rocket-team-indoor.webp','nura-team-2025.webp','nura-conference-2025.webp','test-team-2025.webp']);
+  const portraits=[];
+  document.querySelectorAll('main figure img').forEach(img=>{
+    const file=img.getAttribute('src').split('/').pop().replace('-thumb.webp','.webp');
+    if(!peopleFiles.has(file)||img.closest('[data-photo-reel],dialog'))return;
+    const media=img.closest('a')||img;
+    const frame=document.createElement('div');frame.className='living-photo';frame.dataset.livingPhoto='';
+    media.before(frame);frame.append(media);
+    const button=document.createElement('button');button.type='button';button.className='photo-motion-toggle';
+    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path data-photo-pause d="M8 5v14M16 5v14"/><path data-photo-play d="m8 5 11 7-11 7Z"/></svg>';
+    frame.append(button);
+    const state={frame,img,button,visible:false,paused:false};portraits.push(state);
+    button.addEventListener('click',()=>{state.paused=!state.paused;syncPortrait(state);});
+  });
+  function syncPortrait(state){
+    const allowed=!reduced.matches&&!navigator.connection?.saveData;
+    const playing=allowed&&state.visible&&!state.paused&&!document.hidden&&!document.body.classList.contains('menu-open')&&!document.body.classList.contains('dialog-open');
+    state.frame.dataset.playing=String(playing);
+    state.button.hidden=!allowed;
+    state.button.setAttribute('aria-pressed',String(state.paused));
+    state.button.setAttribute('aria-label',document.documentElement.lang==='ko'?(state.paused?'사진 움직임 재생':'사진 움직임 정지'):(state.paused?'Play photograph motion':'Pause photograph motion'));
+    state.button.querySelector('[data-photo-pause]').style.display=playing?'':'none';
+    state.button.querySelector('[data-photo-play]').style.display=playing?'none':'';
+  }
+  const syncPortraits=()=>portraits.forEach(syncPortrait);
+  const portraitObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{const state=portraits.find(item=>item.frame===entry.target);state.visible=entry.isIntersecting&&entry.intersectionRatio>=.2;syncPortrait(state);});
+  },{threshold:[0,.2]});
+  portraits.forEach(state=>portraitObserver.observe(state.frame));
+  reduced.addEventListener('change',syncPortraits);document.addEventListener('visibilitychange',syncPortraits);
+  if(portraits.length)new MutationObserver(syncPortraits).observe(document.body,{attributes:true,attributeFilter:['class']});
+  syncPortraits();
+  // One entrance per image or heading; content remains present without scripting.
+  const pictures=document.querySelectorAll('.reel-image,.program-picture,.story-list>article>a,[data-gallery-open],.study-visual,.living-photo');
   const reveal=new IntersectionObserver(entries=>{
     for(const entry of entries){
       if(!entry.isIntersecting)continue;
       reveal.unobserve(entry.target);
-      animate(entry.target,[{clipPath:'inset(0 0 9% 0)',opacity:.55},{clipPath:'inset(0)',opacity:1}],{duration:850});
+      animate(entry.target,[{clipPath:'inset(12% 6% 12% 6%)',transform:'translateY(55px) scale(.96)',opacity:.3},{clipPath:'inset(0)',transform:'none',opacity:1}],{duration:1100});
     }
   },{threshold:.12});
-  pictures.forEach(element=>reveal.observe(element));
+  pictures.forEach(element=>{if(!element.closest('.living-photo')||element.classList.contains('living-photo'))reveal.observe(element);});
+  const titles=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){titles.unobserve(entry.target);animate(entry.target,[{transform:'translateY(36px)',opacity:.15},{transform:'none',opacity:1}],{duration:900,delay:120});}}},{threshold:.3});
+  document.querySelectorAll('main h2').forEach(title=>titles.observe(title));
+  const finePointer=matchMedia('(hover:hover) and (pointer:fine)');
+  pictures.forEach(element=>{
+    if(element.closest('.living-photo')&&!element.classList.contains('living-photo'))return;
+    element.classList.add('motion-surface');
+    element.addEventListener('pointermove',event=>{
+      if(reduced.matches||!finePointer.matches)return;
+      const box=element.getBoundingClientRect();
+      element.style.setProperty('--tilt-x',`${(event.clientY-box.top)/box.height*-5+2.5}deg`);
+      element.style.setProperty('--tilt-y',`${(event.clientX-box.left)/box.width*5-2.5}deg`);
+    });
+    const reset=()=>{element.style.removeProperty('--tilt-x');element.style.removeProperty('--tilt-y');};
+    element.addEventListener('pointerleave',reset);reduced.addEventListener('change',reset);
+  });
   reduced.addEventListener('change', () => {if(reduced.matches){for(const animation of running.values())animation.finish();running.clear();}});
   const systems = [...document.querySelectorAll('[data-system]')];
   const desired = new Map(systems.map(el=>[el,el.open]));

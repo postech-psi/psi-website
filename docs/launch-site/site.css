@@ -274,7 +274,7 @@ body.dialog-open{overflow:hidden}
 html[data-theme=light] [data-theme-icon=light],html[data-theme=dark] [data-theme-icon=dark]{display:block}
 .theme-toggle:active svg{transform:scale(.9)}
 .header-inner{min-height:94px;gap:32px}
-.brand{flex-basis:240px}.brand img{width:240px;height:auto}
+.brand{flex-basis:264px}.brand img{width:264px;height:auto}
 .site-nav{gap:clamp(18px,1.7vw,28px)}
 h1,h2{letter-spacing:-.035em}h3,h4{letter-spacing:-.025em}
 .hero-identity{bottom:82px;max-width:560px;width:39%}
@@ -351,3 +351,30 @@ html[data-theme=light] .site-header[data-scrolled=true]{--header-background:#fff
  .test-action:hover::after{translate:4px 0}
 }
 @media(prefers-reduced-motion:reduce){.site-header,.site-header .site-nav a:after{transition:none}}
+.tvc-stage{height:clamp(340px,55vw,600px);width:100%;background:var(--surface,#171717)}
+.tvc-stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.tvc-stage canvas:active{cursor:grabbing}
+.tvc-toolbar,.tvc-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 0}
+.tvc-start,.tvc-actions button{font:inherit;background:var(--text);color:var(--canvas);border:1px solid currentColor;padding:10px 16px;cursor:pointer;min-height:44px}
+.tvc-actions button{min-width:44px;background:transparent;color:var(--text)}
+.tvc-help{margin-right:auto;font-size:14px;color:var(--secondary)}
+.tvc-status{font-size:14px;color:var(--secondary)}
+.tvc-start:disabled{opacity:.6;cursor:wait}
+.tvc-viewer:empty{display:none}
+.tvc-viewer[hidden],.tvc-start[hidden],.cad-board[hidden]{display:none!important}
+.study-visual:has(.tvc-viewer){transform:none!important;clip-path:none!important}
+.living-photo{position:relative;overflow:hidden}
+.living-photo>a{display:block}
+.living-photo img{transform-origin:center}
+.photo-motion-toggle{position:absolute;right:16px;bottom:16px;z-index:2;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#000b;color:#fff;cursor:pointer}
+.photo-motion-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.photo-motion-toggle:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(prefers-reduced-motion:no-preference){
+ .living-photo img{animation:portrait-drift 10s ease-in-out infinite alternate;animation-play-state:paused}
+ .living-photo[data-playing=true] img{animation-play-state:running}
+ @keyframes portrait-drift{from{transform:scale(1)}to{transform:scale(1.035) translateY(-.35%)}}
+ .motion-surface{transition:transform .65s var(--motion-ease);transform:perspective(1100px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg))}
+ .motion-surface:hover img{filter:brightness(1.035)}
+ .text-link{transition:translate .35s var(--motion-ease)}
+ .text-link:hover{translate:5px 0}
+}

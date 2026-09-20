@@ -20,9 +20,9 @@
   if(languageLink){const destination=languageLink.getAttribute('href');const updateLanguage=()=>{languageLink.setAttribute('href',destination+location.search+location.hash);};updateLanguage();addEventListener('hashchange',updateLanguage);}
   const themeButton = document.querySelector('[data-theme-toggle]');
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
-  let theme = 'system';
-  try { theme = localStorage.getItem('psi-theme') || 'system'; } catch {}
-  if (!['light', 'dark', 'system'].includes(theme)) theme = 'system';
+  let theme = 'light';
+  try { theme = localStorage.getItem('psi-theme') || 'light'; } catch {}
+  if (!['light', 'dark', 'system'].includes(theme)) theme = 'light';
   const applyTheme = () => {
     const resolved = theme === 'system' ? (systemTheme.matches ? 'dark' : 'light') : theme;
     document.documentElement.dataset.themeChoice = theme;

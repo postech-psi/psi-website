@@ -65,7 +65,7 @@ async function checkBrand(browser){
         await page.goto(`${base}/${locale}index.html`);
         await setTheme(page,'system');await page.emulateMedia({colorScheme:'dark'});
         await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
-        assert.equal(await page.locator('html').getAttribute('data-theme-choice'),'system','Fresh default follows the OS');
+        assert.equal(await page.locator('html').getAttribute('data-theme-choice'),'system','Previously saved system preference still follows the OS');
         const button=page.locator('[data-theme-toggle]');
         await button.click();await page.reload();
         assert.equal(await page.locator('html').getAttribute('data-theme'),'light');

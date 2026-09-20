@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 // Drive explicit preferences through the visible control, not injected UI state.
 async function setTheme(page, choice) {
   if (choice === 'system') {
-    await page.evaluate(() => localStorage.removeItem('psi-theme'));
+    // Exercise compatibility for visitors with an explicitly saved old system preference.
+    await page.evaluate(() => localStorage.setItem('psi-theme','system'));
     await page.reload();
     return;
   }

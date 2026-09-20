@@ -41,7 +41,7 @@ export async function exportSite(output = repository) {
     if (content.toString() !== render(page, lang)) throw new Error(`Stale page: ${name}; run node docs/launch-site/build.mjs first`);
     outputFiles.set(name, content);
   }
-  for (const name of ['site.css', 'program-pages.css', 'site.js', 'motion.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
+  for (const name of ['site.css', 'program-pages.css', 'site.js', 'motion.js', 'telemetry.mjs', 'tvc-viewer.mjs']) outputFiles.set(name, await readFile(join(source, name)));
 
   // The onboard source is selected at runtime, rather than preloaded in HTML.
   const assets = new Set(['onboard.mp4', 'onboard-poster.webp', 'Pretendard-LICENSE.txt', 'supporter-sources.md']);
@@ -61,6 +61,15 @@ export async function exportSite(output = repository) {
     outputFiles.set(`assets/results/${name}`, content);
   }
 
+  // Public CAD and pinned renderer dependencies; never export arbitrary research files.
+  const tvcLock=JSON.parse(await readFile(join(source,'assets/tvc/source-lock.json'),'utf8'));
+  for(const file of tvcLock.files){
+    if(!/^[A-Za-z0-9_.-]+$/.test(file.path)||file.path.includes('..'))throw Error(`Unsafe TVC asset: ${file.path}`);
+    const content=await readFile(join(source,'assets/tvc',file.path));
+    if(digest(content)!==file.sha256)throw Error(`Changed TVC asset: ${file.path}`);
+    outputFiles.set(`assets/tvc/${file.path}`,content);
+  }
+  outputFiles.set('assets/tvc/source-lock.json',Buffer.from(JSON.stringify(tvcLock,null,2)+'\n'));
   const files = [...outputFiles].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([path, content]) => ({path, sha256:digest(content), bytes:content.length}));
   const release = {generator, revision:digest(JSON.stringify(files)), files};
   const manifestPath = await safeTarget(destination, 'release.json');
