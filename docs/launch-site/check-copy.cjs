@@ -10,6 +10,12 @@ function checkCopy() {
       assert.ok(!home.includes(filler), `Remove empty framing: ${filler}`);
     }
     const pslv = read(lang, 'pslv');
+    const news = read(lang, 'news');
+    const detailCaption = lang ? '발사 레일에 설치된 PSI 로켓 동체.' : 'The PSI rocket body on the launch rail.';
+    for (const page of [home, pslv, news]) assert.ok(page.includes(detailCaption), 'Rocket close-up has a concrete bilingual description');
+    assert.ok(news.includes(lang ? 'PSI 아카이브의 사진입니다.' : 'Photographs from the PSI archive.'));
+    assert.ok(!news.includes('archive previews') && !news.includes('미리보기 이미지로 확보'), 'Archive credit excludes acquisition narration');
+    assert.ok(pslv.includes(lang ? '지상국 표시와 <br>로그 재생' : 'Ground-station displays <br>and playback'), 'Heading covers live displays and recorded playback');
     for (const fact of ['343', '29.38', '186.632', '45.841', 'PRELAUNCH', 'DEPLOY', '100 Hz', '25 Hz', '50 Hz', '320', '860', 'raw_force_N', '323.79 N', '484.66 N s', '2331.2 ms', '38.018 bar']) assert.ok(pslv.includes(fact), `Retain ${fact}`);
     assert.match(pslv, lang ? /비행 날짜와 기체는 확인되지/ : /flight date and vehicle are unconfirmed/);
     assert.match(pslv, lang ? /착륙이나 회수 완료를 확인할 수 없습니다/ : /landing and completed recovery are not established/);

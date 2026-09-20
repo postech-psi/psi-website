@@ -12,7 +12,7 @@ export const events=[
   {id:'launch-dec-2025',date:'2025-12-05',dateLabel:text('5 December 2025','2025년 12월 5일'),label:text('Launch day','발사일'),description:text('A day at the field: the people, the assembled vehicle and the launch rail.','현장에서 함께한 사람들, 조립된 기체와 발사 레일의 기록.'),photos:[
     photo('field-team.webp','PSI members gathered with the rocket at the launch field.','발사 현장에서 로켓과 함께한 PSI 구성원들.'),
     photo('rocket-full.webp','The complete rocket photographed at the field.','현장에서 촬영한 로켓의 전체 모습.'),
-    photo('rocket-detail.webp','A close view of the rocket body and its assembled hardware.','로켓 동체와 조립된 하드웨어의 가까운 모습.'),
+    photo('rocket-detail.webp','The PSI rocket body on the launch rail.','발사 레일에 설치된 PSI 로켓 동체.'),
     photo('launch-rail.webp','The rocket mounted on its launch rail.','발사 레일에 설치한 로켓.'),
     photo('launch-day-team.webp','The team together by the sea on launch day.','발사 당일 바닷가에서 함께한 팀.')
   ]},
