@@ -1,0 +1,85 @@
+const assert = require('node:assert/strict');
+const http = require('node:http');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.css':'text/css','.woff2':'font/woff2'};
+(async()=>{
+ const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,'http://localhost');const name=decodeURIComponent(url.pathname).replace(/^\/psi-website\//,'/');if(name.endsWith('/upstream/reference.html')){res.setHeader('Content-Type','text/html');res.end(`<html><head><script>window.PSI_PAGE_CONFIG=${JSON.stringify({page:url.searchParams.has('test')?'detail':'home',testId:url.searchParams.get('test'),rootPath:'.'})}</script><link rel="stylesheet" href="assets/site.css"><script defer src="assets/vendor/echarts.min.js"></script><script defer src="assets/charts.js"></script><script defer src="assets/site.js"></script></head><body></body></html>`);return;}if(name==='/favicon.ico'){res.writeHead(204).end();return;}const file=path.join(__dirname,name);res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(await fs.readFile(file));}catch{res.writeHead(404).end();}});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));
+ const base=`http://127.0.0.1:${server.address().port}/psi-website/`;
+ const browser=await chromium.launch({headless:true,channel:'msedge'});
+ try {
+  const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+  page.on('pageerror',error=>console.error('Browser:',error.message));
+  page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
+  await page.goto(base+'tms.html');
+  assert.equal(await page.locator('[data-test-results]').count(),1,'TMS exposes the original interactive results alongside its static fallback');
+  await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
+  assert.equal(await page.locator('#cmp-canvas-thrust canvas').count(),1);
+  assert.equal(await page.locator('#dt-canvas-thrust canvas').count(),1);
+  assert.equal(await page.locator('.site-header').count(),1,'results preserve PSI chrome');
+  const chart=async(id)=>page.locator('#'+id).evaluate(el=>{const o=echarts.getInstanceByDom(el).getOption();return {series:o.series.map(s=>({name:s.name,data:s.data})),font:o.textStyle.fontFamily,animation:o.animation,zoom:o.dataZoom,legend:o.legend};});
+  let data=await chart('cmp-canvas-thrust');
+  const original=await browser.newPage({viewport:{width:1440,height:1000}});
+  await original.goto(base+'assets/results/upstream/reference.html');await original.locator('#cmp-canvas-thrust canvas').waitFor();
+  const originalData=await original.locator('#cmp-canvas-thrust').evaluate(el=>echarts.getInstanceByDom(el).getOption().series.map(s=>({name:s.name,data:s.data})));
+  assert.deepEqual(data.series,originalData,'every comparison data point matches the original controller');
+  const styleSnapshot=el=>{const o=echarts.getInstanceByDom(el).getOption();return Object.fromEntries(['grid','xAxis','yAxis','color','textStyle','legend'].map(k=>[k,o[k]]));};
+  assert.deepEqual(await page.locator('#cmp-canvas-thrust').evaluate(styleSnapshot),await original.locator('#cmp-canvas-thrust').evaluate(styleSnapshot),'original axes, palette, font, grid and legend options retained');
+  for(const tab of ['pressure','metrics']){
+   await page.locator('#cmp-tab-'+tab).click();await original.locator('#cmp-tab-'+tab).click();
+   const id=tab==='pressure'?'cmp-canvas-pressure':'cmp-canvas-metric-thrust';
+   assert.deepEqual((await chart(id)).series,await original.locator('#'+id).evaluate(el=>echarts.getInstanceByDom(el).getOption().series.map(s=>({name:s.name,data:s.data}))),'comparison pressure/metric caller parity');
+  }
+  await page.locator('#cmp-tab-thrust').click();
+  assert.deepEqual(data.series.map(s=>s.name),['2026-07-16','2026-05-28','2026-04-08','2026-04-03']);
+  assert.match(data.font,/Pretendard/);assert.equal(data.animation,false);
+  const first=data.series[0].data[0];
+  await page.locator('[data-comparison-mode="aligned"]').click();
+  data=await chart('cmp-canvas-thrust');assert.ok(Math.abs(data.series[0].data[0][0]-(first[0]-4.1188))<1e-9);
+  await page.locator('[data-view-mode="focus"]').click();
+  await page.locator('[data-clear-runs]').click();
+  await page.locator('#run-picker-add-btn').click();await page.locator('[data-add-run="2026-04-03-combustion"]').click();
+  assert.equal(await page.locator('[data-remove-run]').count(),1);
+  await page.locator('[data-view-mode="overview"]').click();
+  await page.locator('#cmp-canvas-thrust').evaluate(el=>{const c=echarts.getInstanceByDom(el);c.dispatchAction({type:'dataZoom',start:20,end:70});c.dispatchAction({type:'legendToggleSelect',name:'2026-04-03'});});
+  await page.locator('[data-theme-toggle]').click();
+  await page.waitForTimeout(100);
+  data=await chart('cmp-canvas-thrust');assert.equal(data.zoom[0].start,20);assert.equal(data.legend[0].selected['2026-04-03'],false);
+  assert.equal(await page.locator('#dt-canvas-thrust').evaluate(el=>echarts.getInstanceByDom(el).getOption().textStyle.color),'#f8fbff','detailed charts follow PSI dark theme');
+  for(const date of ['2026-07-16','2026-05-28','2026-04-08','2026-04-03']){
+   await page.locator('[data-results-select]').selectOption(date+'-combustion');
+   await page.locator('.detail-hero__title').filter({hasText:date==='2026-04-03'?'April 3':date==='2026-04-08'?'April 8':date==='2026-05-28'?'May 28':'July 16'}).waitFor();
+   const detail=await chart('dt-canvas-thrust');assert.deepEqual(detail.series.map(s=>s.name),['Raw Force','Corrected Force','Filtered Force']);
+   await original.goto(base+'assets/results/upstream/reference.html?test='+date+'-combustion');await original.locator('#dt-canvas-thrust canvas').waitFor();
+   assert.deepEqual(detail.series,await original.locator('#dt-canvas-thrust').evaluate(el=>echarts.getInstanceByDom(el).getOption().series.map(s=>({name:s.name,data:s.data}))),'all original raw/corrected/filtered samples retained');
+   await page.locator('#dt-tab-pressure').click();assert.deepEqual((await chart('dt-canvas-pressure')).series.map(s=>s.name),['Raw Pressure','Filtered Pressure']);
+   await page.locator('#dt-tab-thrust').click();
+  }
+  assert.equal(await page.locator('[data-results-detail] a[href="https://www.instagram.com/postech_psi/reel/DWqwlBcE8Gz/"]').count(),1);
+  assert.match(await page.locator('.results-observations').innerText(),/rig shifting/,'selected April 3 observations accompany its signals');
+  await page.locator('#cmp-tab-metrics').click();assert.equal(await page.locator('#cmp-canvas-metric-thrust canvas').count(),1);
+  assert.equal(await page.evaluate(()=>document.fonts.check('14px Pretendard')),true);
+  await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-desktop.png'),fullPage:true});
+  await page.locator('#cmp-tab-thrust').click();await page.locator('[data-results-comparison]').screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-comparison-desktop.png')});
+  await page.goto(base+'ko/tms.html');await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});assert.equal(await page.locator('#cmp-tab-thrust').textContent(),'추력');
+  await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-mobile-ko.png'),fullPage:true});
+  await page.locator('[data-results-comparison]').screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-comparison-mobile-ko.png')});
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no mobile overflow');
+  await original.close();
+  await page.route('**/tests/index.json',route=>route.abort());await page.reload();await page.locator('[data-results-retry]').waitFor();assert.equal(await page.locator('.site-header').count(),1);assert.equal(await page.locator('[data-results-fallback] tbody tr').count(),4);
+  await page.unroute('**/tests/index.json');await page.locator('[data-results-retry]').click();await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
+  await page.route('**/tms_5_pipeline_data.txt',async route=>{const raw=await fs.readFile(path.join(__dirname,'assets/results/upstream/tests/2026-07-16/files/tms_5_pipeline_data.txt'),'utf8');const lines=raw.split(/\r?\n/);const index=lines[0].split('\t').indexOf('raw_force_N');const cells=lines[1].split('\t');cells[index]='';lines[1]=cells.join('\t');await route.fulfill({body:lines.join('\n'),contentType:'text/plain'});});
+  await page.reload();await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
+  assert.equal((await chart('dt-canvas-thrust')).series[0].data[0][1],null,'an empty source cell is a gap, never invented zero');
+  const tooltip=await page.locator('#dt-canvas-thrust').evaluate(el=>echarts.getInstanceByDom(el).getOption().tooltip[0].formatter([{axisValue:1,value:[1,2],seriesName:'<img src=x onerror=alert(1)>',marker:''}]));
+  assert.ok(tooltip.includes('&lt;img'));assert.ok(!tooltip.includes('<img'));
+  await page.unroute('**/tms_5_pipeline_data.txt');
+  await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));assert.equal(await page.locator('#dt-canvas-thrust').count(),0,'page teardown disposes charts');
+  const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'tms.html');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
+  const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'tms.html');assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
+  const requests=[];page.on('request',r=>requests.push(r.url()));await page.goto(base+'avionics.html');assert.equal(requests.some(u=>u.includes('/results/')),false);
+  console.log('PASS original results integration, controls, all trials, theme, KO/subpath, motion, failure/retry and no-JS');
+ } finally {await browser.close();server.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

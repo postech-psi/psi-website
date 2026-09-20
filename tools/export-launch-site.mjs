@@ -51,6 +51,15 @@ export async function exportSite(output = repository) {
     outputFiles.set(`assets/${name}`, await readFile(join(source, 'assets', name)));
   }
   for (const [name, target, label] of [['team.html', 'about.html', 'About PSI'], ['events.html', 'news.html', 'News and records'], ['contact.html', 'join.html', 'Join PSI']]) outputFiles.set(name, Buffer.from(redirect(target, label)));
+  // Nested results data is exported only through the reviewed immutable lock.
+  const resultLock = JSON.parse(await readFile(join(source, 'assets/results/source-lock.json'), 'utf8'));
+  for (const name of resultLock.publicFiles) {
+    if (name.startsWith('/') || name.includes('..') || name.includes('\\') || !/^[A-Za-z0-9_ ./-]+$/.test(name)) throw Error(`Unsafe results asset: ${name}`);
+    const content = await readFile(join(source, 'assets/results', name));
+    const expected = [...resultLock.files, ...resultLock.generated].find(file => file.path === name);
+    if (expected && digest(content) !== expected.sha256) throw Error(`Changed results asset: ${name}`);
+    outputFiles.set(`assets/results/${name}`, content);
+  }
 
   const files = [...outputFiles].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([path, content]) => ({path, sha256:digest(content), bytes:content.length}));
   const release = {generator, revision:digest(JSON.stringify(files)), files};
