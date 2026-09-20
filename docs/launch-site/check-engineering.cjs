@@ -104,7 +104,7 @@ async function checkEngineering(browser){
   ])try{await run();console.log(`PASS: ${locale||'en/'} ${name}`);}catch(e){errors.push(`${locale||'en/'} ${name}: ${e.message}`);}
   await context.close();
   const plain=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
-  try{const p=await plain.newPage();for(const route of ['avionics','tms']){assert.equal((await p.goto(`${base}/${locale}pslv.html`)).status(),200);await p.locator(`[data-system="${route}"] > summary`).click();assert.ok(await p.locator(`[data-system="${route}"] .case-chapter`).count()>=3,'Every static chapter is present');assert.ok((await p.locator('#main').innerText()).length>2000,'Substantive static chapters remain without JavaScript');}console.log(`PASS: ${locale||'en/'} static engineering content`);}catch(e){errors.push(`${locale||'en/'} no-JavaScript: ${e.message}`);}finally{await plain.close();}
+  try{const p=await plain.newPage();for(const route of ['avionics','tms']){assert.equal((await p.goto(`${base}/${locale}pslv.html`)).status(),200);await p.locator(`[data-system="${route}"] > summary`).click();assert.deepEqual(await p.locator(`[data-system="${route}"] .case-chapter`).evaluateAll(nodes=>nodes.map(node=>node.id)),route==='avionics'?['architecture','estimation','recording','ground-station']:['instrument','processing','analysis','test-results'],'Every expected static chapter is present in order');assert.ok((await p.locator('#main').innerText()).length>2000,'Substantive static chapters remain without JavaScript');}console.log(`PASS: ${locale||'en/'} static engineering content`);}catch(e){errors.push(`${locale||'en/'} no-JavaScript: ${e.message}`);}finally{await plain.close();}
  }
  assert.deepEqual(errors,[],'Engineering case-study checks');
 }

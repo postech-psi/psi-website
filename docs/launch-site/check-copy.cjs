@@ -1,0 +1,31 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+function checkCopy() {
+  const read = (lang, route) => fs.readFileSync(path.join(__dirname, lang, route + '.html'), 'utf8');
+  for (const lang of ['', 'ko']) {
+    const home = read(lang, 'index');
+    for (const filler of ['The work behind', 'a few seconds', 'Find the moments around the hardware', 'The flight is one moment', '짧은 비행을 만드는', '긴 시간의 연구', '한 번의 비행은', '어떤 질문을 탐구할까요', '무슨 일이 있었을까']) {
+      assert.ok(!home.includes(filler), `Remove empty framing: ${filler}`);
+    }
+    const pslv = read(lang, 'pslv');
+    for (const fact of ['343', '29.38', '186.632', '45.841', 'PRELAUNCH', 'DEPLOY', '100 Hz', '25 Hz', '50 Hz', '320', '860', 'raw_force_N', '323.79 N', '484.66 N s', '2331.2 ms', '38.018 bar']) assert.ok(pslv.includes(fact), `Retain ${fact}`);
+    assert.match(pslv, lang ? /비행 날짜와 기체는 확인되지/ : /flight date and vehicle are unconfirmed/);
+    assert.match(pslv, lang ? /착륙이나 회수 완료를 확인할 수 없습니다/ : /landing and completed recovery are not established/);
+    assert.match(pslv, lang ? /움직임과 이후 화재/ : /movement and a later fire/);
+    const about = read(lang, 'about');
+    for (const name of ['Uikang Joo', 'Yeonho Kim', 'Taeho Lee', 'Jaeyoung Park', 'Jin-Tae Kim', 'Un-Seong Baik', 'Minsoo Kim', 'President', 'Vice President', 'Secretary', 'Avionics & TMS Lead', 'Faculty advisor', 'Former presidents']) assert.ok(about.includes(name), `Retain ${name}`);
+    assert.ok(about.includes(lang ? '재정' : 'Finance'));
+    assert.ok(about.includes('APEC–APRU') && about.includes('LINC 2.0'));
+    const research = read(lang, 'research');
+    assert.match(research, lang ? /통계적 유의성은 확인되지/ : /statistical significance is not established/);
+    assert.match(research, lang ? /게재 확정·출판 여부는 확인되지/ : /Acceptance and publication status have not been verified/);
+    const records = read(lang, 'records');
+    assert.match(records, lang ? /회수가 성공하지 못한/ : /unsuccessful recovery/);
+    for (const date of ['2025-08-09', '2025-12-05', '2026-02-06']) assert.ok(records.includes(date));
+  }
+  console.log('PASS: bilingual copy cleanup and protected science, people, Finance, dates and uncertainty');
+}
+if (require.main === module) checkCopy();
+module.exports = {checkCopy};

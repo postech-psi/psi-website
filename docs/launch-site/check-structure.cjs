@@ -19,7 +19,7 @@ const {chromium}=require('playwright');
   await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
   assert.equal(await page.locator('#ksas-2025-fusion').count(),1);
   await page.goto(base+prefix+'index.html');
-  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'지금, 어떤 질문을 탐구할까요?':'What are we investigating now?','Semantic question punctuation remains intact');
+  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'진행 중인 다섯 연구':'Five current studies','Research invitation identifies the studies directly');
   assert.equal(await page.locator('[data-program]').count(),2);
   assert.equal(await page.locator('.testing-feature a.button').getAttribute('href'),'pslv.html#test-results');
   await page.goto(base+prefix+'projects.html');

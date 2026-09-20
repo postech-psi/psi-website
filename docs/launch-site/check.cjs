@@ -13,9 +13,11 @@ const { checkPolish } = require('./check-polish.cjs');
 const { checkEngineering } = require('./check-engineering.cjs');
 const { checkSimpleNavigation } = require('./check-simple-navigation.cjs');
 const { checkSupporters } = require('./check-supporters.cjs');
+const { checkCopy } = require('./check-copy.cjs');
 const routes = ['index','projects','pslv','aircraft','research','records','learning','about','news','join','gallery','avionics','tms'];
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 (async () => {
+  checkCopy();
   for (const lang of ['', 'ko/']) for (const route of routes) assert.ok(fs.existsSync(path.join(__dirname,lang,`${route}.html`)),`Missing page: ${lang}${route}.html`);
   const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   const errors = [];
