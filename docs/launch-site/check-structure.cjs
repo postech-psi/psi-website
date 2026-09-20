@@ -4,11 +4,22 @@ const {chromium}=require('playwright');
  const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined});
  const page=await browser.newPage();
  const base=process.env.PSI_BASE_URL||'http://localhost:8870/';
- const {research}=await import('./content.mjs');
+ const {research,routes}=await import('./content.mjs');
  const {resultCatalog}=await import('./test-results-view.mjs');
  try {
  for(const prefix of ['', 'ko/']){
+  await page.goto(base+prefix+'about.html');
+  const recordsLink=page.getByRole('link',{name:prefix?'날짜별 기록 살펴보기':'Browse the dated records',exact:true});
+  assert.equal(await recordsLink.getAttribute('href'),'records.html','About uses the canonical Records destination');
+  await recordsLink.click();await page.waitForURL(base+prefix+'records.html');
+  assert.equal(await page.locator('#research-archive').count(),1);
+  await page.goto(base+prefix+'avionics.html');
+  const relatedLink=page.getByRole('link',{name:prefix?'관련 센서 퓨전 연구':'Related sensor-fusion research',exact:true});
+  assert.equal(await relatedLink.getAttribute('href'),'records.html#ksas-2025-fusion','Related historical work uses its canonical Records anchor');
+  await relatedLink.click();await page.waitForURL(base+prefix+'records.html#ksas-2025-fusion');
+  assert.equal(await page.locator('#ksas-2025-fusion').count(),1);
   await page.goto(base+prefix+'index.html');
+  assert.equal(await page.locator('.current-research-invitation h2').innerText(),prefix?'지금, 어떤 질문을 탐구할까요?':'What are we investigating now?','Semantic question punctuation remains intact');
   assert.equal(await page.locator('[data-program]').count(),2);
   assert.equal(await page.locator('.testing-feature a.button').getAttribute('href'),'tms.html#test-results');
   await page.goto(base+prefix+'projects.html');
@@ -45,6 +56,10 @@ const {chromium}=require('playwright');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${prefix}${route} at ${width}`);
    assert.equal(await page.locator('main a[href*="sharepoint"],main a[href*="onedrive"],main iframe').count(),0);
    await page.screenshot({path:require('node:path').join(__dirname,'review',`task2-${prefix?'ko':'en'}-${route}-${width}.png`),fullPage:true});
+  }
+  for(const route of routes){
+   await page.goto(base+prefix+route+'.html');
+   assert.deepEqual(await page.locator('main h1,main h2,main h3,main h4,main h5,main h6').evaluateAll(nodes=>nodes.map(n=>n.textContent.trim()).filter(text=>text.endsWith('.'))),[],`${prefix}${route} generated headings remove final full stops`);
   }
  }
  console.log('PASS bilingual navigation, two programs, research/records segregation, legacy redirects and validated trial selection');
