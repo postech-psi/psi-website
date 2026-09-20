@@ -2,20 +2,24 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium} = require('playwright');
 const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.css':'text/css','.woff2':'font/woff2'};
 (async()=>{
+ const browser=await chromium.launch({headless:true,...(process.env.PSI_BROWSER_CHANNEL?{channel:process.env.PSI_BROWSER_CHANNEL}:{})});
+ await fs.mkdir(path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20'),{recursive:true});
  const server=http.createServer(async(req,res)=>{try{const url=new URL(req.url,'http://localhost');const name=decodeURIComponent(url.pathname).replace(/^\/psi-website\//,'/');if(name.endsWith('/upstream/reference.html')){res.setHeader('Content-Type','text/html');res.end(`<html><head><script>window.PSI_PAGE_CONFIG=${JSON.stringify({page:url.searchParams.has('test')?'detail':'home',testId:url.searchParams.get('test'),rootPath:'.'})}</script><link rel="stylesheet" href="assets/site.css"><script defer src="assets/vendor/echarts.min.js"></script><script defer src="assets/charts.js"></script><script defer src="assets/site.js"></script></head><body></body></html>`);return;}if(name==='/favicon.ico'){res.writeHead(204).end();return;}const file=path.join(__dirname,name);res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(await fs.readFile(file));}catch{res.writeHead(404).end();}});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base=`http://127.0.0.1:${server.address().port}/psi-website/`;
- const browser=await chromium.launch({headless:true,channel:'msedge'});
  try {
   const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+  const fontRequests=[];
+  page.on('request',request=>{if(request.url().includes('.woff2'))fontRequests.push(new URL(request.url()).pathname);});
   page.on('pageerror',error=>console.error('Browser:',error.message));
   page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
   await page.goto(base+'tms.html');
   assert.equal(await page.locator('[data-test-results]').count(),1,'TMS exposes the original interactive results alongside its static fallback');
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
+  assert.deepEqual(fontRequests,['/psi-website/assets/Pretendard.woff2'],'charts reuse the already-loaded document Pretendard font without a duplicate font download');
   assert.equal(await page.locator('#cmp-canvas-thrust canvas').count(),1);
   assert.equal(await page.locator('#dt-canvas-thrust canvas').count(),1);
   assert.equal(await page.locator('.site-header').count(),1,'results preserve PSI chrome');

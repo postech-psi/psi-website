@@ -40,3 +40,15 @@ Leadership updates supplied by PSI in the design review supersede the older publ
 The homepage close-up uses the user's preferred authentic rocket photograph at its complete aspect ratio. A bounded desktop photo drift and short activity-panel transition add motion without hiding content; reduced-motion/mobile variants keep the photograph still. No animation library, generated rocket image, scroll hijacking or invented telemetry was added.
 
 This checkpoint establishes complete content and working interactions. Visual refinement and independent design review remain the root task's responsibility; a passing test suite is not design approval.
+
+## Portable results parity checks
+
+From the repository root, use Node.js 20 or newer and pnpm:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm exec playwright install chromium
+pnpm test:results
+```
+
+The pinned project dependency and lockfile supply Playwright; the suite uses standard Node module resolution and Chromium by default on Windows, macOS and Linux. Linux CI images may additionally need `pnpm exec playwright install-deps chromium`. To use an already-installed supported browser, set `PSI_BROWSER_CHANNEL` (for example, PowerShell: `$env:PSI_BROWSER_CHANNEL='msedge'`). No developer-specific runtime path is required. The suite starts its own static server and creates its screenshot output directory. `node tools/check-results-test-dependency.cjs` verifies dependency resolution without launching a browser.

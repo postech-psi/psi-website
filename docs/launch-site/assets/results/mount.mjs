@@ -10,8 +10,8 @@ export async function mountResults(root){
  await script(new URL('upstream/assets/vendor/echarts.min.js',base).href);
  await script(new URL('charts.js',base).href);
  if(!fontReady){
-  const face=new FontFace('Pretendard',`url("${new URL('upstream/assets/fonts/PretendardVariable.woff2',base).href}")`,{weight:'45 920'});
-  fontReady=face.load().then(font=>{document.fonts.add(font);return document.fonts.ready;}).catch(error=>{fontReady=null;throw error;});
+  // site.css already declares this exact upstream font for DOM and canvas.
+  fontReady=document.fonts.load('14px Pretendard').then(()=>document.fonts.ready).catch(error=>{fontReady=null;throw error;});
  }
  await fontReady;
  const response=await fetch(new URL('upstream/tests/index.json',base));
