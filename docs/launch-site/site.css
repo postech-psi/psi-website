@@ -236,6 +236,9 @@ body.dialog-open{overflow:hidden}
 [data-theme-icon]{display:none;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
 
 .page-head{padding-block:72px 64px;gap:64px}.page-head h1{font-size:clamp(40px,5vw,72px);line-height:1.1}
+.page-head .program-code{display:block}
+.page-head .program-name{display:block;margin-top:16px;font-size:clamp(26px,3vw,44px);font-weight:600;line-height:1.2;letter-spacing:-.025em;text-wrap:wrap}
+@media(max-width:650px){.page-head .program-name{text-wrap:balance}}
 .section-heading{gap:48px;margin-bottom:48px}.section-context,.affiliation{font-size:14px;margin-bottom:24px}
 .project-feature h2{font-size:68px}.join-band h2{font-size:48px}
 @media(max-width:1100px){.header-inner{gap:16px;min-height:76px}.brand{flex-basis:96px}.brand img{width:96px;height:auto}.site-nav{background:#000;border-color:#353535}.site-nav a{color:#fff}.header-preferences{margin-left:auto;gap:12px}.menu-toggle{margin-left:0}.site-nav{max-height:calc(100dvh - 76px)}}
