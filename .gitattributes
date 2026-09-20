@@ -6,3 +6,5 @@
 *.mjs text eol=lf
 *.json text eol=lf
 *.txt text eol=lf
+docs/launch-site/assets/supporter-sources.md text eol=lf
+assets/supporter-sources.md text eol=lf
