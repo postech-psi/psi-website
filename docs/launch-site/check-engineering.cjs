@@ -58,20 +58,22 @@ async function checkEngineering(browser){
     const {resultCatalog}=await import('./test-results-view.mjs');
     for(const test of resultCatalog.tests)assert.ok(await page.locator(`a[href="pslv.html?test=${test.id}#test-results"]`).count());
    }],
-   ['anchors account for the nonsticky header',async()=>{
+   ['anchors clear the sticky header',async()=>{
     await page.setViewportSize({width:390,height:844});
     for(const [route,selector]of [['pslv.html#avionics','.case-nav a[href="#estimation"]'],['news.html','.album-navigation a']]){
       await page.goto(`${base}/${locale}${route.includes('.html')?route:'pslv.html#'+route}`);
       const anchor=page.locator(selector).first(),href=await anchor.getAttribute('href');
       await anchor.click();
       const box=await page.locator(href).boundingBox();
-      assert.ok(box.y>=0&&box.y<=42,'Anchor target starts near the viewport top without obsolete fixed-header space');
+      const headerHeight=(await page.locator('.site-header').boundingBox()).height;
+      assert.ok(box.y>=headerHeight&&box.y<=headerHeight+150,'Anchor target stays below the persistent navigation');
     }
     await page.goto(`${base}/${locale}research.html`);
     const article=page.locator('[data-current-research]').last();
     await article.evaluate(el=>el.scrollIntoView());
     const box=await article.boundingBox();
-    assert.ok(box.y>=0&&box.y<=42,'Research anchor has only a modest inset');
+    const headerHeight=(await page.locator('.site-header').boundingBox()).height;
+    assert.ok(box.y>=headerHeight&&box.y<=headerHeight+150,'Research anchor clears the sticky header');
     assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior),'auto','Reduced motion keeps anchor movement immediate');
    }],
    ['new chapters fit both themes at four widths',async()=>{

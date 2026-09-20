@@ -222,13 +222,14 @@ body.dialog-open{overflow:hidden}
 @media(max-width:650px){.telemetry-plot [data-time-tick="25"]{display:none}}
 
 /* Official monochrome identity and shared preference control. */
-.site-header{background:#000;color:#fff;border-color:#353535;color-scheme:dark}
+.site-header{position:sticky;top:0;background:#000;color:#fff;border-color:#353535;color-scheme:dark;transition:background-color .45s ease,color .45s ease,border-color .45s ease}
 .header-inner{min-height:80px;gap:32px}
 .brand{flex:0 0 152px;display:flex;align-items:center;min-height:44px}
 .brand img{width:152px;height:auto;object-fit:contain}
-.site-header :focus-visible{outline-color:#fff}
-.site-header .site-nav a:hover{color:#fff;text-decoration:underline;text-underline-offset:6px}
-.site-header .site-nav a[aria-current=page]:after{background:#fff}
+.site-header :focus-visible{outline-color:currentColor}
+.site-header .site-nav a:hover{color:inherit}
+.site-header .site-nav a:after{content:'';position:absolute;bottom:5px;left:0;right:0;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.site-header .site-nav a[aria-current=page]:after,.site-header .site-nav a:hover:after,.site-header .site-nav a:focus-visible:after{transform:scaleX(1)}
 .header-preferences{gap:16px}
 .language-link{min-height:44px;min-width:36px;display:inline-flex;align-items:center;justify-content:center}
 
@@ -266,7 +267,7 @@ body.dialog-open{overflow:hidden}
 }
 
 /* Photo-led editorial refinement: one face, quiet controls, authentic hardware. */
-.theme-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:10px;background:none;color:#fff;border-radius:50%;transition:background .2s ease}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;padding:10px;background:none;color:inherit;border-radius:50%;transition:background .2s ease}
 .theme-toggle:hover{background:#ffffff18}
 .theme-toggle svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 [data-theme-icon]{display:none}
@@ -313,3 +314,40 @@ html[lang=en] .hero-identity h1{max-width:12ch}
 .test-action{display:inline-flex;align-items:center;gap:12px;min-height:44px;padding:8px 0;border-bottom:1px solid currentColor;text-decoration:none;font-weight:550}
 .test-action::after{content:'';width:8px;height:8px;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);flex:none}
 .test-action[target="_blank"]::after{transform:rotate(0deg)}
+
+/* Persistent navigation; the original wordmark becomes a background-free mask. */
+:root{--header-clearance:110px;--motion-ease:cubic-bezier(.22,1,.36,1)}
+html{scroll-padding-top:var(--header-clearance)}
+.brand{position:relative}
+[data-reel-transition]{position:absolute;top:0;left:0;width:100%;z-index:1;pointer-events:none}
+.site-header{--header-background:#000}
+@supports(mask-mode:luminance){
+ .brand img{opacity:0}
+ .brand::after{content:'';position:absolute;left:0;top:50%;width:100%;aspect-ratio:1280/317;transform:translateY(-50%);background:currentColor;mask:url('assets/psi-logo.png') center/contain no-repeat;mask-mode:luminance;clip-path:inset(2px 0);pointer-events:none}
+}
+html[data-theme=light] .site-header[data-scrolled=true]{--header-background:#fff;background:#fff;color:#000;border-color:#dedede;color-scheme:light}
+.site-header .site-nav{color:inherit}
+.site-header .site-nav a{color:inherit}
+.language-link{width:44px;height:44px}
+.language-link svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:1101px){
+ .header-inner{display:grid;grid-template-columns:1fr auto 1fr;gap:24px}
+ .brand{justify-self:start}
+ .site-nav{margin:0;justify-self:center;gap:clamp(22px,2.4vw,38px);font-size:18px}
+ .header-preferences{justify-self:end}
+}
+@media(max-width:1100px){
+ :root{--header-clearance:98px}
+ .site-header .site-nav{background:var(--header-background);border-color:inherit}
+}
+@media(max-width:650px){:root{--header-clearance:92px}}
+@media(prefers-reduced-motion:no-preference){
+ .program-picture,.story-list>article>a,[data-gallery-open],.reel-image{overflow:hidden}
+ .program-picture img,.story-list>article>a img,[data-gallery-open] img,.reel-image img{transition:transform .85s var(--motion-ease)}
+ .program-picture:hover img,.story-list>article>a:hover img,[data-gallery-open]:hover img,.reel-image:hover img{transform:scale(1.025)}
+ .button,.test-action,.language-link,.theme-toggle{transition:background-color .3s ease,transform .4s var(--motion-ease)}
+ .button:active,.language-link:active{transform:scale(.97)}
+ .test-action::after{transition:translate .35s var(--motion-ease)}
+ .test-action:hover::after{translate:4px 0}
+}
+@media(prefers-reduced-motion:reduce){.site-header,.site-header .site-nav a:after{transition:none}}

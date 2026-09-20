@@ -67,7 +67,20 @@
       if (playing) timer = setTimeout(() => show(index + 1), 7000);
     };
     const show = next => {
+      const previousIndex=index;
       index = (next + slides.length) % slides.length;
+      reel.querySelector('[data-reel-transition]')?.remove();
+      if(index!==previousIndex&&!motionPreference.matches&&window.psiMotion){
+        const outgoing=document.createElement('div');
+        outgoing.className='reel-image';
+        outgoing.dataset.reelTransition='';
+        outgoing.setAttribute('aria-hidden','true');
+        const image=slides[previousIndex].querySelector('img').cloneNode(false);
+        image.alt='';outgoing.append(image);
+        reel.querySelector('.reel-slides').append(outgoing);
+        const transition=window.psiMotion(outgoing,[{opacity:1},{opacity:0}],{duration:900});
+        transition?.finished.finally(()=>outgoing.remove()).catch(()=>{});
+      }
       slides.forEach((slide,i) => { slide.hidden = i !== index; });
       dots.forEach((dot,i) => dot.setAttribute('aria-current', String(i === index)));
       status.textContent = (index + 1) + ' / ' + slides.length + ': ' + slides[index].querySelector('figcaption').textContent;

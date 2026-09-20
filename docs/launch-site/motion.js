@@ -4,12 +4,28 @@
   function animate(element, frames, options = {}) {
     running.get(element)?.cancel();
     if (reduced.matches) return null;
-    const animation = element.animate(frames, {duration:360, easing:'cubic-bezier(.2,.7,.2,1)', ...options});
+    const animation = element.animate(frames, {duration:480, easing:'cubic-bezier(.22,1,.36,1)', ...options});
     running.set(element, animation);
     animation.finished.catch(() => {}).finally(() => {if(running.get(element)===animation)running.delete(element);});
     return animation;
   }
   window.psiMotion = animate;
+  const header=document.querySelector('.site-header');
+  const updateHeader=()=>{if(header)header.dataset.scrolled=String(scrollY>48);};
+  let scrollFrame=0;
+  addEventListener('scroll',()=>{if(!scrollFrame)scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;updateHeader();});},{passive:true});
+  addEventListener('pageshow',updateHeader);
+  updateHeader();
+  // Images settle into place once; text and keyboard targets are never hidden.
+  const pictures=document.querySelectorAll('.reel-image img,.program-picture img,.story-list img,[data-gallery-open] img,.study-visual,.award-feature>figure');
+  const reveal=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+      reveal.unobserve(entry.target);
+      animate(entry.target,[{clipPath:'inset(0 0 9% 0)',opacity:.55},{clipPath:'inset(0)',opacity:1}],{duration:850});
+    }
+  },{threshold:.12});
+  pictures.forEach(element=>reveal.observe(element));
   reduced.addEventListener('change', () => {if(reduced.matches){for(const animation of running.values())animation.finish();running.clear();}});
   const systems = [...document.querySelectorAll('[data-system]')];
   const desired = new Map(systems.map(el=>[el,el.open]));
