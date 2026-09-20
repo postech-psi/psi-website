@@ -2,6 +2,22 @@
   'use strict';
   const ko = document.documentElement.lang === 'ko';
   const t = (en, kr) => ko ? kr : en;
+  // Preserve old public entry points with same-directory, language-safe routes.
+  const pageName=location.pathname.split('/').pop();
+  const legacyDestination=()=>{
+    if(pageName==='learning.html')return 'join.html#learning';
+    if(pageName==='projects.html'&&['#avionics','#tms'].includes(location.hash))return location.hash.slice(1)+'.html';
+    if(pageName==='news.html'&&location.hash==='#tests')return 'records.html#tests';
+    if(pageName==='research.html'&&(location.hash==='#research-archive'||[...document.querySelectorAll('[data-archive-compatibility] a')].some(a=>a.hash===location.hash)))return 'records.html'+location.hash;
+  };
+  const forwardLegacy=()=>{const destination=legacyDestination();if(destination)location.replace(destination);};
+  forwardLegacy();
+  addEventListener('hashchange',forwardLegacy);
+  const trialSelect=document.querySelector('[data-results-select]');
+  const requestedTrial=new URLSearchParams(location.search).get('test');
+  if(trialSelect&&[...trialSelect.options].some(option=>option.value===requestedTrial))trialSelect.value=requestedTrial;
+  const languageLink=document.querySelector('[data-language-link]');
+  if(languageLink){const destination=languageLink.getAttribute('href');const updateLanguage=()=>{languageLink.setAttribute('href',destination+location.search+location.hash);};updateLanguage();addEventListener('hashchange',updateLanguage);}
   const themeButton = document.querySelector('[data-theme-toggle]');
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   let theme = 'system';

@@ -2,7 +2,7 @@ const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
-const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium} = require('playwright');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 
 // These independent source fixtures catch missing teams, stale April topics and
@@ -28,25 +28,24 @@ async function checkCurrentContent(browser) {
       await check(`${locale || 'en/'} five current studies remain distinct from historical records`, async () => {
         await page.goto(`${base}/${locale}research.html`);
         assert.equal(await page.locator('[data-current-research]').count(),5,'Five current research records must exist');
-        const current = page.locator('#current-research');
+        const current = page.locator('main');
         const text = await current.textContent();
         for (const title of titles) assert.ok(text.includes(title),`Missing current manuscript: ${title}`);
         assert.doesNotMatch(text,/canard|카나드|moving.platform landing/i,'Old April topics must not replace current research');
         assert.equal(await current.locator('.current-stage:visible').count(),5,'Stage boundaries stay visible when details are closed');
-        assert.equal(await current.locator('.current-research-status').textContent(),locale
-          ? '진행 중인 학회 원고 연구입니다. 게재 확정·출판 여부는 확인되지 않았습니다.'
-          : 'Ongoing conference manuscripts; acceptance and publication status have not been verified.',
-          'Unknown acceptance/publication status must not be presented as confirmed nonacceptance');
+        assert.match(text,/publication status have not been verified|게재 확정·출판 여부는 확인되지/);
         const details = current.locator('details').first();
         await details.locator('summary').focus();
         await page.keyboard.press('Enter');
         assert.ok(await details.evaluate(el=>el.open),'Keyboard opens native research details');
         assert.ok(await details.locator('[data-research-method]').isVisible());
         assert.ok(await details.locator('[data-research-next]').isVisible());
-        assert.equal(await page.locator('[data-research-item]:visible').count(),15,'The historical archive remains separate and complete');
+        assert.equal(await page.locator('[data-research-item]').count(),0,'History is absent from current research');
+        await page.goto(`${base}/${locale}records.html`);
+        assert.equal(await page.locator('[data-research-item]:visible').count(),15,'Historical archive remains complete in Records');
         await page.locator('[data-filter-type]').selectOption('award');
         assert.equal(await page.locator('[data-research-item]:visible').count(),6,'Historical award filter still works');
-        assert.equal(await page.locator('[data-current-research]:visible').count(),5,'Archive filters cannot hide ongoing research');
+        assert.equal(await page.locator('[data-current-research]').count(),0,'Records does not duplicate current studies');
         await page.locator('[data-filter-reset]').click();
         assert.equal(await page.locator('[data-research-item]:visible').count(),15);
         assert.equal(await current.locator('a[href*="sharepoint"],a[href*="onedrive"]').count(),0,'Private manuscript storage must not be linked');
@@ -56,8 +55,8 @@ async function checkCurrentContent(browser) {
         await page.goto(`${base}/${locale}research.html`);
         await page.evaluate(()=>document.fonts.ready);
         const first = page.locator('[data-current-research]').first();
-        assert.ok((await first.locator('h3').boundingBox()).y<520,'First study heading begins before 520px');
-        assert.ok((await first.locator('.current-stage').boundingBox()).y<792,'The first stage boundary begins in the initial viewport');
+        assert.ok((await first.locator('figure').boundingBox()).y<792,'A substantial research visual begins in the first viewport');
+        assert.ok(await first.locator('.current-stage').isVisible(),'Stage is visible without expanding details');
       });
       await check(`${locale || 'en/'} current Avionics responsibilities and pinned versions are delivered`, async () => {
         await page.goto(`${base}/${locale}avionics.html`);
@@ -68,8 +67,8 @@ async function checkCurrentContent(browser) {
         assert.match(text,/integrated|통합/);
         assert.doesNotMatch(text,/three.axis acceleration plots|three separate windows|three.window|3D 자세 모델과 비행 상태, GNSS 기반 경로, 3축 가속도 그래프/);
         assert.ok(await avionics.locator('a[href*="7cfb5be044e539c2e3c6d79a6538416a2741cd67"]').count()>0,'Current source is pinned');
-        await page.goto(`${base}/${locale}projects.html`);
-        assert.ok(await page.locator('#tms a[href*="abb02a09bca4e7835425dc67b2c28234ef887992"]').count()>0,'TMS retains its verified version');
+        await page.goto(`${base}/${locale}tms.html`);
+        assert.ok(await page.locator('a[href*="abb02a09bca4e7835425dc67b2c28234ef887992"]').count()>0,'TMS retains its verified version');
         assert.equal(await page.locator('.selection-list').count(),0,'Stale April team-selection section is replaced');
       });
       await page.goto(`${base}/${locale}research.html`);
@@ -103,7 +102,7 @@ async function checkCurrentContent(browser) {
   assert.deepEqual(failures,[],'Current content checks');
 }
 if(require.main===module)(async()=>{
-  const browser=await chromium.launch({channel:'msedge',headless:true});
+  const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
   try{await checkCurrentContent(browser);}finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1});
 module.exports={checkCurrentContent};

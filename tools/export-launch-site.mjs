@@ -41,7 +41,7 @@ export async function exportSite(output = repository) {
     if (content.toString() !== render(page, lang)) throw new Error(`Stale page: ${name}; run node docs/launch-site/build.mjs first`);
     outputFiles.set(name, content);
   }
-  for (const name of ['site.css', 'site.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
+  for (const name of ['site.css', 'program-pages.css', 'site.js', 'telemetry.mjs']) outputFiles.set(name, await readFile(join(source, name)));
 
   // The onboard source is selected at runtime, rather than preloaded in HTML.
   const assets = new Set(['onboard.mp4', 'onboard-poster.webp', 'Pretendard-LICENSE.txt']);

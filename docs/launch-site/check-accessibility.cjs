@@ -1,6 +1,6 @@
 const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
-const { chromium } = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const { chromium } = require('playwright');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 
 async function checkAccessibility(page) {
@@ -10,7 +10,7 @@ async function checkAccessibility(page) {
     await page.goto(`${base}/${locale}index.html`);
     for (const theme of ['light', 'dark']) {
       await setTheme(page,theme);
-      const ratios = await page.locator('.testing-feature .test-plot figcaption').evaluate(caption => {
+      const ratios = await page.locator('.testing-feature .testing-intro>div:last-child').evaluate(caption => {
         const parse = value => (value.match(/[\d.]+/g) || []).map(Number);
         const luminance = rgb => rgb.slice(0, 3).map(channel => {
           const c = channel / 255;
@@ -57,7 +57,7 @@ async function checkAccessibility(page) {
 
 if (require.main === module) {
   (async () => {
-    const browser = await chromium.launch({channel:'msedge',headless:true});
+    const browser = await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});
     try { await checkAccessibility(await browser.newPage()); }
     finally { await browser.close(); }
   })().catch(error => { console.error(error); process.exitCode = 1; });

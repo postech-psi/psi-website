@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium} = require('playwright');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 
 async function checkPolish(browser) {
@@ -78,5 +78,5 @@ async function checkPolish(browser) {
   }
   assert.deepEqual(failures,[],'Minimal editorial polish');
 }
-if (require.main===module) (async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{await checkPolish(browser);}finally{await browser.close();}})().catch(error=>{console.error(error);process.exitCode=1;});
+if (require.main===module) (async()=>{const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});try{await checkPolish(browser);}finally{await browser.close();}})().catch(error=>{console.error(error);process.exitCode=1;});
 module.exports={checkPolish};

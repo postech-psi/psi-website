@@ -1,6 +1,6 @@
 const {setTheme} = require('./test-helpers.cjs');
 const assert = require('node:assert/strict');
-const {chromium} = require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium} = require('playwright');
 const base = process.env.PSI_URL || 'http://127.0.0.1:8767';
 const still = async page => {
   const before = await page.locator('[data-flight-video]').evaluate(v => v.currentTime);
@@ -224,5 +224,5 @@ async function checkMotionGallery(browser, only = 'all') {
   }
   assert.deepEqual(failures,[],'Motion/gallery/replay checks');
 }
-if(require.main===module)(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{await checkMotionGallery(browser,process.argv[2]);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+if(require.main===module)(async()=>{const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});try{await checkMotionGallery(browser,process.argv[2]);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
 module.exports={checkMotionGallery};

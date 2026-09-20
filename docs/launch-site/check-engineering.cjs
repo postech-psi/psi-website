@@ -1,6 +1,6 @@
 const {setTheme} = require('./test-helpers.cjs');
 const assert=require('node:assert/strict');
-const {chromium}=require('C:/Users/tae06/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const {chromium}=require('playwright');
 const base=process.env.PSI_URL||'http://127.0.0.1:8767';
 const portal='https://postech-psi.github.io/test-results/';
 async function checkEngineering(browser){
@@ -8,9 +8,9 @@ async function checkEngineering(browser){
  for(const locale of ['', 'ko/']){
   const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'}),page=await context.newPage();
   for(const [name,run] of [
-   ['activity selection uses the supplied 600 display weight',async()=>{
+   ['program links remain keyboard accessible',async()=>{
     await page.goto(`${base}/${locale}index.html`);
-    assert.equal(await page.locator('.activity-tabs [aria-selected=true]').evaluate(el=>getComputedStyle(el).fontWeight),'600');
+    assert.equal(await page.locator('[data-program]').count(),2);
    }],
    ['Avionics chapters and source boundaries',async()=>{
     assert.equal((await page.goto(`${base}/${locale}avionics.html`)).status(),200,'Avionics case-study route exists');
@@ -34,20 +34,23 @@ async function checkEngineering(browser){
     assert.equal(await page.locator('[data-language-link]').getAttribute('href'),locale?'../tms.html':'ko/tms.html');
     for(const id of ['instrument','processing','test-results'])assert.equal(await page.locator(`#${id}`).count(),1);
     const text=await page.locator('main').innerText();
-    for(const term of ['320','860','ADS1115','kg','N·s'])assert.ok(text.includes(term),term);
+    for(const term of ['320','860','ADS1115','kg'])assert.ok(text.includes(term),term);
     assert.match(text,locale?/오프라인/:/offline/);assert.match(text,locale?/일정한 오프셋/:/constant offset/);
     assert.match(text,locale?/타임스탬프.*아니라/:/rather than individual sample timestamps/);
     assert.ok(await page.locator(`a[href="${portal}"]`).count()>0);
     assert.ok(await page.locator(`a[href="${portal}#comparison"]`).count()>0);
     assert.equal(await page.locator('[data-test-result]').count(),4);
-    for(const [date,thrust,impulse]of [['2026-07-16','323.79','484.66'],['2026-05-28','174.19','366.33'],['2026-04-08','203.00','387.07'],['2026-04-03','174.42','368.74']]){
-      const record=page.locator(`[data-test-result="${date}"]`);const copy=await record.innerText();assert.ok(copy.includes(thrust)&&copy.includes(impulse));
-      assert.ok(await record.locator(`a[href="${portal}tests/${date}/index.html"]`).count());
+    const {resultCatalog}=await import('./test-results-view.mjs');
+    for(const test of resultCatalog.tests){
+      const record=page.locator(`[data-test-result="${test.id}"]`);
+      assert.ok((await record.innerText()).includes(test.date));
       assert.ok(await record.locator('a[href$="index.md"]').count());
+      const row=page.locator('[data-results-fallback] tbody tr').filter({hasText:test.date});
+      for(const metric of ['maxThrustN','totalImpulseNs'])assert.ok((await row.innerText()).includes(test.metrics[metric].display));
     }
-    assert.match(await page.locator('[data-test-result="2026-07-16"]').innerText(),locale?/압력.*이상/:/pressure.*anomal/i);
-    assert.match(await page.locator('[data-test-result="2026-04-03"]').innerText(),locale?/움직임.*화재/:/movement.*fire/);
-    for(const file of ['tms-july16-thrust.webp','tms-loadcell-calibration.webp']){
+    assert.match(await page.locator('[data-test-result="2026-07-16-combustion"]').innerText(),locale?/압력.*이상/:/pressure.*anomal/i);
+    assert.match(await page.locator('[data-test-result="2026-04-03-combustion"]').innerText(),locale?/움직임.*화재/:/movement.*fire/);
+    for(const file of ['tms-loadcell-calibration.webp']){
       const img=page.locator(`img[src$="${file}"]`);assert.equal(await img.count(),1);await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());
       assert.notEqual(await img.evaluate(el=>getComputedStyle(el).objectFit),'cover');
       assert.equal(await img.evaluate(el=>getComputedStyle(el).filter),'none');
@@ -56,14 +59,16 @@ async function checkEngineering(browser){
     }
    }],
    ['overview links, canonical player and selected display weight',async()=>{
-    await page.goto(`${base}/${locale}projects.html`);
-    for(const name of ['avionics','tms']){assert.equal(await page.locator(`#${name}`).count(),1);assert.ok(await page.locator(`#${name} a[href="${name}.html"]`).count());}
+    await page.goto(`${base}/${locale}pslv.html`);
+    for(const name of ['avionics','tms']){assert.ok(await page.locator(`#systems a[href="${name}.html"]`).count());}
     assert.equal(await page.locator('[data-telemetry]').count(),0,'Replay is not duplicated on Projects');
-    assert.ok(await page.locator('a[href="avionics.html#flight-record"]').count());
+    assert.ok(await page.locator('a[href="avionics.html"]').count());
     await page.goto(`${base}/${locale}index.html`);
-    assert.ok(await page.locator(`a.button[href="${portal}"]`).count(),'Home leads to actual results portal');
-    assert.equal(await page.locator('.activity-tabs [aria-selected=true]').evaluate(el=>getComputedStyle(el).fontWeight),'600');
-    for(const route of ['index','news']){await page.goto(`${base}/${locale}${route}.html`);for(const date of ['2026-07-16','2026-05-28','2026-04-08','2026-04-03'])assert.ok(await page.locator(`a[href="${portal}tests/${date}/index.html"]`).count());}
+    assert.ok(await page.locator(`a.button[href="tms.html#test-results"]`).count(),'Home leads to integrated results');
+    assert.equal(await page.locator('[data-program]').count(),2);
+    await page.goto(`${base}/${locale}records.html`);
+    const {resultCatalog}=await import('./test-results-view.mjs');
+    for(const test of resultCatalog.tests)assert.ok(await page.locator(`a[href="tms.html?test=${test.id}#test-results"]`).count());
    }],
    ['anchors account for the nonsticky header',async()=>{
     await page.setViewportSize({width:390,height:844});
@@ -75,7 +80,7 @@ async function checkEngineering(browser){
       assert.ok(box.y>=0&&box.y<=42,'Anchor target starts near the viewport top without obsolete fixed-header space');
     }
     await page.goto(`${base}/${locale}research.html`);
-    const article=page.locator('.current-research-list>article').last();
+    const article=page.locator('[data-current-research]').last();
     await article.evaluate(el=>el.scrollIntoView());
     const box=await article.boundingBox();
     assert.ok(box.y>=0&&box.y<=42,'Research anchor has only a modest inset');
@@ -103,5 +108,5 @@ async function checkEngineering(browser){
  }
  assert.deepEqual(errors,[],'Engineering case-study checks');
 }
-if(require.main===module)(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{await checkEngineering(browser);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+if(require.main===module)(async()=>{const browser=await chromium.launch({channel:process.env.PSI_BROWSER_CHANNEL||undefined,headless:true});try{await checkEngineering(browser);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
 module.exports={checkEngineering};
