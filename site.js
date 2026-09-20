@@ -5,8 +5,8 @@
   // Preserve old public entry points with same-directory, language-safe routes.
   const pageName=location.pathname.split('/').pop();
   const legacyDestination=()=>{
-    if(pageName==='learning.html')return 'join.html#learning';
-    if(pageName==='projects.html'&&['#avionics','#tms'].includes(location.hash))return location.hash.slice(1)+'.html';
+    if(pageName==='learning.html')return 'about.html#learning';
+    if(pageName==='projects.html'&&['#avionics','#tms'].includes(location.hash))return 'pslv.html'+location.search+location.hash;
     if(pageName==='news.html'&&location.hash==='#tests')return 'records.html#tests';
     if(pageName==='research.html'&&(location.hash==='#research-archive'||[...document.querySelectorAll('[data-archive-compatibility] a')].some(a=>a.hash===location.hash)))return 'records.html'+location.hash;
   };
@@ -42,6 +42,7 @@
       theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       try { localStorage.setItem('psi-theme', theme); } catch {}
       applyTheme();
+      window.psiMotion?.(themeButton,[{transform:'rotate(-35deg)',opacity:.3},{transform:'none',opacity:1}]);
     });
   }
   systemTheme.addEventListener('change', applyTheme);
@@ -118,6 +119,8 @@
     menu.setAttribute('aria-expanded', String(open));
     menu.querySelector('[data-menu-label]').textContent = open ? t('Close', '닫기') : t('Menu', '메뉴');
     navigation.classList.toggle('is-open', open);
+    window.psiMotion?.(menu.querySelector('.menu-icon'),[{transform:'rotate(-90deg)'},{transform:'none'}]);
+    if(open)window.psiMotion?.(navigation,[{opacity:0,transform:'translateY(-16px)'},{opacity:1,transform:'none'}]);
     document.body.classList.toggle('menu-open', open);
     if (main) main.inert = open;
     if (footer) footer.inert = open;
@@ -216,6 +219,7 @@
         loading.textContent = '';
         error.hidden = !failed;
         picture.hidden = failed;
+        if(!failed)window.psiMotion?.(picture,[{opacity:.25,transform:'translateX(24px)'},{opacity:1,transform:'none'}]);
       };
       picture.addEventListener('load', () => finish(false), {once:true});
       picture.addEventListener('error', () => finish(true), {once:true});
@@ -233,6 +237,7 @@
       showPhoto();
       document.body.classList.add('dialog-open');
       dialog.showModal();
+      window.psiMotion?.(dialog,[{opacity:0,transform:'scale(.96)'},{opacity:1,transform:'none'}]);
       close.focus();
     }));
     close.addEventListener('click', () => dialog.close());
@@ -424,7 +429,7 @@
         other.setAttribute('aria-selected', String(selected));
         other.tabIndex = selected ? 0 : -1;
       });
-      panels.forEach(panel => { panel.hidden = panel.dataset.hardwarePanel !== tab.dataset.hardware; });
+      panels.forEach(panel => { panel.hidden = panel.dataset.hardwarePanel !== tab.dataset.hardware; if(!panel.hidden)window.psiMotion?.(panel,[{opacity:.2,transform:'translateY(12px)'},{opacity:1,transform:'none'}]); });
     }));
     tabKeyboard(tabs);
   });
