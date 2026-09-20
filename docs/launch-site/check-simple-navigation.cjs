@@ -38,9 +38,10 @@ async function checkSimpleNavigation(browser){
    if(from.startsWith('avionics'))assert.ok(await page.locator('#architecture').isVisible());
   }
   await page.goto(`${base}/${prefix}news.html`);
+  const newsPath=new URL(page.url()).pathname;
   await page.locator('[data-gallery-open]').first().click();
   assert.ok(await page.locator('#photo-dialog').isVisible());
-  assert.equal(new URL(page.url()).pathname,`/${prefix}news.html`);
+  assert.equal(new URL(page.url()).pathname,newsPath);
   await page.locator('[data-gallery-next]').click();
   await page.locator('[data-gallery-image]').waitFor({state:'visible'});
   assert.ok(await page.locator('[data-gallery-image]').evaluate(el=>el.getAnimations().length>0),'Gallery animates photo changes');

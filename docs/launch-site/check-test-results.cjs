@@ -13,9 +13,12 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
  try {
   const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
   const fontRequests=[];
+  const browserErrors=[];
+  let browserErrorPhase='normal';
   page.on('request',request=>{if(request.url().includes('.woff2'))fontRequests.push(new URL(request.url()).pathname);});
-  page.on('pageerror',error=>console.error('Browser:',error.message));
-  page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
+  page.on('pageerror',error=>browserErrors.push({phase:browserErrorPhase,source:'pageerror',message:error.message}));
+  page.on('console',message=>{if(message.type()==='error')browserErrors.push({phase:browserErrorPhase,source:'console',message:message.text()});});
+  const isExpectedCatalogAbort=error=>error.phase==='catalog-abort'&&error.source==='console'&&(error.message==='Failed to load resource: net::ERR_FAILED'||error.message.startsWith('Test-results panel: TypeError: Failed to fetch'));
   await page.goto(base+'pslv.html#tms');
   assert.equal(await page.locator('[data-test-results]').count(),1,'TMS exposes the original interactive results alongside its static fallback');
   await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
@@ -72,7 +75,8 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   await page.locator('[data-results-comparison]').screenshot({path:path.join(__dirname,'../../.superpowers/sdd/implementation-2026-09-20/results-comparison-mobile-ko.png')});
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'no mobile overflow');
   await original.close();
-  await page.route('**/tests/index.json',route=>route.abort());await page.reload();await page.locator('[data-results-retry]').waitFor();assert.equal(await page.locator('.site-header').count(),1);assert.equal(await page.locator('[data-results-fallback] tbody tr').count(),4);
+  browserErrorPhase='catalog-abort';await page.route('**/tests/index.json',route=>route.abort());await page.reload();await page.locator('[data-results-retry]').waitFor();assert.equal(await page.locator('.site-header').count(),1);assert.equal(await page.locator('[data-results-fallback] tbody tr').count(),4);
+  browserErrorPhase='normal';assert.ok(browserErrors.some(error=>isExpectedCatalogAbort(error)&&error.message.startsWith('Test-results panel: TypeError: Failed to fetch')),'catalog abort reaches the expected failure path');
   await page.unroute('**/tests/index.json');await page.locator('[data-results-retry]').click();await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
   await page.route('**/tms_5_pipeline_data.txt',async route=>{const raw=await fs.readFile(path.join(__dirname,'assets/results/upstream/tests/2026-07-16/files/tms_5_pipeline_data.txt'),'utf8');const lines=raw.split(/\r?\n/);const index=lines[0].split('\t').indexOf('raw_force_N');const cells=lines[1].split('\t');cells[index]='';lines[1]=cells.join('\t');await route.fulfill({body:lines.join('\n'),contentType:'text/plain'});});
   await page.reload();await page.locator('[data-results-status="ready"]').waitFor({state:'attached'});
@@ -84,6 +88,7 @@ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript
   const broken=await browser.newPage();await broken.route('**/controller.mjs*',r=>r.abort());await broken.goto(base+'pslv.html#tms');await broken.locator('[data-results-retry]').waitFor();assert.equal(await broken.locator('.site-header').count(),1);assert.equal(await broken.locator('[data-results-fallback] tbody tr').count(),4);await broken.unroute('**/controller.mjs*');await broken.locator('[data-results-retry]').click();await broken.locator('[data-results-status="ready"]').waitFor({state:'attached',timeout:5000});await broken.close();
   const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base+'pslv.html');await nojs.locator('[data-system="tms"] > summary').click();assert.equal(await nojs.locator('[data-results-fallback] tbody tr').count(),4);await nojs.close();
   const requests=[];page.on('request',r=>requests.push(r.url()));await page.goto(base+'aircraft.html');assert.equal(requests.some(u=>u.includes('/results/')),false);
+  assert.deepEqual(browserErrors.filter(error=>!isExpectedCatalogAbort(error)),[],'unexpected browser errors');
   console.log('PASS original results integration, controls, all trials, theme, KO/subpath, motion, failure/retry and no-JS');
  } finally {await browser.close();server.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
