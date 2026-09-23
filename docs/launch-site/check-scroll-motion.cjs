@@ -30,7 +30,7 @@ const base=process.env.PSI_URL||'http://127.0.0.1:8870';
     assert.ok(brand.x+brand.width+12<nav.x,`Logo and navigation do not overlap at ${width}px`);
    }
    await page.setViewportSize({width:1440,height:900});
-   assert.equal(await page.locator('.brand').evaluate(el=>getComputedStyle(el,'::after').maskMode),'luminance','Original artwork is rendered without its opaque background');
+   assert.equal(await page.locator('.psi-wordmark').evaluate(el=>getComputedStyle(el,'::after').maskMode),'luminance','Original artwork is rendered without its opaque background');
    await page.locator('[data-theme-toggle]').click();
    await page.waitForFunction(()=>getComputedStyle(document.querySelector('.site-header')).backgroundColor==='rgb(0, 0, 0)');
    await page.locator('[data-theme-toggle]').click();
